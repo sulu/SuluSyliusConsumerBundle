@@ -1,0 +1,6 @@
+parameters:
+    level: 7
+    paths:
+        - .
+    excludes_analyse:
+        - %currentWorkingDirectory%/vendor/*

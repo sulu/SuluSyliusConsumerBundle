@@ -1,0 +1,14 @@
+# composer
+vendor
+composer.lock
+
+# phpunit
+phpunit.phar
+phpunit.xml
+
+# php-cs
+.php_cs.cache
+
+# tests
+Tests/app/cache
+Tests/app/data
