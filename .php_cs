@@ -21,6 +21,7 @@ return PhpCsFixer\Config::create()
         'class_definition' => [
             'multiLineExtendsEachSingleLine' => true,
         ],
+        'declare_strict_types' => true,
         'header_comment' => ['header' => $header],
     ])
     ->setFinder(

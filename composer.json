@@ -12,10 +12,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.1.3",
-
-        "sulu/sulu": "^2.0@dev",
+        "dantleech/phpcr-migrations-bundle": "@dev",
+        "massive/build-bundle": "@dev",
+        "massive/search-bundle": "@dev",
+        "sulu/sulu": "dev-feature/deprecations",
+        "symfony/config": "^4.1",
         "symfony/http-kernel": "^3.4|^4.1",
-        "symfony/config": "^3.4|^4.1"
+        "symfony/messenger": "^4.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.12",
@@ -38,7 +41,7 @@
         }
     },
     "scripts": {
-        "initialize" : [],
+        "initialize": [],
         "phpunit": "vendor/bin/phpunit",
         "phpstan": "vendor/bin/phpstan analyze -c ./phpstan.neon . -l max",
         "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
@@ -48,5 +51,11 @@
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/wachterjohannes/sulu.git"
+        }
+    ]
 }
