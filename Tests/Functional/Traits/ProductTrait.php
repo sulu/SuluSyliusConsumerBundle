@@ -18,9 +18,13 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 
 trait ProductTrait
 {
+    use DimensionTrait;
+
     protected function createProduct(string $code): Product
     {
-        $product = new Product($code);
+        $dimension = $this->findDimension(['workspace' => 'draft']);
+
+        $product = new Product($dimension, $code);
 
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
@@ -30,7 +34,9 @@ trait ProductTrait
 
     protected function findProduct(string $code): ?Product
     {
-        return $this->getEntityManager()->find(Product::class, $code);
+        $dimension = $this->findDimension(['workspace' => 'draft']);
+
+        return $this->getEntityManager()->find(Product::class, ['code' => $code, 'dimension' => $dimension]);
     }
 
     /**

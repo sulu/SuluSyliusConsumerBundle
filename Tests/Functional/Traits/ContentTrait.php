@@ -42,12 +42,14 @@ trait ContentTrait
         return $content;
     }
 
-    protected function findContent(string $resourceKey, string $resourceId): ?Content
+    protected function findContent(string $resourceKey, string $resourceId, string $locale): ?Content
     {
+        $dimension = $this->findDimension(['workspace' => 'draft', 'locale' => $locale]);
+
         /** @var Content $content */
         $content = $this->getEntityManager()->find(
             Content::class,
-            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId]
+            ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
         );
 
         return $content;

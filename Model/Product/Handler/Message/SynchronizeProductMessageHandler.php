@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
@@ -31,19 +32,28 @@ class SynchronizeProductMessageHandler
      */
     private $variantRepository;
 
+    /**
+     * @var DimensionRepositoryInterface
+     */
+    private $dimensionRepository;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductVariantRepositoryInterface $variantRepository
+        ProductVariantRepositoryInterface $variantRepository,
+        DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
         $this->variantRepository = $variantRepository;
+        $this->dimensionRepository = $dimensionRepository;
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
     {
-        $product = $this->productRepository->findByCode($message->getCode());
+        $dimension = $this->dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft']);
+
+        $product = $this->productRepository->findByCode($dimension, $message->getCode());
         if (!$product) {
-            $product = $this->productRepository->create($message->getCode());
+            $product = $this->productRepository->create($dimension, $message->getCode());
         }
 
         $this->synchronizeVariants($message->getVariants(), $product);

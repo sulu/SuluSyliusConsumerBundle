@@ -14,14 +14,33 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandler
 {
+    /**
+     * @var ProductRepositoryInterface
+     */
+    private $productRepository;
+
+    /**
+     * @var ProductVariantRepositoryInterface
+     */
+    private $variantRepository;
+
+    /**
+     * @var DimensionRepositoryInterface
+     */
+    private $dimensionRepository;
+
     /**
      * @var MessageBusInterface
      */
@@ -32,13 +51,21 @@ class PublishProductMessageHandler
      */
     private $slugifier;
 
-    public function __construct(MessageBusInterface $messageBus, SlugifierInterface $slugifier)
-    {
+    public function __construct(
+        ProductRepositoryInterface $productRepository,
+        ProductVariantRepositoryInterface $variantRepository,
+        DimensionRepositoryInterface $dimensionRepository,
+        MessageBusInterface $messageBus,
+        SlugifierInterface $slugifier
+    ) {
+        $this->productRepository = $productRepository;
+        $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
         $this->slugifier = $slugifier;
+        $this->variantRepository = $variantRepository;
     }
 
-    public function __invoke(PublishProductMessage $message): void
+    public function __invoke(PublishProductMessage $message): ProductInterface
     {
         $this->messageBus->dispatch(
             new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getCode(), $message->getLocale())
@@ -54,5 +81,41 @@ class PublishProductMessageHandler
                 $routePath
             )
         );
+
+        $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        );
+        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+        );
+
+        $draftProduct = $this->productRepository->findByCode($draftDimension, $message->getCode());
+        $liveProduct = $this->productRepository->findByCode($liveDimension, $message->getCode());
+        if (!$liveProduct) {
+            $liveProduct = $this->productRepository->create($liveDimension, $message->getCode());
+        }
+
+        $this->synchronizeVariants($draftProduct, $liveProduct);
+
+        return $liveProduct;
+    }
+
+    private function synchronizeVariants(ProductInterface $draftProduct, ProductInterface $liveProduct): void
+    {
+        $codes = [];
+        foreach ($draftProduct->getVariants() as $draftVariant) {
+            $variant = $liveProduct->findVariantByCode($draftVariant->getCode());
+            if (!$variant) {
+                $variant = $this->variantRepository->create($liveProduct, $draftVariant->getCode());
+            }
+
+            $codes[] = $variant->getCode();
+        }
+
+        foreach ($liveProduct->getVariants() as $variant) {
+            if (!in_array($variant->getCode(), $codes)) {
+                $liveProduct->removeVariant($variant);
+            }
+        }
     }
 }

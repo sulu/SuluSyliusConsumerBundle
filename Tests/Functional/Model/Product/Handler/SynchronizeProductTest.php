@@ -18,7 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class SynchronizeProductHandlerTest extends SuluTestCase
+class SynchronizeProductTest extends SuluTestCase
 {
     use ProductTrait;
 

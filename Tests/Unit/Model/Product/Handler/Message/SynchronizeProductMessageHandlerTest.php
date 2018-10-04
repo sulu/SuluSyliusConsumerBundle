@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Message;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
@@ -22,7 +25,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
-class SynchronizeProductHandlerTest extends TestCase
+class SynchronizeProductMessageHandlerTest extends TestCase
 {
     public function testInvokeCreate(): void
     {
@@ -32,12 +35,21 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $productRepository->findByCode('product-1')->willReturn(null);
+        $handler = new SynchronizeProductMessageHandler(
+            $productRepository->reveal(),
+            $variantRepository->reveal(),
+            $dimensionRepository->reveal()
+        );
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
+
+        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn(null);
         $product = $this->prophesize(ProductInterface::class);
         $product->getVariants()->willReturn([]);
-        $productRepository->create('product-1')->shouldBeCalled()->willReturn($product->reveal());
+        $productRepository->create($dimension->reveal(), 'product-1')->shouldBeCalled()->willReturn($product->reveal());
 
         $handler->__invoke($message->reveal());
     }
@@ -50,12 +62,21 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+
+        $handler = new SynchronizeProductMessageHandler(
+            $productRepository->reveal(),
+            $variantRepository->reveal(),
+            $dimensionRepository->reveal()
+        );
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getVariants()->willReturn([]);
-        $productRepository->findByCode('product-1')->willReturn($product->reveal());
-        $productRepository->create('product-1')->shouldNotBeCalled();
+        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn($product->reveal());
+        $productRepository->create(Argument::cetera())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
     }
@@ -75,13 +96,22 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+
+        $handler = new SynchronizeProductMessageHandler(
+            $productRepository->reveal(),
+            $variantRepository->reveal(),
+            $dimensionRepository->reveal()
+        );
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getVariants()->willReturn([]);
         $product->findVariantByCode('variant-1')->willReturn(null);
-        $productRepository->findByCode('product-1')->willReturn($product->reveal());
-        $productRepository->create('product-1')->shouldNotBeCalled();
+        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn($product->reveal());
+        $productRepository->create(Argument::cetera())->shouldNotBeCalled();
 
         $variant = $this->prophesize(ProductVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
@@ -98,11 +128,20 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+
+        $handler = new SynchronizeProductMessageHandler(
+            $productRepository->reveal(),
+            $variantRepository->reveal(),
+            $dimensionRepository->reveal()
+        );
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
-        $productRepository->findByCode('product-1')->willReturn($product->reveal());
-        $productRepository->create('product-1')->shouldNotBeCalled();
+        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn($product->reveal());
+        $productRepository->create(Argument::cetera())->shouldNotBeCalled();
 
         $variant = $this->prophesize(ProductVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');

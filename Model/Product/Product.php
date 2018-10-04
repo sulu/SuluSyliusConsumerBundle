@@ -15,9 +15,17 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableInterface;
 
 class Product implements ProductInterface
 {
+    /**
+     * @var DimensionInterface
+     */
+    private $dimension;
+
     /**
      * @var string
      */
@@ -28,11 +36,27 @@ class Product implements ProductInterface
      */
     private $variants;
 
-    public function __construct(string $code, array $variants = [])
+    /**
+     * @var ContentInterface
+     */
+    private $content;
+
+    /**
+     * @var RoutableInterface
+     */
+    private $routable;
+
+    public function __construct(DimensionInterface $dimension, string $code, array $variants = [])
     {
+        $this->dimension = $dimension;
         $this->code = $code;
 
         $this->variants = new ArrayCollection($variants);
+    }
+
+    public function getDimension(): DimensionInterface
+    {
+        return $this->dimension;
     }
 
     public function getCode(): string
@@ -66,5 +90,29 @@ class Product implements ProductInterface
         $this->variants->remove($variant->getCode());
 
         return $this;
+    }
+
+    public function setContent(ContentInterface $content): Product
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    public function getContent(): ?ContentInterface
+    {
+        return $this->content;
+    }
+
+    public function setRoutable(RoutableInterface $routable): Product
+    {
+        $this->routable = $routable;
+
+        return $this;
+    }
+
+    public function getRoutable(): ?RoutableInterface
+    {
+        return $this->routable;
     }
 }

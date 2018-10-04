@@ -21,7 +21,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
-class RemoveProductHandlerTest extends TestCase
+class RemoveProductMessageHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
@@ -32,7 +32,7 @@ class RemoveProductHandlerTest extends TestCase
         $handler = new RemoveProductMessageHandler($repository->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
-        $repository->findByCode('product-1')->willReturn($product->reveal());
+        $repository->findAllByCode('product-1')->willReturn([$product->reveal()]);
         $repository->remove($product->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
@@ -48,7 +48,7 @@ class RemoveProductHandlerTest extends TestCase
         $repository = $this->prophesize(ProductRepositoryInterface::class);
         $handler = new RemoveProductMessageHandler($repository->reveal());
 
-        $repository->findByCode('product-1')->willReturn(null);
+        $repository->findAllByCode('product-1')->willReturn([]);
         $repository->remove(Argument::any())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());

@@ -17,9 +17,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
-class FindProductQueryHandler
+class FindPublishedProductQueryHandler
 {
     /**
      * @var ProductRepositoryInterface
@@ -31,18 +32,28 @@ class FindProductQueryHandler
      */
     private $dimensionRepository;
 
+    /**
+     * @var ProductViewFactoryInterface
+     */
+    private $productViewFactory;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        DimensionRepositoryInterface $dimensionRepository
+        DimensionRepositoryInterface $dimensionRepository,
+        ProductViewFactoryInterface $productViewFactory
     ) {
         $this->productRepository = $productRepository;
         $this->dimensionRepository = $dimensionRepository;
+        $this->productViewFactory = $productViewFactory;
     }
 
-    public function __invoke(FindProductQuery $query): ProductInterface
+    public function __invoke(FindPublishedProductQuery $query): ProductInterface
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft']
+            ['workspace' => 'live']
+        );
+        $localizedDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            ['workspace' => 'live', 'locale' => $query->getLocale()]
         );
 
         $product = $this->productRepository->findByCode($dimension, $query->getCode());
@@ -50,6 +61,6 @@ class FindProductQueryHandler
             throw new ProductNotFoundException($query->getCode());
         }
 
-        return $product;
+        return $this->productViewFactory->create([$product], [$dimension, $localizedDimension]);
     }
 }

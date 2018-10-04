@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Query;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindProductQueryHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -24,15 +26,21 @@ class FindProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $repository = $this->prophesize(ProductRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindProductQueryHandler($repository->reveal());
+        $handler = new FindProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
 
         $message = $this->prophesize(FindProductQuery::class);
         $message->getCode()->willReturn('product-1');
 
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
+
         $product = $this->prophesize(ProductInterface::class);
-        $repository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
+        $productRepository->findByCode($dimension->reveal(), 'product-1')
+            ->willReturn($product->reveal())
+            ->shouldBeCalled();
 
         $result = $handler->__invoke($message->reveal());
         $this->assertEquals($product->reveal(), $result);
@@ -42,14 +50,18 @@ class FindProductQueryHandlerTest extends TestCase
     {
         $this->expectException(ProductNotFoundException::class);
 
-        $repository = $this->prophesize(ProductRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
+        $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindProductQueryHandler($repository->reveal());
+        $handler = new FindProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
+
+        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
 
         $message = $this->prophesize(FindProductQuery::class);
         $message->getCode()->willReturn('product-1');
 
-        $repository->findByCode('product-1')->willReturn(null);
+        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }
