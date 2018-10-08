@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-class CreateProductMessage
+interface ProductVariantInterface
 {
+    public function getProduct(): ProductInterface;
+
+    public function getCode(): string;
 }

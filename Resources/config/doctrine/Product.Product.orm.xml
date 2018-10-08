@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"
+            table="pr_products"
+            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\ProductRepository">
+        <id name="code" type="string">
+            <generator strategy="NONE"/>
+        </id>
+
+        <one-to-many field="variants"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant"
+                     mapped-by="product"
+                     orphan-removal="true"
+                     index-by="code">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+    </entity>
+</doctrine-mapping>
