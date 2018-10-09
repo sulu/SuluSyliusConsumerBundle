@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-$file = __DIR__ . '/../vendor/autoload.php';
-if (!file_exists($file)) {
-    throw new RuntimeException('Install dependencies to run test suite.');
-}
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-return require $file;
+interface ProductVariantRepositoryInterface
+{
+    public function create(ProductInterface $product, string $code): ProductVariantInterface;
+}

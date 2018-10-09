@@ -12,3 +12,4 @@ phpunit.xml
 # tests
 Tests/app/cache
 Tests/app/data
+Tests/var
