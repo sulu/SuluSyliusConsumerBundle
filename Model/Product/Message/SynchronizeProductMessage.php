@@ -13,11 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
-
 class SynchronizeProductMessage
 {
-    use PayloadTrait;
+    use ProductPayloadTrait;
 
     /**
      * @var string
@@ -33,10 +31,5 @@ class SynchronizeProductMessage
     public function getCode(): string
     {
         return $this->code;
-    }
-
-    public function getProduct(): ProductDTO
-    {
-        return new ProductDTO($this->getArrayValue('product'));
     }
 }

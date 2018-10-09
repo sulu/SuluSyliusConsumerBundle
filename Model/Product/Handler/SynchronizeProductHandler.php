@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantDTO;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
@@ -41,20 +41,18 @@ class SynchronizeProductHandler
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
     {
-        $productDTO = $message->getProduct();
-
-        $product = $this->productRepository->findByCode($productDTO->getCode());
+        $product = $this->productRepository->findByCode($message->getCode());
         if (!$product) {
-            $product = $this->productRepository->create($productDTO->getCode());
+            $product = $this->productRepository->create($message->getCode());
         }
 
-        $this->synchronizeVariants($productDTO->getVariants(), $product);
+        $this->synchronizeVariants($message->getVariants(), $product);
 
         return $product;
     }
 
     /**
-     * @param ProductVariantDTO[] $variantDTOs
+     * @param ProductVariantValueObject[] $variantDTOs
      */
     private function synchronizeVariants(array $variantDTOs, ProductInterface $product)
     {

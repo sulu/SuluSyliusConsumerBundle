@@ -15,43 +15,33 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductVariantDTO
+trait ProductPayloadTrait
 {
     use PayloadTrait;
 
-    public function __construct(array $payload)
-    {
-        $this->initializePayload($payload);
-    }
-
-    public function getCode(): string
-    {
-        return $this->getStringValue('code');
-    }
-
     /**
-     * @return ProductVariantTranslationDTO[]
+     * @return ProductTranslationValueObject[]
      */
     public function getTranslations(): array
     {
         return array_map(
             function (array $payload) {
-                return new ProductVariantTranslationDTO($payload);
+                return new ProductTranslationValueObject($payload);
             },
             $this->getArrayValue('translations')
         );
     }
 
     /**
-     * @return OptionValueDTO[]
+     * @return ProductVariantValueObject[]
      */
-    public function getOptionValues(): array
+    public function getVariants(): array
     {
         return array_map(
             function (array $payload) {
-                return new OptionValueDTO($payload);
+                return new ProductVariantValueObject($payload);
             },
-            $this->getArrayValue('optionValues')
+            $this->getArrayValue('variants')
         );
     }
 }

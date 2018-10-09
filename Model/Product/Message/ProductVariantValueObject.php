@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductDTO
+class ProductVariantValueObject
 {
     use PayloadTrait;
 
@@ -30,28 +30,28 @@ class ProductDTO
     }
 
     /**
-     * @return ProductTranslationDTO[]
+     * @return ProductVariantTranslationValueObject[]
      */
     public function getTranslations(): array
     {
         return array_map(
             function (array $payload) {
-                return new ProductTranslationDTO($payload);
+                return new ProductVariantTranslationValueObject($payload);
             },
             $this->getArrayValue('translations')
         );
     }
 
     /**
-     * @return ProductVariantDTO[]
+     * @return OptionValueValueObject[]
      */
-    public function getVariants(): array
+    public function getOptionValues(): array
     {
         return array_map(
             function (array $payload) {
-                return new ProductVariantDTO($payload);
+                return new OptionValueValueObject($payload);
             },
-            $this->getArrayValue('variants')
+            $this->getArrayValue('optionValues')
         );
     }
 }

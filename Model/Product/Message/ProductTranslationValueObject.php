@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductTranslationDTO
+class ProductTranslationValueObject
 {
     use PayloadTrait;
 

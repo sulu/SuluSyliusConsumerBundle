@@ -15,8 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\SynchronizeProductHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductDTO;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantDTO;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
@@ -27,13 +26,9 @@ class SynchronizeProductHandlerTest extends TestCase
 {
     public function testInvokeCreate(): void
     {
-        $productDTO = $this->prophesize(ProductDTO::class);
-        $productDTO->getCode()->willReturn('product-1');
-        $productDTO->getVariants()->willReturn([]);
-
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
-        $message->getProduct()->willReturn($productDTO->reveal());
+        $message->getVariants()->willReturn([]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
@@ -49,13 +44,9 @@ class SynchronizeProductHandlerTest extends TestCase
 
     public function testInvokeUpdate(): void
     {
-        $productDTO = $this->prophesize(ProductDTO::class);
-        $productDTO->getCode()->willReturn('product-1');
-        $productDTO->getVariants()->willReturn([]);
-
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
-        $message->getProduct()->willReturn($productDTO->reveal());
+        $message->getVariants()->willReturn([]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
@@ -71,20 +62,16 @@ class SynchronizeProductHandlerTest extends TestCase
 
     public function testInvokeCreateVariant(): void
     {
-        $variantDTO = $this->prophesize(ProductVariantDTO::class);
+        $variantDTO = $this->prophesize(ProductVariantValueObject::class);
         $variantDTO->getCode()->willReturn('variant-1');
 
-        $productDTO = $this->prophesize(ProductDTO::class);
-        $productDTO->getCode()->willReturn('product-1');
-        $productDTO->getVariants()->willReturn(
+        $message = $this->prophesize(SynchronizeProductMessage::class);
+        $message->getCode()->willReturn('product-1');
+        $message->getVariants()->willReturn(
             [
                 $variantDTO->reveal(),
             ]
         );
-
-        $message = $this->prophesize(SynchronizeProductMessage::class);
-        $message->getCode()->willReturn('product-1');
-        $message->getProduct()->willReturn($productDTO->reveal());
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
@@ -105,13 +92,9 @@ class SynchronizeProductHandlerTest extends TestCase
 
     public function testInvokeRemoveVariant(): void
     {
-        $productDTO = $this->prophesize(ProductDTO::class);
-        $productDTO->getCode()->willReturn('product-1');
-        $productDTO->getVariants()->willReturn([]);
-
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
-        $message->getProduct()->willReturn($productDTO->reveal());
+        $message->getVariants()->willReturn([]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);

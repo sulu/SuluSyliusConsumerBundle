@@ -27,11 +27,8 @@ class SynchronizeProductHandlerTest extends SuluTestCase
         $message = new SynchronizeProductMessage(
             'product-1',
             [
-               'product' => [
-                   'code' => 'product-1',
-                   'variants' => [
-                       ['code' => 'variant-1'],
-                   ],
+               'variants' => [
+                   ['code' => 'variant-1'],
                ],
            ]
         );

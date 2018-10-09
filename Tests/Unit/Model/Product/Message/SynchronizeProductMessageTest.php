@@ -20,15 +20,8 @@ class SynchronizeProductMessageTest extends TestCase
 {
     public function testGetCode(): void
     {
-        $message = new SynchronizeProductMessage('product-1', []);
+        $message = new SynchronizeProductMessage('product-1', ['variants' => []]);
 
         $this->assertEquals('product-1', $message->getCode());
-    }
-
-    public function testGetProduct(): void
-    {
-        $message = new SynchronizeProductMessage('product-1', ['product' => ['code' => 'product-1']]);
-
-        $this->assertEquals(['code' => 'product-1'], $message->getProduct()->getPayload());
     }
 }
