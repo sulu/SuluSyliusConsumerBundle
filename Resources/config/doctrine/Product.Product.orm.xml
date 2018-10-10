@@ -4,8 +4,8 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"
             table="pr_products"
-            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\ProductRepository">
-        <id name="code" type="string">
+            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductRepository">
+        <id name="code" column="product_code" type="string">
             <generator strategy="NONE"/>
         </id>
 

@@ -11,10 +11,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler;
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Message;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\SynchronizeProductHandler;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -32,7 +32,7 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductHandler($productRepository->reveal(), $variantRepository->reveal());
+        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
 
         $productRepository->findByCode('product-1')->willReturn(null);
         $product = $this->prophesize(ProductInterface::class);
@@ -50,7 +50,7 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductHandler($productRepository->reveal(), $variantRepository->reveal());
+        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getVariants()->willReturn([]);
@@ -75,7 +75,7 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductHandler($productRepository->reveal(), $variantRepository->reveal());
+        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getVariants()->willReturn([]);
@@ -98,7 +98,7 @@ class SynchronizeProductHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
-        $handler = new SynchronizeProductHandler($productRepository->reveal(), $variantRepository->reveal());
+        $handler = new SynchronizeProductMessageHandler($productRepository->reveal(), $variantRepository->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
         $productRepository->findByCode('product-1')->willReturn($product->reveal());

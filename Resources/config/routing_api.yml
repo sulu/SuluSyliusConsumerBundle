@@ -1,0 +1,9 @@
+sulu_sylius_product.product_content:
+    type: rest
+    resource: sulu_sylius_product.controller.product_content
+    name_prefix: sulu_sylius_product.
+
+sulu_sylius_product.product:
+    type: rest
+    resource: sulu_sylius_product.controller.product
+    name_prefix: sulu_sylius_product.

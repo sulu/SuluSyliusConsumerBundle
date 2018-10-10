@@ -22,6 +22,11 @@ class SynchronizeProductHandlerTest extends SuluTestCase
 {
     use ProductTrait;
 
+    public function setUp()
+    {
+        $this->purgeDatabase();
+    }
+
     public function testSynchronizeProductCreate()
     {
         $message = new SynchronizeProductMessage(

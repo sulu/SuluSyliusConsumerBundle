@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Repository;
+namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;

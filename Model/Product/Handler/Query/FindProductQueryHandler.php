@@ -11,13 +11,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
 
-class RemoveProductHandler
+class FindProductQueryHandler
 {
     /**
      * @var ProductRepositoryInterface
@@ -29,13 +30,13 @@ class RemoveProductHandler
         $this->productRepository = $productRepository;
     }
 
-    public function __invoke(RemoveProductMessage $message): void
+    public function __invoke(FindProductQuery $query): ProductInterface
     {
-        $product = $this->productRepository->findByCode($message->getCode());
+        $product = $this->productRepository->findByCode($query->getCode());
         if (!$product) {
-            throw new ProductNotFoundException($message->getCode());
+            throw new ProductNotFoundException($query->getCode());
         }
 
-        $this->productRepository->remove($product);
+        return $product;
     }
 }

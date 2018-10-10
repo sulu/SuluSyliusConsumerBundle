@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -49,6 +51,69 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                                     'is_bundle' => true,
                                     'mapping' => true,
                                 ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        if (!$container->hasExtension('jms_serializer')) {
+            throw new \RuntimeException('Missing JmsSerializerBundle.');
+        }
+
+        $container->prependExtensionConfig(
+            'jms_serializer',
+            [
+                'metadata' => [
+                    'directories' => [
+                        [
+                            'name' => 'SuluSyliusConsumerBundle',
+                            'path' => __DIR__ . '/../Resources/config/serializer',
+                            'namespace_prefix' => 'Sulu\\Bundle\\SyliusConsumerBundle\\Model',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        if (!$container->hasExtension('sulu_admin')) {
+            throw new \RuntimeException('Missing SuluAdminBundle.');
+        }
+
+        $container->prependExtensionConfig(
+            'sulu_admin',
+            [
+                'resources' => [
+                    ProductInterface::RESOURCE_KEY => [
+                        'datagrid' => Product::class,
+                        'form' => ['@SuluSyliusConsumerBundle/Resources/config/forms/Product.Product.xml'],
+                        'endpoint' => 'sulu_sylius_product.get_products',
+                    ],
+                ],
+            ]
+        );
+
+        if (!$container->hasExtension('sulu_core')) {
+            throw new \RuntimeException('Missing SuluCoreBundle.');
+        }
+
+        $container->prependExtensionConfig(
+            'sulu_core',
+            [
+                'content' => [
+                    'structure' => [
+                        'paths' => [
+                            'product_content' => [
+                                'path' => '%kernel.project_dir%/config/templates/products',
+                                'type' => 'product_content',
+                            ],
+                        ],
+                        'resources' => [
+                            'product_contents' => [
+                                'datagrid' => Product::class,
+                                'types' => ['product_content'],
+                                'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
                         ],
                     ],

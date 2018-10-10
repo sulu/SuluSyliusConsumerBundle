@@ -22,6 +22,11 @@ class RemoveProductHandlerTest extends SuluTestCase
 {
     use ProductTrait;
 
+    public function setUp()
+    {
+        $this->purgeDatabase();
+    }
+
     public function testSynchronizeProductCreate()
     {
         $product = $this->createProduct('product-1');
