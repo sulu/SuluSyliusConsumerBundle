@@ -13,9 +13,20 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+
 interface ContentRepositoryInterface
 {
-    public function findOrCreate(string $resourceKey, string $resourceId): ContentInterface;
+    public function findOrCreate(
+        string $resourceKey,
+        string $resourceId,
+        DimensionInterface $dimension
+    ): ContentInterface;
 
     public function findByResource(string $resourceKey, string $resourceId): ?ContentInterface;
+
+    /**
+     * @param DimensionInterface[] $dimensions
+     */
+    public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array;
 }

@@ -24,6 +24,7 @@ class ModifyContentMessageTest extends TestCase
         $message = new ModifyContentMessage(
             ProductInterface::RESOURCE_KEY,
             'product-1',
+            'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
@@ -35,10 +36,23 @@ class ModifyContentMessageTest extends TestCase
         $message = new ModifyContentMessage(
             ProductInterface::RESOURCE_KEY,
             'product-1',
+            'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
         $this->assertEquals('product-1', $message->getResourceId());
+    }
+
+    public function testGetLocale(): void
+    {
+        $message = new ModifyContentMessage(
+            ProductInterface::RESOURCE_KEY,
+            'product-1',
+            'en',
+            ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
+        );
+
+        $this->assertEquals('en', $message->getLocale());
     }
 
     public function testGetType(): void
@@ -46,6 +60,7 @@ class ModifyContentMessageTest extends TestCase
         $message = new ModifyContentMessage(
             ProductInterface::RESOURCE_KEY,
             'product-1',
+            'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
@@ -57,6 +72,7 @@ class ModifyContentMessageTest extends TestCase
         $message = new ModifyContentMessage(
             ProductInterface::RESOURCE_KEY,
             'product-1',
+            'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 

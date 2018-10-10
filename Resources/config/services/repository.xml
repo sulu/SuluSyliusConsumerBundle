@@ -17,5 +17,10 @@
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content</argument>
         </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</argument>
+        </service>
     </services>
 </container>

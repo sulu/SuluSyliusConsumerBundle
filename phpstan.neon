@@ -1,6 +1,7 @@
 includes:
-	- vendor/jangregor/phpstan-prophecy/src/extension.neon
-	- vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/jangregor/phpstan-prophecy/src/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+    - vendor/phpstan/phpstan-symfony/extension.neon
 
 parameters:
     level: 7
@@ -11,3 +12,5 @@ parameters:
         - %currentWorkingDirectory%/Tests/app/AppKernel.php
         - %currentWorkingDirectory%/Tests/app/cache/*
         - %currentWorkingDirectory%/Tests/var/*
+    symfony:
+        container_xml_path: %rootDir%/../../../Tests/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml

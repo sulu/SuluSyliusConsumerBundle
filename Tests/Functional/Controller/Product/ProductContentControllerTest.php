@@ -31,7 +31,7 @@ class ProductContentControllerTest extends SuluTestCase
         $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1');
 
         $client = $this->createAuthenticatedClient();
-        $client->request('GET', '/api/product-contents/' . $content->getResourceId());
+        $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=en');
 
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -42,12 +42,28 @@ class ProductContentControllerTest extends SuluTestCase
         );
     }
 
-    public function testPutActionCreate(): void
+    public function testGetActionOtherLocale(): void
     {
-        $data = ['template' => 'default', 'title' => 'Sulu is awesome'];
+        $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1');
 
         $client = $this->createAuthenticatedClient();
-        $client->request('PUT', '/api/product-contents/product-1', $data);
+        $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=de');
+
+        $response = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $this->assertEquals(
+            ['template' => $content->getType()],
+            $response
+        );
+    }
+
+    public function testPutActionCreate(): void
+    {
+        $data = ['template' => 'default', 'title' => 'Sulu', 'article' => 'Sulu is awesome'];
+
+        $client = $this->createAuthenticatedClient();
+        $client->request('PUT', '/api/product-contents/product-1?locale=en', $data);
 
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -57,12 +73,18 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionUpdate(): void
     {
-        $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1', 'homepage', ['title' => 'Sulu is great']);
+        $content = $this->createContent(
+            ProductInterface::RESOURCE_KEY,
+            'product-1',
+            'en',
+            'homepage',
+            ['title' => 'Zoolu', 'article' => 'Zoolu is great']
+        );
 
-        $data = ['template' => 'default', 'title' => 'Sulu is awesome'];
+        $data = ['template' => 'default', 'title' => 'Sulu', 'article' => 'Sulu is awesome'];
 
         $client = $this->createAuthenticatedClient();
-        $client->request('PUT', '/api/product-contents/' . $content->getResourceId(), $data);
+        $client->request('PUT', '/api/product-contents/' . $content->getResourceId() . '?locale=en', $data);
 
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());

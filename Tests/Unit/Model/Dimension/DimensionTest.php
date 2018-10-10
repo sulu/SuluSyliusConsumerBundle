@@ -1,0 +1,53 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Sulu.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Dimension;
+
+use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionAttributeInterface;
+
+class DimensionTest extends TestCase
+{
+    public function testGetId(): void
+    {
+        $dimension = new Dimension('123-123-123');
+
+        $this->assertEquals('123-123-123', $dimension->getId());
+    }
+
+    public function testGetAttributeCount(): void
+    {
+        $dimension = new Dimension('123-123-123');
+
+        $this->assertEquals(0, $dimension->getAttributeCount());
+    }
+
+    public function testGetAttributes(): void
+    {
+        $attribute = $this->prophesize(DimensionAttributeInterface::class);
+        $attribute->setDimension(
+            Argument::that(
+                function (Dimension $dimension) {
+                    return '123-123-123' === $dimension->getId();
+                }
+            )
+        )->shouldBeCalled()->willReturn($attribute->reveal());
+
+        $dimension = new Dimension('123-123-123', [$attribute->reveal()]);
+
+        $this->assertEquals(1, $dimension->getAttributeCount());
+        $this->assertEquals([$attribute->reveal()], $dimension->getAttributes());
+    }
+}

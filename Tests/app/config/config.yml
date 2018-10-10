@@ -8,7 +8,7 @@ doctrine:
             gedmo_tree:
                 type: xml
                 prefix: Gedmo\Tree\Entity
-                dir: '%kernel.root_dir%/../../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity'
+                dir: "%kernel.root_dir%/../../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
                 alias: GedmoTree
                 is_bundle: false
 
@@ -19,15 +19,26 @@ framework:
                 middleware:
                     - doctrine_transaction_middleware
 
+sulu_core:
+    content:
+        structure:
+            paths:
+                  products:
+                        path: "%kernel.project_dir%/app/Resources/templates/products"
+                        type: "products"
+
 services:
     sulu_sylius_consumer_test.messenger.bus.default:
         alias: message_bus
         public: true
+    sulu_sylius_consumer_test.repository.dimension:
+        alias: Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface
+        public: true
     doctrine.orm.messenger.middleware_factory.transaction:
         class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddlewareFactory
-        arguments: ['@doctrine']
+        arguments: ["@doctrine"]
     messenger.middleware.doctrine_transaction_middleware:
         class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
-        factory: 'doctrine.orm.messenger.middleware_factory.transaction:createMiddleware'
+        factory: "doctrine.orm.messenger.middleware_factory.transaction:createMiddleware"
         abstract: true
-        arguments: ['default']
+        arguments: ["default"]

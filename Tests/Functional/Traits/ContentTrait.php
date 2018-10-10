@@ -15,16 +15,26 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 trait ContentTrait
 {
+    use DimensionTrait;
+
     protected function createContent(
         string $resourceKey,
         string $resourceId,
+        string $locale = 'en',
         ?string $type = 'default',
-        array $data = ['title' => 'Sulu is awesome']
+        array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
     ): Content {
-        $content = new Content($resourceKey, $resourceId, $type, $data);
+        $dimension = $this->findDimension(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+            ]
+        );
+        $content = new Content($dimension, $resourceKey, $resourceId, $type, $data);
 
         $this->getEntityManager()->persist($content);
         $this->getEntityManager()->flush();
