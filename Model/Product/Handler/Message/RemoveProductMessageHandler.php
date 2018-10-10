@@ -31,11 +31,13 @@ class RemoveProductMessageHandler
 
     public function __invoke(RemoveProductMessage $message): void
     {
-        $product = $this->productRepository->findByCode($message->getCode());
-        if (!$product) {
+        $products = $this->productRepository->findAllByCode($message->getCode());
+        if (empty($products)) {
             throw new ProductNotFoundException($message->getCode());
         }
 
-        $this->productRepository->remove($product);
+        foreach ($products as $product) {
+            $this->productRepository->remove($product);
+        }
     }
 }

@@ -15,9 +15,17 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class Product implements ProductInterface
 {
+    /**
+     * @var DimensionInterface
+     */
+    private $dimension;
+
     /**
      * @var string
      */
@@ -28,8 +36,19 @@ class Product implements ProductInterface
      */
     private $variants;
 
-    public function __construct(string $code, array $variants = [])
+    /**
+     * @var ContentInterface
+     */
+    private $content;
+
+    /**
+     * @var RoutableResourceInterface
+     */
+    private $routableResource;
+
+    public function __construct(string $code, DimensionInterface $dimension, array $variants = [])
     {
+        $this->dimension = $dimension;
         $this->code = $code;
 
         $this->variants = new ArrayCollection($variants);
@@ -38,6 +57,11 @@ class Product implements ProductInterface
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getDimension(): DimensionInterface
+    {
+        return $this->dimension;
     }
 
     public function getVariants(): array
@@ -66,5 +90,29 @@ class Product implements ProductInterface
         $this->variants->remove($variant->getCode());
 
         return $this;
+    }
+
+    public function setContent(ContentInterface $content): Product
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    public function getContent(): ?ContentInterface
+    {
+        return $this->content;
+    }
+
+    public function setRoutableResource(RoutableResourceInterface $routableResource): Product
+    {
+        $this->routableResource = $routableResource;
+
+        return $this;
+    }
+
+    public function getRoutableResource(): ?RoutableResourceInterface
+    {
+        return $this->routableResource;
     }
 }

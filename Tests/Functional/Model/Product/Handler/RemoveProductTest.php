@@ -14,12 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class RemoveProductHandlerTest extends SuluTestCase
+class RemoveProductTest extends SuluTestCase
 {
+    use DimensionTrait;
     use ProductTrait;
 
     public function setUp()

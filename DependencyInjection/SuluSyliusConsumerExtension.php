@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Component\HttpKernel\SuluKernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -77,23 +78,6 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
             ]
         );
 
-        if (!$container->hasExtension('sulu_admin')) {
-            throw new \RuntimeException('Missing SuluAdminBundle.');
-        }
-
-        $container->prependExtensionConfig(
-            'sulu_admin',
-            [
-                'resources' => [
-                    ProductInterface::RESOURCE_KEY => [
-                        'datagrid' => Product::class,
-                        'form' => ['@SuluSyliusConsumerBundle/Resources/config/forms/Product.Product.xml'],
-                        'endpoint' => 'sulu_sylius_product.get_products',
-                    ],
-                ],
-            ]
-        );
-
         if (!$container->hasExtension('sulu_core')) {
             throw new \RuntimeException('Missing SuluCoreBundle.');
         }
@@ -116,6 +100,32 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
                         ],
+                    ],
+                ],
+            ]
+        );
+
+        $this->prependForAdmin($container);
+    }
+
+    public function prependForAdmin(ContainerBuilder $container)
+    {
+        if (SuluKernel::CONTEXT_ADMIN !== $container->getParameter('sulu.context')) {
+            return;
+        }
+
+        if (!$container->hasExtension('sulu_admin')) {
+            throw new \RuntimeException('Missing SuluAdminBundle.');
+        }
+
+        $container->prependExtensionConfig(
+            'sulu_admin',
+            [
+                'resources' => [
+                    ProductInterface::RESOURCE_KEY => [
+                        'datagrid' => Product::class,
+                        'form' => ['@SuluSyliusConsumerBundle/Resources/config/forms/Product.Product.xml'],
+                        'endpoint' => 'sulu_sylius_product.get_products',
                     ],
                 ],
             ]

@@ -14,11 +14,13 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class ProductControllerTest extends SuluTestCase
 {
+    use DimensionTrait;
     use ProductTrait;
 
     public function setUp()
