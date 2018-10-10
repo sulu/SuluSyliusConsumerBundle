@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentView;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
 class ProductViewFactory implements ProductViewFactoryInterface
 {
@@ -27,16 +27,23 @@ class ProductViewFactory implements ProductViewFactoryInterface
     private $contentRepository;
 
     /**
-     * @var RoutableRepositoryInterface
+     * @var RoutableResourceRepositoryInterface
      */
-    private $routableRepository;
+    private $routableResourceRepository;
+
+    /**
+     * @var ContentViewFactoryInterface
+     */
+    private $contentViewFactory;
 
     public function __construct(
         ContentRepositoryInterface $contentRepository,
-        RoutableRepositoryInterface $routableRepository
+        RoutableResourceRepositoryInterface $routableResourceRepository,
+        ContentViewFactoryInterface $contentViewFactory
     ) {
         $this->contentRepository = $contentRepository;
-        $this->routableRepository = $routableRepository;
+        $this->routableResourceRepository = $routableResourceRepository;
+        $this->contentViewFactory = $contentViewFactory;
     }
 
     public function create(array $productDimensions, array $dimensions): ProductInterface
@@ -50,12 +57,12 @@ class ProductViewFactory implements ProductViewFactoryInterface
         );
 
         $contentDimensions = $this->contentRepository->findByDimensions('products', $product->getCode(), $dimensions);
-        $content = ContentView::create($contentDimensions);
+        $content = $this->contentViewFactory->create($contentDimensions);
         if ($content) {
             $product->setContent($content);
         }
 
-        $routable = $this->routableRepository->findOrCreateByResource(
+        $routable = $this->routableResourceRepository->findOrCreateByResource(
             'products',
             $product->getCode(),
             $product->getDimension()

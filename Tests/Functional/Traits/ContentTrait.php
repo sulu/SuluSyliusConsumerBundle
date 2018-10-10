@@ -19,8 +19,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 trait ContentTrait
 {
-    use DimensionTrait;
-
     protected function createContent(
         string $resourceKey,
         string $resourceId,
@@ -54,6 +52,8 @@ trait ContentTrait
 
         return $content;
     }
+
+    abstract protected function findDimension(array $attributes): DimensionInterface;
 
     /**
      * @return EntityManagerInterface

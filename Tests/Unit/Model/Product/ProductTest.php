@@ -18,7 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class ProductTest extends TestCase
 {
@@ -124,7 +124,7 @@ class ProductTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $product = new Product($dimension->reveal(), 'product-1');
 
-        $routable = $this->prophesize(RoutableInterface::class);
+        $routable = $this->prophesize(RoutableResourceInterface::class);
         $this->assertEquals($product, $product->setRoutable($routable->reveal()));
 
         $this->assertEquals($routable->reveal(), $product->getRoutable());

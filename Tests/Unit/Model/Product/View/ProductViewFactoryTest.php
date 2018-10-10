@@ -16,20 +16,26 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\View;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactory;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Routable;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
 class ProductViewFactoryTest extends TestCase
 {
     public function testCreate()
     {
         $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
-        $routableRepository = $this->prophesize(RoutableRepositoryInterface::class);
+        $routableResourceRepository = $this->prophesize(RoutableResourceRepositoryInterface::class);
+        $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
-        $factory = new ProductViewFactory($contentRepository->reveal(), $routableRepository->reveal());
+        $factory = new ProductViewFactory(
+            $contentRepository->reveal(),
+            $routableResourceRepository->reveal(),
+            $contentViewFactory->reveal()
+        );
 
         $dimension = $this->prophesize(DimensionInterface::class);
 
@@ -47,17 +53,18 @@ class ProductViewFactoryTest extends TestCase
         $contentRepository->findByDimensions('products', 'product-1', [$dimension->reveal()])
             ->willReturn([$content->reveal()]);
 
-        $routable = $this->prophesize(Routable::class);
-        $routableRepository->findOrCreateByResource('products', 'product-1', $dimension->reveal())
+        $routable = $this->prophesize(RoutableResourceInterface::class);
+        $routableResourceRepository->findOrCreateByResource('products', 'product-1', $dimension->reveal())
             ->willReturn($routable->reveal());
+
+        $viewContent = $this->prophesize(ContentInterface::class);
+        $contentViewFactory->create([$content->reveal()])->willReturn($viewContent->reveal());
 
         $result = $factory->create([$product->reveal()], [$dimension->reveal()]);
 
         $this->assertEquals('product-1', $result->getCode());
         $this->assertEquals([], $result->getVariants());
         $this->assertEquals($routable->reveal(), $result->getRoutable());
-
-        // FIXME change to assertEquals when content-view-factory was implemented
-        $this->assertInstanceOf(ContentInterface::class, $result->getContent());
+        $this->assertEquals($viewContent->reveal(), $result->getContent());
     }
 }

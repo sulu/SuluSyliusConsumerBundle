@@ -18,8 +18,7 @@ use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Routable;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -81,7 +80,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
     public function supports($entityClass)
     {
-        return is_subclass_of($entityClass, RoutableInterface::class);
+        return is_subclass_of($entityClass, RoutableResourceInterface::class);
     }
 
     private function loadProduct(string $id, string $locale): ProductInterface

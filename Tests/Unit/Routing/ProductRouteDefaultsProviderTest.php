@@ -21,8 +21,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Routable;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\StructureMetadata;
@@ -65,7 +65,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $cacheLifetimeResolver->supports('seconds', 3600)->willReturn(true);
         $cacheLifetimeResolver->resolve('seconds', 3600)->willReturn(3600);
 
-        $defaults = $provider->getByEntity(RoutableInterface::class, 'products#product-1', 'en');
+        $defaults = $provider->getByEntity(RoutableResourceInterface::class, 'product-1', 'en');
         $this->assertEquals(
             [
                 'object' => $product->reveal(),
@@ -99,7 +99,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
             )
         )->willReturn($product->reveal())->shouldBeCalled();
 
-        $this->assertTrue($provider->isPublished(RoutableInterface::class, 'products#product-1', 'en'));
+        $this->assertTrue($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }
 
     public function testIsNotPublished(): void
@@ -122,7 +122,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
             )
         )->willThrow(new ProductNotFoundException('product-1'))->shouldBeCalled();
 
-        $this->assertFalse($provider->isPublished(RoutableInterface::class, 'products#product-1', 'en'));
+        $this->assertFalse($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }
 
     public function testSupports(): void
@@ -137,7 +137,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $cacheLifetimeResolver->reveal()
         );
 
-        $this->assertTrue($provider->supports(Routable::class));
+        $this->assertTrue($provider->supports(RoutableResource::class));
     }
 
     public function testNoSupports(): void

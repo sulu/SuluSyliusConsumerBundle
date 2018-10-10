@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
@@ -67,6 +68,8 @@ class PublishProductMessageHandler
 
     public function __invoke(PublishProductMessage $message): ProductInterface
     {
+        $liveProduct = $this->publishProduct($message->getCode());
+
         $this->messageBus->dispatch(
             new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getCode(), $message->getLocale())
         );
@@ -82,6 +85,11 @@ class PublishProductMessageHandler
             )
         );
 
+        return $liveProduct;
+    }
+
+    private function publishProduct(string $code): ProductInterface
+    {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
         );
@@ -89,10 +97,14 @@ class PublishProductMessageHandler
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
         );
 
-        $draftProduct = $this->productRepository->findByCode($draftDimension, $message->getCode());
-        $liveProduct = $this->productRepository->findByCode($liveDimension, $message->getCode());
+        $draftProduct = $this->productRepository->findByCode($draftDimension, $code);
+        if (!$draftProduct) {
+            throw new ProductNotFoundException($code);
+        }
+
+        $liveProduct = $this->productRepository->findByCode($liveDimension, $code);
         if (!$liveProduct) {
-            $liveProduct = $this->productRepository->create($liveDimension, $message->getCode());
+            $liveProduct = $this->productRepository->create($liveDimension, $code);
         }
 
         $this->synchronizeVariants($draftProduct, $liveProduct);

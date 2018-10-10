@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class Product implements ProductInterface
 {
@@ -42,7 +42,7 @@ class Product implements ProductInterface
     private $content;
 
     /**
-     * @var RoutableInterface
+     * @var RoutableResourceInterface
      */
     private $routable;
 
@@ -104,14 +104,14 @@ class Product implements ProductInterface
         return $this->content;
     }
 
-    public function setRoutable(RoutableInterface $routable): Product
+    public function setRoutable(RoutableResourceInterface $routable): Product
     {
         $this->routable = $routable;
 
         return $this;
     }
 
-    public function getRoutable(): ?RoutableInterface
+    public function getRoutable(): ?RoutableResourceInterface
     {
         return $this->routable;
     }

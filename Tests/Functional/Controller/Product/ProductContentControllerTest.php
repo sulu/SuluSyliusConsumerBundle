@@ -15,11 +15,15 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ContentTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class ProductContentControllerTest extends SuluTestCase
 {
     use ContentTrait;
+    use DimensionTrait;
+    use ProductTrait;
 
     public function setUp()
     {
@@ -94,6 +98,8 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionCreateAndPublish(): void
     {
+        $this->createProduct('product-1');
+
         $data = ['template' => 'default', 'title' => 'Sulu', 'article' => 'Sulu is awesome'];
 
         $client = $this->createAuthenticatedClient();
@@ -109,6 +115,7 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionUpdateAndPublish(): void
     {
+        $this->createProduct('product-1');
         $content = $this->createContent(
             ProductInterface::RESOURCE_KEY,
             'product-1',
