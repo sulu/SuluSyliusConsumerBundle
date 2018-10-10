@@ -21,9 +21,11 @@ trait ProductTrait
 {
     protected function createProduct(string $code): Product
     {
-        $dimension = $this->findDimension(['workspace' => 'draft']);
+        $dimension = $this->findDimension(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        );
 
-        $product = new Product($dimension, $code);
+        $product = new Product($code, $dimension);
 
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
@@ -33,7 +35,9 @@ trait ProductTrait
 
     protected function findProduct(string $code): ?Product
     {
-        $dimension = $this->findDimension(['workspace' => 'draft']);
+        $dimension = $this->findDimension(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        );
 
         return $this->getEntityManager()->find(Product::class, ['code' => $code, 'dimension' => $dimension]);
     }

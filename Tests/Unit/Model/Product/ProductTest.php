@@ -25,7 +25,7 @@ class ProductTest extends TestCase
     public function testGetDimension(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
 
         $this->assertEquals($dimension->reveal(), $product->getDimension());
     }
@@ -33,7 +33,7 @@ class ProductTest extends TestCase
     public function testGetCode(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
 
         $this->assertEquals('product-1', $product->getCode());
     }
@@ -43,7 +43,7 @@ class ProductTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $variant = $this->prophesize(ProductVariantInterface::class);
 
-        $product = new Product($dimension->reveal(), 'product-1', ['variant-1' => $variant->reveal()]);
+        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
 
         $this->assertEquals([$variant->reveal()], $product->getVariants());
     }
@@ -53,7 +53,7 @@ class ProductTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $variant = $this->prophesize(ProductVariantInterface::class);
 
-        $product = new Product($dimension->reveal(), 'product-1', ['variant-1' => $variant->reveal()]);
+        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
 
         $this->assertEquals($variant->reveal(), $product->findVariantByCode('variant-1'));
     }
@@ -63,7 +63,7 @@ class ProductTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $variant = $this->prophesize(ProductVariantInterface::class);
 
-        $product = new Product($dimension->reveal(), 'product-1', ['variant-1' => $variant->reveal()]);
+        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
 
         $this->assertNull($product->findVariantByCode('variant-2'));
     }
@@ -74,7 +74,7 @@ class ProductTest extends TestCase
         $variant = $this->prophesize(ProductVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
 
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
         $this->assertEquals($product, $product->addVariant($variant->reveal()));
 
         $this->assertEquals([$variant->reveal()], $product->getVariants());
@@ -86,7 +86,7 @@ class ProductTest extends TestCase
         $variant = $this->prophesize(ProductVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
 
-        $product = new Product($dimension->reveal(), 'product-1', ['variant-1' => $variant->reveal()]);
+        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
         $this->assertEquals($product, $product->removeVariant($variant->reveal()));
 
         $this->assertEmpty($product->getVariants());
@@ -95,7 +95,7 @@ class ProductTest extends TestCase
     public function testGetContent(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
 
         $this->assertNull($product->getContent());
     }
@@ -103,7 +103,7 @@ class ProductTest extends TestCase
     public function testSetContent(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
 
         $content = $this->prophesize(ContentInterface::class);
         $this->assertEquals($product, $product->setContent($content->reveal()));
@@ -114,19 +114,19 @@ class ProductTest extends TestCase
     public function testGetRoutable(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
 
-        $this->assertNull($product->getRoutable());
+        $this->assertNull($product->getRoutableResource());
     }
 
     public function testSetRoutable(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product($dimension->reveal(), 'product-1');
+        $product = new Product('product-1', $dimension->reveal());
 
         $routable = $this->prophesize(RoutableResourceInterface::class);
-        $this->assertEquals($product, $product->setRoutable($routable->reveal()));
+        $this->assertEquals($product, $product->setRoutableResource($routable->reveal()));
 
-        $this->assertEquals($routable->reveal(), $product->getRoutable());
+        $this->assertEquals($routable->reveal(), $product->getRoutableResource());
     }
 }

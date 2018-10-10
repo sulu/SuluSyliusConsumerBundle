@@ -21,16 +21,16 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
 class ProductRepository extends EntityRepository implements ProductRepositoryInterface
 {
-    public function create(DimensionInterface $dimension, string $code): ProductInterface
+    public function create(string $code, DimensionInterface $dimension): ProductInterface
     {
         $className = $this->getClassName();
-        $product = new $className($dimension, $code);
+        $product = new $className($code, $dimension);
         $this->getEntityManager()->persist($product);
 
         return $product;
     }
 
-    public function findByCode(DimensionInterface $dimension, string $code): ?ProductInterface
+    public function findByCode(string $code, DimensionInterface $dimension): ?ProductInterface
     {
         /** @var ProductInterface $product */
         $product = $this->find(['code' => $code, 'dimension' => $dimension]);

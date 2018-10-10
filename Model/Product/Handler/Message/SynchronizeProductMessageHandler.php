@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
@@ -49,11 +50,13 @@ class SynchronizeProductMessageHandler
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
     {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft']);
+        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        );
 
-        $product = $this->productRepository->findByCode($dimension, $message->getCode());
+        $product = $this->productRepository->findByCode($message->getCode(), $dimension);
         if (!$product) {
-            $product = $this->productRepository->create($dimension, $message->getCode());
+            $product = $this->productRepository->create($message->getCode(), $dimension);
         }
 
         $this->synchronizeVariants($message->getVariants(), $product);

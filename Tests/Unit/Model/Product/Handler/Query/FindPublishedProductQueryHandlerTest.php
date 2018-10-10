@@ -42,19 +42,24 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         $message->getLocale()->willReturn('en');
 
         $dimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'live'])
-            ->willReturn($dimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+        )->willReturn($dimension->reveal());
 
         $localizedDimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'live', 'locale' => 'en'])
-            ->willReturn($localizedDimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
+        )->willReturn($localizedDimension->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
-        $productRepository->findByCode($dimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $dimension->reveal())
             ->willReturn($product->reveal())
             ->shouldBeCalled();
 
-        $productViewFactory->create([$product->reveal()], [$dimension->reveal(), $localizedDimension->reveal()])
+        $productViewFactory->create($product->reveal(), [$dimension->reveal(), $localizedDimension->reveal()])
             ->shouldBeCalled()
             ->willReturn($product->reveal());
 
@@ -77,18 +82,20 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         );
 
         $dimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'live'])
-            ->willReturn($dimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+        )->willReturn($dimension->reveal());
 
         $localizedDimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'live', 'locale' => 'en'])
-            ->willReturn($localizedDimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE, 'locale' => 'en']
+        )->willReturn($localizedDimension->reveal());
 
         $message = $this->prophesize(FindPublishedProductQuery::class);
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn(null);
+        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

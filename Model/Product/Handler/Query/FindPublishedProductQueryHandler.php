@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -49,18 +50,21 @@ class FindPublishedProductQueryHandler
 
     public function __invoke(FindPublishedProductQuery $query): ProductInterface
     {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'live']
+        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
         );
-        $localizedDimension = $this->dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'live', 'locale' => $query->getLocale()]
+        $localizedLiveDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $query->getLocale(),
+            ]
         );
 
-        $product = $this->productRepository->findByCode($dimension, $query->getCode());
+        $product = $this->productRepository->findByCode($query->getCode(), $liveDimension);
         if (!$product) {
             throw new ProductNotFoundException($query->getCode());
         }
 
-        return $this->productViewFactory->create([$product], [$dimension, $localizedDimension]);
+        return $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
     }
 }

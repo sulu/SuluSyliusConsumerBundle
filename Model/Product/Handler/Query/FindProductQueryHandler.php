@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -42,10 +43,10 @@ class FindProductQueryHandler
     public function __invoke(FindProductQuery $query): ProductInterface
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft']
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
         );
 
-        $product = $this->productRepository->findByCode($dimension, $query->getCode());
+        $product = $this->productRepository->findByCode($query->getCode(), $dimension);
         if (!$product) {
             throw new ProductNotFoundException($query->getCode());
         }

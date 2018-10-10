@@ -42,7 +42,12 @@ trait ContentTrait
 
     protected function findContent(string $resourceKey, string $resourceId, string $locale): ?Content
     {
-        $dimension = $this->findDimension(['workspace' => 'draft', 'locale' => $locale]);
+        $dimension = $this->findDimension(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+            ]
+        );
 
         /** @var Content $content */
         $content = $this->getEntityManager()->find(

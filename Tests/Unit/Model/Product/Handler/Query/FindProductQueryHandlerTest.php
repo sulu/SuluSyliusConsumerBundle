@@ -35,10 +35,12 @@ class FindProductQueryHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
 
         $dimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        )->willReturn($dimension->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
-        $productRepository->findByCode($dimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $dimension->reveal())
             ->willReturn($product->reveal())
             ->shouldBeCalled();
 
@@ -56,12 +58,14 @@ class FindProductQueryHandlerTest extends TestCase
         $handler = new FindProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
 
         $dimension = $this->prophesize(DimensionInterface::class);
-        $dimensionRepository->findOrCreateByAttributes(['workspace' => 'draft'])->willReturn($dimension->reveal());
+        $dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+        )->willReturn($dimension->reveal());
 
         $message = $this->prophesize(FindProductQuery::class);
         $message->getCode()->willReturn('product-1');
 
-        $productRepository->findByCode($dimension->reveal(), 'product-1')->willReturn(null);
+        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

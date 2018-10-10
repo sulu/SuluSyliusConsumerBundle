@@ -21,11 +21,11 @@ interface ProductInterface
 {
     const RESOURCE_KEY = 'products';
 
-    public function __construct(DimensionInterface $dimension, string $code, array $variants = []);
-
-    public function getDimension(): DimensionInterface;
+    public function __construct(string $code, DimensionInterface $dimension, array $variants = []);
 
     public function getCode(): string;
+
+    public function getDimension(): DimensionInterface;
 
     /**
      * @return ProductVariantInterface[]
@@ -42,7 +42,7 @@ interface ProductInterface
 
     public function getContent(): ?ContentInterface;
 
-    public function setRoutable(RoutableResourceInterface $routable): Product;
+    public function setRoutableResource(RoutableResourceInterface $routable): Product;
 
-    public function getRoutable(): ?RoutableResourceInterface;
+    public function getRoutableResource(): ?RoutableResourceInterface;
 }

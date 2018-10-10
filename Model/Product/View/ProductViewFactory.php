@@ -46,28 +46,30 @@ class ProductViewFactory implements ProductViewFactoryInterface
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function create(array $productDimensions, array $dimensions): ProductInterface
+    public function create(ProductInterface $product, array $dimensions): ProductInterface
     {
-        $firstProductDimension = reset($productDimensions);
-
         $product = new Product(
-            $firstProductDimension->getDimension(),
-            $firstProductDimension->getCode(),
-            $firstProductDimension->getVariants()
+            $product->getCode(),
+            $product->getDimension(),
+            $product->getVariants()
         );
 
-        $contentDimensions = $this->contentRepository->findByDimensions('products', $product->getCode(), $dimensions);
+        $contentDimensions = $this->contentRepository->findByDimensions(
+            ProductInterface::RESOURCE_KEY,
+            $product->getCode(),
+            $dimensions
+        );
         $content = $this->contentViewFactory->create($contentDimensions);
         if ($content) {
             $product->setContent($content);
         }
 
-        $routable = $this->routableResourceRepository->findOrCreateByResource(
-            'products',
+        $routableResource = $this->routableResourceRepository->findOrCreateByResource(
+            ProductInterface::RESOURCE_KEY,
             $product->getCode(),
             $product->getDimension()
         );
-        $product->setRoutable($routable);
+        $product->setRoutableResource($routableResource);
 
         return $product;
     }

@@ -48,23 +48,26 @@ class ProductViewFactoryTest extends TestCase
         $content->getData()->willReturn([]);
         $content->getType()->willReturn('default');
         $content->getDimension()->willReturn($dimension->reveal());
-        $content->getResourceKey()->willReturn('products');
+        $content->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
         $content->getResourceId()->willReturn('product-1');
-        $contentRepository->findByDimensions('products', 'product-1', [$dimension->reveal()])
+        $contentRepository->findByDimensions(ProductInterface::RESOURCE_KEY, 'product-1', [$dimension->reveal()])
             ->willReturn([$content->reveal()]);
 
         $routable = $this->prophesize(RoutableResourceInterface::class);
-        $routableResourceRepository->findOrCreateByResource('products', 'product-1', $dimension->reveal())
-            ->willReturn($routable->reveal());
+        $routableResourceRepository->findOrCreateByResource(
+            ProductInterface::RESOURCE_KEY,
+            'product-1',
+            $dimension->reveal()
+        )->willReturn($routable->reveal());
 
         $viewContent = $this->prophesize(ContentInterface::class);
         $contentViewFactory->create([$content->reveal()])->willReturn($viewContent->reveal());
 
-        $result = $factory->create([$product->reveal()], [$dimension->reveal()]);
+        $result = $factory->create($product->reveal(), [$dimension->reveal()]);
 
         $this->assertEquals('product-1', $result->getCode());
         $this->assertEquals([], $result->getVariants());
-        $this->assertEquals($routable->reveal(), $result->getRoutable());
+        $this->assertEquals($routable->reveal(), $result->getRoutableResource());
         $this->assertEquals($viewContent->reveal(), $result->getContent());
     }
 }

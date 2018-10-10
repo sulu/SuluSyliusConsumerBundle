@@ -97,14 +97,14 @@ class PublishProductMessageHandler
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
         );
 
-        $draftProduct = $this->productRepository->findByCode($draftDimension, $code);
+        $draftProduct = $this->productRepository->findByCode($code, $draftDimension);
         if (!$draftProduct) {
             throw new ProductNotFoundException($code);
         }
 
-        $liveProduct = $this->productRepository->findByCode($liveDimension, $code);
+        $liveProduct = $this->productRepository->findByCode($code, $liveDimension);
         if (!$liveProduct) {
-            $liveProduct = $this->productRepository->create($liveDimension, $code);
+            $liveProduct = $this->productRepository->create($code, $liveDimension);
         }
 
         $this->synchronizeVariants($draftProduct, $liveProduct);

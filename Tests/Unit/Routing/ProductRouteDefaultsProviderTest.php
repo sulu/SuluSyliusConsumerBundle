@@ -60,7 +60,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $metadata->getView()->willReturn('templates/product');
         $metadata->getCacheLifetime()->willReturn(['type' => 'seconds', 'value' => 3600]);
 
-        $factory->getStructureMetadata('products', 'default')->willReturn($metadata->reveal());
+        $factory->getStructureMetadata(ProductInterface::RESOURCE_KEY, 'default')->willReturn($metadata->reveal());
 
         $cacheLifetimeResolver->supports('seconds', 3600)->willReturn(true);
         $cacheLifetimeResolver->resolve('seconds', 3600)->willReturn(3600);

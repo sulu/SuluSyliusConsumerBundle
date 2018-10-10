@@ -44,9 +44,9 @@ class Product implements ProductInterface
     /**
      * @var RoutableResourceInterface
      */
-    private $routable;
+    private $routableResource;
 
-    public function __construct(DimensionInterface $dimension, string $code, array $variants = [])
+    public function __construct(string $code, DimensionInterface $dimension, array $variants = [])
     {
         $this->dimension = $dimension;
         $this->code = $code;
@@ -54,14 +54,14 @@ class Product implements ProductInterface
         $this->variants = new ArrayCollection($variants);
     }
 
-    public function getDimension(): DimensionInterface
-    {
-        return $this->dimension;
-    }
-
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getDimension(): DimensionInterface
+    {
+        return $this->dimension;
     }
 
     public function getVariants(): array
@@ -104,15 +104,15 @@ class Product implements ProductInterface
         return $this->content;
     }
 
-    public function setRoutable(RoutableResourceInterface $routable): Product
+    public function setRoutableResource(RoutableResourceInterface $routableResource): Product
     {
-        $this->routable = $routable;
+        $this->routableResource = $routableResource;
 
         return $this;
     }
 
-    public function getRoutable(): ?RoutableResourceInterface
+    public function getRoutableResource(): ?RoutableResourceInterface
     {
-        return $this->routable;
+        return $this->routableResource;
     }
 }

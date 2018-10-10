@@ -19,8 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 interface ProductViewFactoryInterface
 {
     /**
-     * @param ProductInterface[] $productDimensions
      * @param DimensionInterface[] $dimensions
      */
-    public function create(array $productDimensions, array $dimensions): ProductInterface;
+    public function create(ProductInterface $product, array $dimensions): ProductInterface;
 }

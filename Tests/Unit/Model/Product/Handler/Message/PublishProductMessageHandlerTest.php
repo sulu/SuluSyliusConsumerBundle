@@ -91,10 +91,10 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $draftProduct->getVariants()->willReturn([]);
 
-        $productRepository->findByCode($liveDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
             ->shouldBeCalled();
-        $productRepository->findByCode($draftDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $draftDimension->reveal())
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
@@ -145,10 +145,10 @@ class PublishProductMessageHandlerTest extends TestCase
         $variant->getCode()->willReturn('variant-1');
         $draftProduct->getVariants()->willReturn([$variant->reveal()]);
 
-        $productRepository->findByCode($liveDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
             ->shouldBeCalled();
-        $productRepository->findByCode($draftDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $draftDimension->reveal())
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
@@ -203,10 +203,10 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $draftProduct->getVariants()->willReturn([]);
 
-        $productRepository->findByCode($liveDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
             ->shouldBeCalled();
-        $productRepository->findByCode($draftDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $draftDimension->reveal())
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
@@ -259,10 +259,10 @@ class PublishProductMessageHandlerTest extends TestCase
         $liveProduct = $this->prophesize(ProductInterface::class);
         $draftProduct = $this->prophesize(ProductInterface::class);
 
-        $productRepository->findByCode($liveDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
             ->shouldBeCalled();
-        $productRepository->findByCode($draftDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $draftDimension->reveal())
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
@@ -311,7 +311,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 function ($message) {
                     return $message instanceof PublishContentMessage
                         && 'product-1' === $message->getResourceId()
-                        && 'products' === $message->getResourceKey()
+                        && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale();
                 }
             )
@@ -322,7 +322,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 function ($message) {
                     return $message instanceof PublishRoutableResourceMessage
                         && 'product-1' === $message->getResourceId()
-                        && 'products' === $message->getResourceKey()
+                        && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale()
                         && '/products/product-1' === $message->getRoutePath();
                 }
@@ -345,12 +345,12 @@ class PublishProductMessageHandlerTest extends TestCase
         $liveProduct->getVariants()->willReturn([]);
         $draftProduct->getVariants()->willReturn([]);
 
-        $productRepository->findByCode($liveDimension->reveal(), 'product-1')->willReturn(null)->shouldBeCalled();
-        $productRepository->findByCode($draftDimension->reveal(), 'product-1')
+        $productRepository->findByCode('product-1', $liveDimension->reveal())->willReturn(null)->shouldBeCalled();
+        $productRepository->findByCode('product-1', $draftDimension->reveal())
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
-        $productRepository->create($liveDimension->reveal(), 'product-1')
+        $productRepository->create('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
             ->shouldBeCalled();
 

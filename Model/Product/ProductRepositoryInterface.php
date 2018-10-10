@@ -17,9 +17,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 interface ProductRepositoryInterface
 {
-    public function create(DimensionInterface $dimension, string $code): ProductInterface;
+    public function create(string $code, DimensionInterface $dimension): ProductInterface;
 
-    public function findByCode(DimensionInterface $dimension, string $code): ?ProductInterface;
+    public function findByCode(string $code, DimensionInterface $dimension): ?ProductInterface;
 
     /**
      * @return ProductInterface[]
