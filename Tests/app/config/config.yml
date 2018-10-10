@@ -12,7 +12,22 @@ doctrine:
                 alias: GedmoTree
                 is_bundle: false
 
+framework:
+    messenger:
+        buses:
+            command_bus:
+                middleware:
+                    - doctrine_transaction_middleware
+
 services:
     sulu_sylius_consumer_test.messenger.bus.default:
         alias: message_bus
         public: true
+    doctrine.orm.messenger.middleware_factory.transaction:
+        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddlewareFactory
+        arguments: ['@doctrine']
+    messenger.middleware.doctrine_transaction_middleware:
+        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
+        factory: 'doctrine.orm.messenger.middleware_factory.transaction:createMiddleware'
+        abstract: true
+        arguments: ['default']

@@ -4,7 +4,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant"
             table="pr_product_variants"
-            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\ProductVariantRepository">
+            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductVariantRepository">
         <unique-constraints>
             <unique-constraint columns="code"/>
         </unique-constraints>
@@ -14,7 +14,7 @@
         </id>
 
         <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product">
-            <join-column referenced-column-name="code"/>
+            <join-column name="product_code" referenced-column-name="product_code"/>
         </many-to-one>
     </entity>
 </doctrine-mapping>

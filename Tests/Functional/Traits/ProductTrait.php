@@ -23,6 +23,7 @@ trait ProductTrait
         $product = new Product($code);
 
         $this->getEntityManager()->persist($product);
+        $this->getEntityManager()->flush();
 
         return $product;
     }
