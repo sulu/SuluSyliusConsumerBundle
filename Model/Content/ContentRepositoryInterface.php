@@ -23,7 +23,11 @@ interface ContentRepositoryInterface
         DimensionInterface $dimension
     ): ContentInterface;
 
-    public function findByResource(string $resourceKey, string $resourceId): ?ContentInterface;
+    public function findByResource(
+        string $resourceKey,
+        string $resourceId,
+        DimensionInterface $dimension
+    ): ?ContentInterface;
 
     /**
      * @param DimensionInterface[] $dimensions

@@ -17,6 +17,7 @@ interface DimensionInterface
 {
     const ATTRIBUTE_KEY_STAGE = 'stage';
     const ATTRIBUTE_VALUE_DRAFT = 'draft';
+    const ATTRIBUTE_VALUE_LIVE = 'live';
 
     const ATTRIBUTE_KEY_LOCALE = 'locale';
 

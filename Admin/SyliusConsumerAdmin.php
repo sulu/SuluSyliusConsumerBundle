@@ -59,7 +59,7 @@ class SyliusConsumerAdmin extends Admin
         );
 
         $formToolbarActions = [
-            'sulu_admin.save',
+            'sulu_admin.save_with_publishing',
             'sulu_admin.type',
         ];
 

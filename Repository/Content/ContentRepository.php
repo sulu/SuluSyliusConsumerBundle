@@ -26,7 +26,7 @@ class ContentRepository extends EntityRepository implements ContentRepositoryInt
         DimensionInterface $dimension
     ): ContentInterface {
         /** @var ContentInterface|null $content */
-        $content = $this->find(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]);
+        $content = $this->findByResource($resourceKey, $resourceId, $dimension);
         if ($content) {
             return $content;
         }
@@ -39,10 +39,13 @@ class ContentRepository extends EntityRepository implements ContentRepositoryInt
         return $content;
     }
 
-    public function findByResource(string $resourceKey, string $resourceId): ?ContentInterface
-    {
+    public function findByResource(
+        string $resourceKey,
+        string $resourceId,
+        DimensionInterface $dimension
+    ): ?ContentInterface {
         /** @var ContentInterface|null $content */
-        $content = $this->find(['resourceKey' => $resourceKey, 'resourceId' => $resourceId]);
+        $content = $this->find(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]);
 
         return $content;
     }
