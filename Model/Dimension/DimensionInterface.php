@@ -30,5 +30,7 @@ interface DimensionInterface
 
     public function getAttributeCount(): int;
 
-    public function getAttributes();
+    public function getAttributes(): array;
+
+    public function getAttributeValue(string $key): string;
 }

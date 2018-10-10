@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Dimension;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Exception\DimensionAttributeNotFoundException;
 
 class Dimension implements DimensionInterface
 {
@@ -60,5 +61,16 @@ class Dimension implements DimensionInterface
     public function getAttributes(): array
     {
         return $this->attributes->getValues();
+    }
+
+    public function getAttributeValue(string $key): string
+    {
+        foreach ($this->attributes as $attribute) {
+            if ($key === $attribute->getKey()) {
+                return $attribute->getValue();
+            }
+        }
+
+        throw new DimensionAttributeNotFoundException($this, $key);
     }
 }

@@ -27,6 +27,13 @@ sulu_core:
                         path: "%kernel.project_dir%/app/Resources/templates/products"
                         type: "products"
 
+sulu_route:
+    mappings:
+        Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource:
+            generator: schema
+            options:
+                route_schema: ""
+
 services:
     sulu_sylius_consumer_test.messenger.bus.default:
         alias: message_bus

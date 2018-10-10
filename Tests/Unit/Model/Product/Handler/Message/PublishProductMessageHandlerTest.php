@@ -19,6 +19,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
+use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandlerTest extends TestCase
@@ -30,14 +32,30 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getLocale()->willReturn('en');
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
-        $handler = new PublishProductMessageHandler($messageBus->reveal());
+        $slugifier = $this->prophesize(SlugifierInterface::class);
+        $handler = new PublishProductMessageHandler($messageBus->reveal(), $slugifier->reveal());
+
+        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
-                function (PublishContentMessage $message) {
-                    return 'product-1' === $message->getResourceId()
+                function ($message) {
+                    return $message instanceof PublishContentMessage
+                        && 'product-1' === $message->getResourceId()
                         && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale();
+                }
+            )
+        )->shouldBeCalled();
+
+        $messageBus->dispatch(
+            Argument::that(
+                function ($message) {
+                    return $message instanceof PublishRoutableResourceMessage
+                        && 'product-1' === $message->getResourceId()
+                        && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
+                        && 'en' === $message->getLocale()
+                        && '/products/product-1' === $message->getRoutePath();
                 }
             )
         )->shouldBeCalled();

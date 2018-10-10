@@ -18,6 +18,7 @@
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler">
             <argument type="service" id="message_bus"/>
+            <argument type="service" id="sulu_document_manager.slugifier"/>
 
             <tag name="messenger.message_handler"/>
         </service>
