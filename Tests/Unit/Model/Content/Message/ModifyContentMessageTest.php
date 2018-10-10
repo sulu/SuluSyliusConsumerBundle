@@ -15,24 +15,25 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\Message;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\ModifyContentMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 class ModifyContentMessageTest extends TestCase
 {
     public function testGetResourceKey(): void
     {
         $message = new ModifyContentMessage(
-            'products',
+            ProductInterface::RESOURCE_KEY,
             'product-1',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals('products', $message->getResourceKey());
+        $this->assertEquals(ProductInterface::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $message = new ModifyContentMessage(
-            'products',
+            ProductInterface::RESOURCE_KEY,
             'product-1',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -43,7 +44,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetType(): void
     {
         $message = new ModifyContentMessage(
-            'products',
+            ProductInterface::RESOURCE_KEY,
             'product-1',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
@@ -54,7 +55,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetData(): void
     {
         $message = new ModifyContentMessage(
-            'products',
+            ProductInterface::RESOURCE_KEY,
             'product-1',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );

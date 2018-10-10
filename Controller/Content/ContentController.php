@@ -36,21 +36,14 @@ abstract class ContentController implements ClassResourceInterface
     /**
      * @var string
      */
-    private $resourceKey;
-
-    /**
-     * @var string
-     */
     private $defaultType;
 
     public function __construct(
         MessageBusInterface $messageBus,
         ViewHandlerInterface $viewHandler,
-        string $resourceKey,
         string $defaultType = 'default'
     ) {
         $this->messageBus = $messageBus;
-        $this->resourceKey = $resourceKey;
         $this->defaultType = $defaultType;
 
         $this->setViewHandler($viewHandler);
@@ -64,7 +57,7 @@ abstract class ContentController implements ClassResourceInterface
     public function getAction(string $resourceId): Response
     {
         try {
-            $content = $this->messageBus->dispatch(new FindContentQuery($this->resourceKey, $resourceId));
+            $content = $this->messageBus->dispatch(new FindContentQuery($this->getResourceKey(), $resourceId));
         } catch (ContentNotFoundException $exception) {
             $content = [
                 'template' => $this->defaultType,
@@ -83,8 +76,12 @@ abstract class ContentController implements ClassResourceInterface
             'data' => $data,
         ];
 
-        $content = $this->messageBus->dispatch(new ModifyContentMessage($this->resourceKey, $resourceId, $payload));
+        $content = $this->messageBus->dispatch(
+            new ModifyContentMessage($this->getResourceKey(), $resourceId, $payload)
+        );
 
         return $this->handleView($this->view($content));
     }
+
+    abstract protected function getResourceKey(): string;
 }

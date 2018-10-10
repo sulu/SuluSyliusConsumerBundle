@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
@@ -48,7 +49,7 @@ class ProductControllerTest extends SuluTestCase
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
-        $this->assertCount(1, $response['_embedded']['products']);
-        $this->assertEquals($product->getCode(), $response['_embedded']['products'][0]['code']);
+        $this->assertCount(1, $response['_embedded'][ProductInterface::RESOURCE_KEY]);
+        $this->assertEquals($product->getCode(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['code']);
     }
 }

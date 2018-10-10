@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -84,7 +85,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
             'sulu_admin',
             [
                 'resources' => [
-                    'products' => [
+                    ProductInterface::RESOURCE_KEY => [
                         'datagrid' => Product::class,
                         'form' => ['@SuluSyliusConsumerBundle/Resources/config/forms/Product.Product.xml'],
                         'endpoint' => 'sulu_sylius_product.get_products',

@@ -19,6 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Query\FindContentQueryHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 class FindContentQueryHandlerTest extends TestCase
 {
@@ -30,10 +31,10 @@ class FindContentQueryHandlerTest extends TestCase
 
         $message = $this->prophesize(FindContentQuery::class);
         $message->getResourceId()->willReturn('product-1');
-        $message->getResourceKey()->willReturn('products');
+        $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
 
         $content = $this->prophesize(ContentInterface::class);
-        $repository->findByResource('products', 'product-1')->willReturn($content->reveal())->shouldBeCalled();
+        $repository->findByResource(ProductInterface::RESOURCE_KEY, 'product-1')->willReturn($content->reveal())->shouldBeCalled();
 
         $result = $handler->__invoke($message->reveal());
         $this->assertEquals($content->reveal(), $result);
@@ -49,9 +50,9 @@ class FindContentQueryHandlerTest extends TestCase
 
         $message = $this->prophesize(FindContentQuery::class);
         $message->getResourceId()->willReturn('product-1');
-        $message->getResourceKey()->willReturn('products');
+        $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
 
-        $repository->findByResource('products', 'product-1')->willReturn(null)->shouldBeCalled();
+        $repository->findByResource(ProductInterface::RESOURCE_KEY, 'product-1')->willReturn(null)->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }

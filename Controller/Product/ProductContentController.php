@@ -14,20 +14,16 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Controller\Content\ContentController;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 /**
  * @Rest\RouteResource("product-content")
  */
 class ProductContentController extends ContentController
 {
-    public function __construct(
-        MessageBusInterface $messageBus,
-        ViewHandlerInterface $viewHandler,
-        string $defaultType = 'default'
-    ) {
-        parent::__construct($messageBus, $viewHandler, 'products', $defaultType);
+    protected function getResourceKey(): string
+    {
+        return ProductInterface::RESOURCE_KEY;
     }
 }

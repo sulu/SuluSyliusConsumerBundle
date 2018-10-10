@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ContentTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
@@ -27,7 +28,7 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testGetAction(): void
     {
-        $content = $this->createContent('products', 'product-1');
+        $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1');
 
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId());
@@ -56,7 +57,7 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionUpdate(): void
     {
-        $content = $this->createContent('products', 'product-1', 'homepage', ['title' => 'Sulu is great']);
+        $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1', 'homepage', ['title' => 'Sulu is great']);
 
         $data = ['template' => 'default', 'title' => 'Sulu is awesome'];
 

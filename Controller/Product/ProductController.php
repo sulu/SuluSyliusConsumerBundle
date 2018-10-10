@@ -17,6 +17,7 @@ use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +44,12 @@ class ProductController implements ClassResourceInterface
     {
         // TODO use container parameter
         $listResult = $this->messageBus->dispatch(
-            new ListProductsQuery(Product::class, 'products', $request->get('_route'), $request->query->all())
+            new ListProductsQuery(
+                Product::class,
+                ProductInterface::RESOURCE_KEY,
+                $request->get('_route'),
+                $request->query->all()
+            )
         );
 
         return $this->handleView($this->view($listResult));

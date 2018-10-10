@@ -15,6 +15,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 interface ProductInterface
 {
+    const RESOURCE_KEY = 'products';
+
     public function getCode(): string;
 
     /**
