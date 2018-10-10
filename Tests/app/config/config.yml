@@ -29,7 +29,7 @@ sulu_core:
 
 sulu_route:
     mappings:
-        Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Routable:
+        Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource:
             generator: schema
             options:
                 route_schema: ""

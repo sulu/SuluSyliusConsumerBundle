@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Routable;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource;
 
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
-class Routable implements RoutableInterface
+class RoutableResource implements RoutableResourceInterface
 {
     /**
      * @var DimensionInterface

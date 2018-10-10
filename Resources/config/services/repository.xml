@@ -23,9 +23,9 @@
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</argument>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableRepositoryInterface">
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Routable</argument>
+            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource</argument>
         </service>
     </services>
 </container>

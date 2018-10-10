@@ -11,38 +11,38 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Routable\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\RoutableResource\Message;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Message\PublishRoutableMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 
-class PublishRoutableMessageTest extends TestCase
+class PublishRoutableResourceMessageTest extends TestCase
 {
     public function testGetResourceKey(): void
     {
-        $message = new PublishRoutableMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
+        $message = new PublishRoutableResourceMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
 
         $this->assertEquals(ProductInterface::RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new PublishRoutableMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
+        $message = new PublishRoutableResourceMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
 
         $this->assertEquals('product-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
-        $message = new PublishRoutableMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
+        $message = new PublishRoutableResourceMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
 
         $this->assertEquals('en', $message->getLocale());
     }
 
     public function testGetRoutePath(): void
     {
-        $message = new PublishRoutableMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
+        $message = new PublishRoutableResourceMessage(ProductInterface::RESOURCE_KEY, 'product-1', 'en', '/products/product-1');
 
         $this->assertEquals('/products/product-1', $message->getRoutePath());
     }

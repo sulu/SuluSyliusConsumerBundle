@@ -19,7 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Message\PublishRoutableMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -51,7 +51,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function ($message) {
-                    return $message instanceof PublishRoutableMessage
+                    return $message instanceof PublishRoutableResourceMessage
                         && 'product-1' === $message->getResourceId()
                         && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale()

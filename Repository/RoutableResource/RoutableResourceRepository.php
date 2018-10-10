@@ -11,20 +11,20 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Routable;
+namespace Sulu\Bundle\SyliusConsumerBundle\Repository\RoutableResource;
 
 use Doctrine\ORM\EntityRepository;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
-class RoutableRepository extends EntityRepository implements RoutableRepositoryInterface
+class RoutableResourceRepository extends EntityRepository implements RoutableResourceRepositoryInterface
 {
     public function findOrCreateByResource(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): RoutableInterface {
+    ): RoutableResourceInterface {
         $routable = $this->findByResource($resourceKey, $resourceId, $dimension);
         if ($routable) {
             return $routable;
@@ -42,8 +42,8 @@ class RoutableRepository extends EntityRepository implements RoutableRepositoryI
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): ?RoutableInterface {
-        /** @var RoutableInterface|null $routable */
+    ): ?RoutableResourceInterface {
+        /** @var RoutableResourceInterface|null $routable */
         $routable = $this->find(
             ['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimension]
         );

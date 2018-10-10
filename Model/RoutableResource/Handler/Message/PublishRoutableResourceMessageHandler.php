@@ -11,22 +11,22 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Handler\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Handler\Message;
 
 use Sulu\Bundle\RouteBundle\Manager\RouteManagerInterface;
 use Sulu\Bundle\RouteBundle\Model\RoutableInterface;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Message\PublishRoutableMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\RoutableRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
-class PublishRoutableMessageHandler
+class PublishRoutableResourceMessageHandler
 {
     /**
-     * @var RoutableRepositoryInterface
+     * @var RoutableResourceRepositoryInterface
      */
-    private $routableRepository;
+    private $routableResourceRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -39,16 +39,16 @@ class PublishRoutableMessageHandler
     private $routeManager;
 
     public function __construct(
-        RoutableRepositoryInterface $routableRepository,
+        RoutableResourceRepositoryInterface $routableResourceRepository,
         DimensionRepositoryInterface $dimensionRepository,
         RouteManagerInterface $routeManager
     ) {
-        $this->routableRepository = $routableRepository;
+        $this->routableResourceRepository = $routableResourceRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->routeManager = $routeManager;
     }
 
-    public function __invoke(PublishRoutableMessage $message): RoutableInterface
+    public function __invoke(PublishRoutableResourceMessage $message): RoutableInterface
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -57,22 +57,22 @@ class PublishRoutableMessageHandler
             ]
         );
 
-        $routable = $this->routableRepository->findOrCreateByResource(
+        $routableResource = $this->routableResourceRepository->findOrCreateByResource(
             $message->getResourceKey(),
             $message->getResourceId(),
             $dimension
         );
 
         /** @var RouteInterface|null $route */
-        $route = $routable->getRoute();
+        $route = $routableResource->getRoute();
         if ($route) {
-            $this->routeManager->update($routable, $message->getRoutePath());
+            $this->routeManager->update($routableResource, $message->getRoutePath());
 
-            return $routable;
+            return $routableResource;
         }
 
-        $this->routeManager->create($routable, $message->getRoutePath());
+        $this->routeManager->create($routableResource, $message->getRoutePath());
 
-        return $routable;
+        return $routableResource;
     }
 }

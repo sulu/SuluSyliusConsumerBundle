@@ -11,9 +11,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message;
 
-class PublishRoutableMessage
+class PublishRoutableResourceMessage
 {
     /**
      * @var string

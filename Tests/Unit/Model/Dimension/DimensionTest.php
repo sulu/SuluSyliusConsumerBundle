@@ -71,7 +71,7 @@ class DimensionTest extends TestCase
 
         $attribute = $this->prophesize(DimensionAttributeInterface::class);
         $attribute->setDimension(Argument::any())->willReturn($attribute->reveal());
-        $attribute->getType()->willReturn(DimensionInterface::ATTRIBUTE_KEY_STAGE);
+        $attribute->getKey()->willReturn(DimensionInterface::ATTRIBUTE_KEY_STAGE);
         $attribute->getValue()->willReturn(DimensionInterface::ATTRIBUTE_VALUE_LIVE);
 
         $dimension = new Dimension('123-123-123', [$attribute->reveal()]);

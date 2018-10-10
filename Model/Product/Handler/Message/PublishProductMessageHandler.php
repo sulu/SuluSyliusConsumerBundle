@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Routable\Message\PublishRoutableMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -47,7 +47,7 @@ class PublishProductMessageHandler
         // FIXME generate route by-schema
         $routePath = '/products/' . $this->slugifier->slugify($message->getCode());
         $this->messageBus->dispatch(
-            new PublishRoutableMessage(
+            new PublishRoutableResourceMessage(
                 ProductInterface::RESOURCE_KEY,
                 $message->getCode(),
                 $message->getLocale(),

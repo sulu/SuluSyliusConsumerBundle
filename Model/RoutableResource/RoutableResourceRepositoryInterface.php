@@ -11,15 +11,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Routable;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
-interface RoutableRepositoryInterface
+interface RoutableResourceRepositoryInterface
 {
     public function findOrCreateByResource(
         string $resourceKey,
         string $resourceId,
         DimensionInterface $dimension
-    ): RoutableInterface;
+    ): RoutableResourceInterface;
 }
