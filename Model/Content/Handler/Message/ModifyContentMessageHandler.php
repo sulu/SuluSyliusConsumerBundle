@@ -18,6 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
@@ -58,16 +59,19 @@ class ModifyContentMessageHandler
     public function __invoke(ModifyContentMessage $message): ContentInterface
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft']
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
         );
-        $localizedDimension = $this->dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft', 'locale' => $message->getLocale()]
+        $localizedDraftDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $message->getLocale(),
+            ]
         );
 
-        $localizedContent = $this->contentRepository->findOrCreate(
+        $localizedDraftContent = $this->contentRepository->findOrCreate(
             $message->getResourceKey(),
             $message->getResourceId(),
-            $localizedDimension
+            $localizedDraftDimension
         );
 
         $draftContent = $this->contentRepository->findOrCreate(
@@ -77,11 +81,11 @@ class ModifyContentMessageHandler
         );
 
         $draftContent->setType($message->getType());
-        $localizedContent->setType($message->getType());
+        $localizedDraftContent->setType($message->getType());
 
-        $this->setData($message, $draftContent, $localizedContent);
+        $this->setData($message, $draftContent, $localizedDraftContent);
 
-        $content = $this->contentViewFactory->create([$localizedContent, $draftContent]);
+        $content = $this->contentViewFactory->create([$localizedDraftContent, $draftContent]);
         if (!$content) {
             throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
@@ -92,7 +96,7 @@ class ModifyContentMessageHandler
     private function setData(
         ModifyContentMessage $message,
         ContentInterface $draftContent,
-        ContentInterface $localizedContent
+        ContentInterface $localizedDraftContent
     ): void {
         $data = $message->getData();
         $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getType());
@@ -100,7 +104,7 @@ class ModifyContentMessageHandler
             return;
         }
 
-        $localizedData = [];
+        $localizedDraftData = [];
         $draftData = [];
         foreach ($metadata->getProperties() as $property) {
             $value = null;
@@ -109,7 +113,7 @@ class ModifyContentMessageHandler
             }
 
             if ($property->isLocalized()) {
-                $localizedData[$property->getName()] = $value;
+                $localizedDraftData[$property->getName()] = $value;
 
                 continue;
             }
@@ -117,7 +121,7 @@ class ModifyContentMessageHandler
             $draftData[$property->getName()] = $value;
         }
 
-        $localizedContent->setData($localizedData);
+        $localizedDraftContent->setData($localizedDraftData);
         $draftContent->setData($draftData);
     }
 }

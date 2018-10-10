@@ -23,23 +23,32 @@ class DimensionAttributeTest extends TestCase
     {
         $dimension = $this->prophesize(DimensionInterface::class);
 
-        $attribute = new DimensionAttribute('workspace', 'draft');
+        $attribute = new DimensionAttribute(
+            DimensionInterface::ATTRIBUTE_KEY_STAGE,
+            DimensionInterface::ATTRIBUTE_VALUE_DRAFT
+        );
         $this->assertEquals($attribute, $attribute->setDimension($dimension->reveal()));
 
         $this->assertEquals($dimension->reveal(), $attribute->getDimension());
     }
 
-    public function testGetType(): void
+    public function testGetKey(): void
     {
-        $attribute = new DimensionAttribute('workspace', 'draft');
+        $attribute = new DimensionAttribute(
+            DimensionInterface::ATTRIBUTE_KEY_STAGE,
+            DimensionInterface::ATTRIBUTE_VALUE_DRAFT
+        );
 
-        $this->assertEquals('workspace', $attribute->getType());
+        $this->assertEquals(DimensionInterface::ATTRIBUTE_KEY_STAGE, $attribute->getKey());
     }
 
     public function testGetValue(): void
     {
-        $attribute = new DimensionAttribute('workspace', 'draft');
+        $attribute = new DimensionAttribute(
+            DimensionInterface::ATTRIBUTE_KEY_STAGE,
+            DimensionInterface::ATTRIBUTE_VALUE_DRAFT
+        );
 
-        $this->assertEquals('draft', $attribute->getValue());
+        $this->assertEquals(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $attribute->getValue());
     }
 }

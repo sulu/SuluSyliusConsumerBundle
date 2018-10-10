@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 class ContentViewFactoryTest extends TestCase
 {
@@ -28,7 +29,7 @@ class ContentViewFactoryTest extends TestCase
 
         $contentDimension1 = $this->prophesize(ContentInterface::class);
         $contentDimension1->getDimension()->willReturn($dimension->reveal());
-        $contentDimension1->getResourceKey()->willReturn('products');
+        $contentDimension1->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
         $contentDimension1->getResourceId()->willReturn('product-1');
         $contentDimension1->getType()->willReturn('default');
         $contentDimension1->getData()->willReturn(['title' => 'Sulu']);
@@ -45,7 +46,7 @@ class ContentViewFactoryTest extends TestCase
         }
 
         $this->assertEquals($dimension->reveal(), $result->getDimension());
-        $this->assertEquals('products', $result->getResourceKey());
+        $this->assertEquals(ProductInterface::RESOURCE_KEY, $result->getResourceKey());
         $this->assertEquals('product-1', $result->getResourceId());
         $this->assertEquals('default', $result->getType());
         $this->assertEquals(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());

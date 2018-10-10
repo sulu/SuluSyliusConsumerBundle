@@ -18,10 +18,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Message\ModifyContentMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\ModifyContentMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\PropertyMetadata;
 use Sulu\Component\Content\Metadata\StructureMetadata;
@@ -53,10 +53,13 @@ class ModifyContentMessageHandlerTest extends TestCase
         $localizedDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft']
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
         )->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft', 'locale' => 'de']
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
         )->willReturn($localizedDimension->reveal());
 
         $metadata = $this->prophesize(StructureMetadata::class);

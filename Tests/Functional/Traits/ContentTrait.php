@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 trait ContentTrait
 {
@@ -27,7 +28,12 @@ trait ContentTrait
         ?string $type = 'default',
         array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
     ): Content {
-        $dimension = $this->findDimension(['workspace' => 'draft', 'locale' => $locale]);
+        $dimension = $this->findDimension(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+            ]
+        );
         $content = new Content($dimension, $resourceKey, $resourceId, $type, $data);
 
         $this->getEntityManager()->persist($content);

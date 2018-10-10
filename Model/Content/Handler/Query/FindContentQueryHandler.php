@@ -18,6 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 
 class FindContentQueryHandler
@@ -51,10 +52,13 @@ class FindContentQueryHandler
     {
         $dimensions = [
             $this->dimensionRepository->findOrCreateByAttributes(
-                ['workspace' => 'draft']
+                [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
             ),
             $this->dimensionRepository->findOrCreateByAttributes(
-                ['workspace' => 'draft', 'locale' => $query->getLocale()]
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $query->getLocale(),
+                ]
             ),
         ];
 

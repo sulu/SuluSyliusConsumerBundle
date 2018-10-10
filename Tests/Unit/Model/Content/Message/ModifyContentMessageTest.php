@@ -46,7 +46,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetLocale(): void
     {
         $message = new ModifyContentMessage(
-            'products',
+            ProductInterface::RESOURCE_KEY,
             'product-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]

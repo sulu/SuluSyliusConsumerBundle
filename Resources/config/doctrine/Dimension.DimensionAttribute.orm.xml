@@ -7,7 +7,7 @@
         <id name="dimension" type="string" association-key="true">
             <generator strategy="NONE"/>
         </id>
-        <id name="type" type="string">
+        <id name="key" type="string" column="attribute_key">
             <generator strategy="NONE"/>
         </id>
 

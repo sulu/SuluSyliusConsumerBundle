@@ -23,16 +23,16 @@ class DimensionAttribute implements DimensionAttributeInterface
     /**
      * @var string
      */
-    private $type;
+    private $key;
 
     /**
      * @var string
      */
     private $value;
 
-    public function __construct(string $type, string $value)
+    public function __construct(string $key, string $value)
     {
-        $this->type = $type;
+        $this->key = $key;
         $this->value = $value;
     }
 
@@ -48,9 +48,9 @@ class DimensionAttribute implements DimensionAttributeInterface
         return $this->dimension;
     }
 
-    public function getType(): string
+    public function getKey(): string
     {
-        return $this->type;
+        return $this->key;
     }
 
     public function getValue(): string

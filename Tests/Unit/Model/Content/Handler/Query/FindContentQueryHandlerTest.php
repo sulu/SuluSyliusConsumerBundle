@@ -14,15 +14,16 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\Handler\Query;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Query\FindContentQueryHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 class FindContentQueryHandlerTest extends TestCase
 {
@@ -47,10 +48,13 @@ class FindContentQueryHandlerTest extends TestCase
         $localizedDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft']
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
         )->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft', 'locale' => 'de']
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
         )->willReturn($localizedDimension->reveal());
 
         $draftContent = $this->prophesize(ContentInterface::class);
@@ -94,10 +98,13 @@ class FindContentQueryHandlerTest extends TestCase
         $localizedDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft']
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
         )->willReturn($draftDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            ['workspace' => 'draft', 'locale' => 'de']
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
         )->willReturn($localizedDimension->reveal());
 
         $contentRepository->findByDimensions(
