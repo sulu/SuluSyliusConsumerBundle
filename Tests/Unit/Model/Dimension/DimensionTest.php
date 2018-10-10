@@ -17,6 +17,8 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionAttributeInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Exception\DimensionAttributeNotFoundException;
 
 class DimensionTest extends TestCase
 {
@@ -49,5 +51,31 @@ class DimensionTest extends TestCase
 
         $this->assertEquals(1, $dimension->getAttributeCount());
         $this->assertEquals([$attribute->reveal()], $dimension->getAttributes());
+    }
+
+    public function testGetAttributeValue(): void
+    {
+        $attribute = $this->prophesize(DimensionAttributeInterface::class);
+        $attribute->setDimension(Argument::any())->willReturn($attribute->reveal());
+        $attribute->getKey()->willReturn(DimensionInterface::ATTRIBUTE_KEY_STAGE);
+        $attribute->getValue()->willReturn(DimensionInterface::ATTRIBUTE_VALUE_LIVE);
+
+        $dimension = new Dimension('123-123-123', [$attribute->reveal()]);
+
+        $this->assertEquals('live', $dimension->getAttributeValue(DimensionInterface::ATTRIBUTE_KEY_STAGE));
+    }
+
+    public function testGetAttributeValueNotFound(): void
+    {
+        $this->expectException(DimensionAttributeNotFoundException::class);
+
+        $attribute = $this->prophesize(DimensionAttributeInterface::class);
+        $attribute->setDimension(Argument::any())->willReturn($attribute->reveal());
+        $attribute->getType()->willReturn(DimensionInterface::ATTRIBUTE_KEY_STAGE);
+        $attribute->getValue()->willReturn(DimensionInterface::ATTRIBUTE_VALUE_LIVE);
+
+        $dimension = new Dimension('123-123-123', [$attribute->reveal()]);
+
+        $dimension->getAttributeValue(DimensionInterface::ATTRIBUTE_KEY_LOCALE);
     }
 }
