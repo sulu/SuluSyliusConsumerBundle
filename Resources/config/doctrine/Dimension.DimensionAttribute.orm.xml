@@ -2,21 +2,16 @@
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-    <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content"
-            table="pr_contents"
-            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Content\ContentRepository">
-        <id name="resourceKey" type="string">
+    <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionAttribute"
+            table="pr_dimension_attributes">
+        <id name="dimension" type="string" association-key="true">
             <generator strategy="NONE"/>
         </id>
-        <id name="resourceId" type="string">
-            <generator strategy="NONE"/>
-        </id>
-        <id name="dimension" type="guid" association-key="true">
+        <id name="type" type="string">
             <generator strategy="NONE"/>
         </id>
 
-        <field name="type" type="string" nullable="false"/>
-        <field name="data" type="json" nullable="false"/>
+        <field name="value" type="string" nullable="false"/>
 
         <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
     </entity>

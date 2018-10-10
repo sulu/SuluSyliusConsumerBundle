@@ -17,6 +17,8 @@ interface ProductInterface
 {
     const RESOURCE_KEY = 'products';
 
+    public function __construct(string $code, array $variants = []);
+
     public function getCode(): string;
 
     /**

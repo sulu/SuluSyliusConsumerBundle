@@ -25,10 +25,16 @@ class FindContentQuery
      */
     private $resourceId;
 
-    public function __construct(string $resourceKey, string $resourceId)
+    /**
+     * @var string
+     */
+    private $locale;
+
+    public function __construct(string $resourceKey, string $resourceId, string $locale)
     {
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
+        $this->locale = $locale;
     }
 
     public function getResourceKey(): string
@@ -39,5 +45,10 @@ class FindContentQuery
     public function getResourceId(): string
     {
         return $this->resourceId;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
     }
 }

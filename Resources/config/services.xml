@@ -11,10 +11,14 @@
 
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Admin\SyliusConsumerAdmin">
+            <argument type="service" id="sulu_core.webspace.webspace_manager"/>
+
             <tag name="sulu.admin"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ContentSerializerSubscriber">
+            <argument type="service" id="sulu_content.structure.factory"/>
+
             <tag name="jms_serializer.event_subscriber"/>
         </service>
     </services>

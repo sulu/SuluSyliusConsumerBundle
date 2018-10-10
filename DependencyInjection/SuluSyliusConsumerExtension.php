@@ -104,15 +104,15 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                 'content' => [
                     'structure' => [
                         'paths' => [
-                            'product_content' => [
+                            'products' => [
                                 'path' => '%kernel.project_dir%/config/templates/products',
-                                'type' => 'product_content',
+                                'type' => 'products',
                             ],
                         ],
                         'resources' => [
                             'product_contents' => [
                                 'datagrid' => Product::class,
-                                'types' => ['product_content'],
+                                'types' => ['products'],
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
                         ],

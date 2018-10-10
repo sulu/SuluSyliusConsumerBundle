@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content;
 use Sulu\Bundle\SyliusConsumerBundle\Model\ModelNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 
 class ContentNotFoundException extends ModelNotFoundException
 {
     public function __construct(string $resourceKey, string $resourceId, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(Product::class, sprintf('%s#%s', $resourceKey, $resourceId), $code, $previous);
+        parent::__construct(Content::class, sprintf('%s#%s', $resourceKey, $resourceId), $code, $previous);
     }
 }

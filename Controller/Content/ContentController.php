@@ -54,10 +54,12 @@ abstract class ContentController implements ClassResourceInterface
         throw new NotFoundHttpException();
     }
 
-    public function getAction(string $resourceId): Response
+    public function getAction(Request $request, string $resourceId): Response
     {
         try {
-            $content = $this->messageBus->dispatch(new FindContentQuery($this->getResourceKey(), $resourceId));
+            $content = $this->messageBus->dispatch(
+                new FindContentQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'))
+            );
         } catch (ContentNotFoundException $exception) {
             $content = [
                 'template' => $this->defaultType,
@@ -77,7 +79,7 @@ abstract class ContentController implements ClassResourceInterface
         ];
 
         $content = $this->messageBus->dispatch(
-            new ModifyContentMessage($this->getResourceKey(), $resourceId, $payload)
+            new ModifyContentMessage($this->getResourceKey(), $resourceId, $request->query->get('locale'), $payload)
         );
 
         return $this->handleView($this->view($content));

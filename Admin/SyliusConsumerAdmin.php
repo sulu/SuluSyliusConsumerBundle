@@ -18,9 +18,21 @@ use Sulu\Bundle\AdminBundle\Admin\Routing\Route;
 use Sulu\Bundle\AdminBundle\Navigation\Navigation;
 use Sulu\Bundle\AdminBundle\Navigation\NavigationItem;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Component\Localization\Localization;
+use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 
 class SyliusConsumerAdmin extends Admin
 {
+    /**
+     * @var WebspaceManagerInterface
+     */
+    private $webspaceManager;
+
+    public function __construct(WebspaceManagerInterface $webspaceManager)
+    {
+        $this->webspaceManager = $webspaceManager;
+    }
+
     public function getNavigation(): Navigation
     {
         $rootNavigationItem = $this->getNavigationItemRoot();
@@ -37,20 +49,33 @@ class SyliusConsumerAdmin extends Admin
 
     public function getRoutes(): array
     {
+        $locales = array_values(
+            array_map(
+                function (Localization $localization) {
+                    return $localization->getLocale();
+                },
+                $this->webspaceManager->getAllLocalizations()
+            )
+        );
+
         $formToolbarActions = [
             'sulu_admin.save',
             'sulu_admin.type',
         ];
 
         return [
-            (new Route('sulu_sylius_product.products_datagrid', '/products', 'sulu_admin.datagrid'))
+            (new Route('sulu_sylius_product.products_datagrid', '/products/:locale', 'sulu_admin.datagrid'))
                 ->addOption('title', 'sulu_sylius_product.products')
                 ->addOption('adapters', ['table'])
                 ->addOption('resourceKey', ProductInterface::RESOURCE_KEY)
-                ->addOption('editRoute', 'sulu_sylius_product.product_edit_form.detail'),
-            (new Route('sulu_sylius_product.product_edit_form', '/products/:id', 'sulu_admin.resource_tabs'))
+                ->addOption('editRoute', 'sulu_sylius_product.product_edit_form.detail')
+                ->addOption('locales', $locales)
+                ->addAttributeDefault('locale', $locales[0]),
+            (new Route('sulu_sylius_product.product_edit_form', '/products/:locale/:id', 'sulu_admin.resource_tabs'))
                 ->addOption('resourceKey', ProductInterface::RESOURCE_KEY)
-                ->addOption('toolbarActions', []),
+                ->addOption('toolbarActions', [])
+                ->addOption('locales', $locales)
+                ->addAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form.detail', '/details', 'sulu_admin.form'))
                 ->addOption('tabTitle', 'sulu_sylius_product.details')
                 ->addOption('backRoute', 'sulu_sylius_product.products_datagrid')

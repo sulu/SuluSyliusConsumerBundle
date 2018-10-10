@@ -18,13 +18,17 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content;
 
 trait ContentTrait
 {
+    use DimensionTrait;
+
     protected function createContent(
         string $resourceKey,
         string $resourceId,
+        string $locale = 'en',
         ?string $type = 'default',
-        array $data = ['title' => 'Sulu is awesome']
+        array $data = ['title' => 'Sulu', 'article' => 'Sulu is awesome']
     ): Content {
-        $content = new Content($resourceKey, $resourceId, $type, $data);
+        $dimension = $this->findDimension(['workspace' => 'draft', 'locale' => $locale]);
+        $content = new Content($dimension, $resourceKey, $resourceId, $type, $data);
 
         $this->getEntityManager()->persist($content);
         $this->getEntityManager()->flush();

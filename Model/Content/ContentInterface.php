@@ -13,8 +13,20 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+
 interface ContentInterface
 {
+    public function __construct(
+        DimensionInterface $dimension,
+        string $resourceKey,
+        string $resourceId,
+        ?string $type = null,
+        array $data = []
+    );
+
+    public function getDimension(): DimensionInterface;
+
     public function getResourceKey(): string;
 
     public function getResourceId(): string;

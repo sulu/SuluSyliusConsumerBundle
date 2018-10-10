@@ -29,10 +29,16 @@ class ModifyContentMessage
      */
     private $resourceId;
 
-    public function __construct(string $resourceKey, string $resourceId, array $payload)
+    /**
+     * @var string
+     */
+    private $locale;
+
+    public function __construct(string $resourceKey, string $resourceId, string $locale, array $payload)
     {
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
+        $this->locale = $locale;
 
         $this->initializePayload($payload);
     }
@@ -45,6 +51,11 @@ class ModifyContentMessage
     public function getResourceId(): string
     {
         return $this->resourceId;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
     }
 
     public function getType(): string
