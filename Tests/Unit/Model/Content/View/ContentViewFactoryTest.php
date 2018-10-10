@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\Factory;
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\View;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;

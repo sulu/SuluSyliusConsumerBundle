@@ -31,12 +31,17 @@ abstract class ContentController implements ClassResourceInterface
     /**
      * @var MessageBusInterface
      */
-    private $messageBus;
+    protected $messageBus;
 
     /**
      * @var string
      */
-    private $defaultType;
+    protected $resourceKey;
+
+    /**
+     * @var string
+     */
+    protected $defaultType;
 
     public function __construct(
         MessageBusInterface $messageBus,
@@ -78,12 +83,27 @@ abstract class ContentController implements ClassResourceInterface
             'data' => $data,
         ];
 
+        $locale = $request->query->get('locale');
         $content = $this->messageBus->dispatch(
-            new ModifyContentMessage($this->getResourceKey(), $resourceId, $request->query->get('locale'), $payload)
+            new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload)
         );
+
+        $action = $request->query->get('action');
+        if ($action) {
+            $this->handleAction($resourceId, $locale, $action);
+        }
 
         return $this->handleView($this->view($content));
     }
+
+    protected function handleAction(string $resourceId, string $locale, string $action): void
+    {
+        if ('publish' === $action) {
+            $this->handlePublish($resourceId, $locale);
+        }
+    }
+
+    abstract protected function handlePublish(string $resourceId, string $locale): void;
 
     abstract protected function getResourceKey(): string;
 }
