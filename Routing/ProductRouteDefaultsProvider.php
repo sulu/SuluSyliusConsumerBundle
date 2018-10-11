@@ -15,8 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Routing;
 
 use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
@@ -57,7 +58,10 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         /** @var StructureMetadata $metadata */
-        $metadata = $this->structureMetadataFactory->getStructureMetadata(ProductInterface::RESOURCE_KEY, $object->getContent()->getType());
+        $metadata = $this->structureMetadataFactory->getStructureMetadata(
+            ProductInterface::RESOURCE_KEY,
+            $object->getContentType()
+        );
 
         return [
             'object' => $object,
@@ -73,7 +77,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
             $this->loadProduct($id, $locale);
 
             return true;
-        } catch (ProductNotFoundException $exception) {
+        } catch (ProductDataNotFoundException $exception) {
             return false;
         }
     }
@@ -83,9 +87,9 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
         return is_subclass_of($entityClass, RoutableResourceInterface::class);
     }
 
-    private function loadProduct(string $id, string $locale): ProductInterface
+    private function loadProduct(string $id, string $locale): ProductViewInterface
     {
-        /** @var ProductInterface $product */
+        /** @var ProductViewInterface $product */
         $product = $this->messagBus->dispatch(new FindPublishedProductQuery($id, $locale));
 
         return $product;

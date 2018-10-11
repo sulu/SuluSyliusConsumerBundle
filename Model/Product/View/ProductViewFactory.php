@@ -15,8 +15,10 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
 class ProductViewFactory implements ProductViewFactoryInterface
@@ -46,22 +48,20 @@ class ProductViewFactory implements ProductViewFactoryInterface
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function create(ProductInterface $product, array $dimensions): ProductInterface
+    public function create(ProductDataInterface $product, array $dimensions): ProductViewInterface
     {
-        $product = new Product(
-            $product->getCode(),
-            $product->getDimension(),
-            $product->getVariants()
-        );
+        $viewProduct = new ProductView($product->getCode());
+        $viewProduct->setProductData($product);
 
         $contentDimensions = $this->contentRepository->findByDimensions(
             ProductInterface::RESOURCE_KEY,
             $product->getCode(),
             $dimensions
         );
+
         $content = $this->contentViewFactory->create($contentDimensions);
         if ($content) {
-            $product->setContent($content);
+            $viewProduct->setContent($content);
         }
 
         $routableResource = $this->routableResourceRepository->findOrCreateByResource(
@@ -69,8 +69,8 @@ class ProductViewFactory implements ProductViewFactoryInterface
             $product->getCode(),
             $product->getDimension()
         );
-        $product->setRoutableResource($routableResource);
+        $viewProduct->setRoutableResource($routableResource);
 
-        return $product;
+        return $viewProduct;
     }
 }

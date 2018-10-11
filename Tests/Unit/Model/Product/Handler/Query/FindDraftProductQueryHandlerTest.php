@@ -16,30 +16,34 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Quer
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindProductQueryHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindDraftProductQueryHandler;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 
-class FindProductQueryHandlerTest extends TestCase
+class FindDraftProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
+        $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
 
-        $message = $this->prophesize(FindProductQuery::class);
+        $message = $this->prophesize(FindDraftProductQuery::class);
         $message->getCode()->willReturn('product-1');
+        $message->getLocale()->willReturn('en');
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
         )->willReturn($dimension->reveal());
 
-        $product = $this->prophesize(ProductInterface::class);
+        $product = $this->prophesize(ProductDataInterface::class);
         $productRepository->findByCode('product-1', $dimension->reveal())
             ->willReturn($product->reveal())
             ->shouldBeCalled();
@@ -50,20 +54,24 @@ class FindProductQueryHandlerTest extends TestCase
 
     public function testInvokeProductNotFound(): void
     {
-        $this->expectException(ProductNotFoundException::class);
+        $this->expectException(ProductDataNotFoundException::class);
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
+        $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
         )->willReturn($dimension->reveal());
 
-        $message = $this->prophesize(FindProductQuery::class);
+        $message = $this->prophesize(FindDraftProductQuery::class);
         $message->getCode()->willReturn('product-1');
+        $message->getLocale()->willReturn('en');
 
         $productRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
 

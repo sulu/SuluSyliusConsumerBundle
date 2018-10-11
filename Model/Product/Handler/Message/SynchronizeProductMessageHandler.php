@@ -15,11 +15,13 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
 class SynchronizeProductMessageHandler
 {
@@ -29,7 +31,12 @@ class SynchronizeProductMessageHandler
     private $productRepository;
 
     /**
-     * @var ProductVariantRepositoryInterface
+     * @var ProductDataRepositoryInterface
+     */
+    private $productDataRepository;
+
+    /**
+     * @var ProductDataVariantRepositoryInterface
      */
     private $variantRepository;
 
@@ -40,40 +47,61 @@ class SynchronizeProductMessageHandler
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductVariantRepositoryInterface $variantRepository,
+        ProductDataRepositoryInterface $productDataRepository,
+        ProductDataVariantRepositoryInterface $variantRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
+        $this->productDataRepository = $productDataRepository;
         $this->variantRepository = $variantRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(SynchronizeProductMessage $message): ProductInterface
+    public function __invoke(SynchronizeProductMessage $message): void
     {
+        $this->productRepository->create($message->getCode());
+
+        foreach ($message->getTranslations() as $translation) {
+            $this->synchronizeProduct($message, $translation);
+        }
+    }
+
+    private function synchronizeProduct(
+        SynchronizeProductMessage $message,
+        ProductTranslationValueObject $translationValueObject
+    ): void {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+            ]
         );
 
-        $product = $this->productRepository->findByCode($message->getCode(), $dimension);
+        $product = $this->productDataRepository->findByCode($message->getCode(), $dimension);
         if (!$product) {
-            $product = $this->productRepository->create($message->getCode(), $dimension);
+            $product = $this->productDataRepository->create($message->getCode(), $dimension);
         }
 
-        $this->synchronizeVariants($message->getVariants(), $product);
+        $product->setName($translationValueObject->getName());
 
-        return $product;
+        $this->synchronizeVariants($message->getVariants(), $product, $translationValueObject->getLocale());
     }
 
     /**
-     * @param ProductVariantValueObject[] $variantDTOs
+     * @param ProductVariantValueObject[] $variantValueObjects
      */
-    private function synchronizeVariants(array $variantDTOs, ProductInterface $product)
+    private function synchronizeVariants(array $variantValueObjects, ProductDataInterface $product, string $locale): void
     {
         $codes = [];
-        foreach ($variantDTOs as $variantDTO) {
-            $variant = $product->findVariantByCode($variantDTO->getCode());
+        foreach ($variantValueObjects as $variantValueObject) {
+            $variant = $product->findVariantByCode($variantValueObject->getCode());
             if (!$variant) {
-                $variant = $this->variantRepository->create($product, $variantDTO->getCode());
+                $variant = $this->variantRepository->create($product, $variantValueObject->getCode());
+            }
+
+            $variantTranslationValueObject = $variantValueObject->findTranslationByLocale($locale);
+            if ($variantTranslationValueObject) {
+                $variant->setName($variantTranslationValueObject->getName());
             }
 
             $codes[] = $variant->getCode();

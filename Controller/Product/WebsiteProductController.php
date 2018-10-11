@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 
 use Sulu\Bundle\HttpCacheBundle\Cache\SuluHttpCache;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -27,7 +27,7 @@ class WebsiteProductController implements ContainerAwareInterface
     use ContainerAwareTrait;
     use ControllerTrait;
 
-    public function indexAction(Request $request, ProductInterface $object, string $view): Response
+    public function indexAction(Request $request, ProductViewInterface $object, string $view): Response
     {
         $requestFormat = $request->getRequestFormat();
         $viewTemplate = $view . '.' . $requestFormat . '.twig';

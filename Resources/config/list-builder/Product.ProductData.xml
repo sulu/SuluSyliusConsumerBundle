@@ -1,0 +1,84 @@
+<class
+    xmlns="http://schemas.sulu.io/class/general"
+    xmlns:orm="http://schemas.sulu.io/class/doctrine"
+>
+    <properties>
+        <property
+            name="id"
+            visibility="never"
+            searchability="no"
+        >
+            <orm:field-name>code</orm:field-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData</orm:entity-name>
+        </property>
+
+        <property
+            name="code"
+            visibility="always"
+            searchability="yes"
+        >
+            <orm:field-name>code</orm:field-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData</orm:entity-name>
+        </property>
+
+        <concatenation-property
+                name="identifier"
+                orm:glue="#"
+                searchability="no"
+        >
+            <orm:field property-ref="code"/>
+            <orm:field property-ref="locale"/>
+        </concatenation-property>
+
+        <property
+            name="name"
+            visibility="always"
+            searchability="yes"
+        >
+            <orm:field-name>name</orm:field-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData</orm:entity-name>
+        </property>
+
+        <property
+                name="locale"
+                visibility="never"
+                searchability="no"
+        >
+            <orm:field-name>value</orm:field-name>
+            <orm:entity-name>attribute_locale</orm:entity-name>
+
+            <orm:joins>
+                <orm:join>
+                    <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData.dimension</orm:field-name>
+                </orm:join>
+                <orm:join>
+                    <orm:entity-name>attribute_locale</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension.attributes</orm:field-name>
+                    <orm:condition>attribute_locale.key = 'locale'</orm:condition>
+                </orm:join>
+            </orm:joins>
+        </property>
+
+        <property
+                name="stage"
+                visibility="never"
+                searchability="no"
+        >
+            <orm:field-name>value</orm:field-name>
+            <orm:entity-name>attribute_stage</orm:entity-name>
+
+            <orm:joins>
+                <orm:join>
+                    <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData.dimension</orm:field-name>
+                </orm:join>
+                <orm:join>
+                    <orm:entity-name>attribute_stage</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension.attributes</orm:field-name>
+                    <orm:condition>attribute_stage.key = 'stage'</orm:condition>
+                </orm:join>
+            </orm:joins>
+        </property>
+    </properties>
+</class>

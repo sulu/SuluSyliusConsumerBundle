@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
@@ -50,14 +51,21 @@ class ListProductsQueryHandler
 
     public function __invoke(ListProductsQuery $query): ListRepresentation
     {
-        $fieldDescriptors = $this->getFieldDescriptors($query->getEntityClass());
+        $fieldDescriptors = $this->getFieldDescriptors($query->getEntityClass(), $query->getLocale());
 
         /** @var DoctrineListBuilder $listBuilder */
         $listBuilder = $this->listBuilderFactory->create($query->getEntityClass());
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
-        $listBuilder->setIdField($fieldDescriptors['id']);
+        $listBuilder->setIdField($fieldDescriptors['identifier']);
 
         $listBuilder->addSelectField($fieldDescriptors['id']);
+
+        $listBuilder->where(
+            $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_STAGE],
+            DimensionInterface::ATTRIBUTE_VALUE_DRAFT
+        );
+        $listBuilder->where($fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_LOCALE], $query->getLocale());
+        $listBuilder->distinct();
 
         $listResponse = $listBuilder->execute();
 
@@ -75,10 +83,13 @@ class ListProductsQueryHandler
     /**
      * @return FieldDescriptor[]
      */
-    protected function getFieldDescriptors(string $entityClass): array
+    protected function getFieldDescriptors(string $entityClass, string $locale): array
     {
         /** @var FieldDescriptor[] $fieldDescriptors */
-        $fieldDescriptors = $this->fieldDescriptorsFactory->getFieldDescriptorForClass($entityClass);
+        $fieldDescriptors = $this->fieldDescriptorsFactory->getFieldDescriptorForClass(
+            $entityClass,
+            ['locale' => $locale]
+        );
 
         return $fieldDescriptors;
     }

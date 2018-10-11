@@ -20,10 +20,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -36,8 +37,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -80,16 +81,23 @@ class PublishProductMessageHandlerTest extends TestCase
         $draftDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
         )->willReturn($liveDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductInterface::class);
-        $draftProduct = $this->prophesize(ProductInterface::class);
+        $liveProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct = $this->prophesize(ProductDataInterface::class);
 
         $draftProduct->getVariants()->willReturn([]);
+        $draftProduct->getName()->willReturn('Product One');
 
         $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
@@ -99,6 +107,7 @@ class PublishProductMessageHandlerTest extends TestCase
             ->shouldBeCalled();
 
         $liveProduct->getVariants()->willReturn([]);
+        $liveProduct->setName('Product One')->shouldBeCalled()->willReturn($liveProduct->reveal());
 
         $handler->__invoke($message->reveal());
     }
@@ -109,8 +118,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -132,17 +141,21 @@ class PublishProductMessageHandlerTest extends TestCase
         $draftDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+            DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($liveDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductInterface::class);
-        $draftProduct = $this->prophesize(ProductInterface::class);
+        $liveProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct->getName()->willReturn('Product One');
 
-        $variant = $this->prophesize(ProductVariantInterface::class);
+        $variant = $this->prophesize(ProductDataVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
+        $variant->getName()->willReturn('Product Variant One');
         $draftProduct->getVariants()->willReturn([$variant->reveal()]);
 
         $productRepository->findByCode('product-1', $liveDimension->reveal())
@@ -153,12 +166,14 @@ class PublishProductMessageHandlerTest extends TestCase
             ->shouldBeCalled();
 
         $liveProduct->findVariantByCode('variant-1')->willReturn(null);
-        $liveVariant = $this->prophesize(ProductVariantInterface::class);
+        $liveVariant = $this->prophesize(ProductDataVariantInterface::class);
         $liveVariant->getCode()->willReturn('variant-1');
+        $liveVariant->setName('Product Variant One')->shouldBeCalled($liveVariant->reveal());
         $variantRepository->create($liveProduct->reveal(), 'variant-1')->shouldBeCalled()
             ->willReturn($liveVariant->reveal());
 
         $liveProduct->getVariants()->willReturn([$liveVariant->reveal()]);
+        $liveProduct->setName('Product One')->shouldBeCalled()->willReturn($liveProduct->reveal());
 
         $handler->__invoke($message->reveal());
     }
@@ -169,8 +184,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -192,14 +207,17 @@ class PublishProductMessageHandlerTest extends TestCase
         $draftDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($liveDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductInterface::class);
-        $draftProduct = $this->prophesize(ProductInterface::class);
+        $liveProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct->getName()->willReturn('Product One');
 
         $draftProduct->getVariants()->willReturn([]);
 
@@ -210,11 +228,12 @@ class PublishProductMessageHandlerTest extends TestCase
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
-        $liveVariant = $this->prophesize(ProductVariantInterface::class);
+        $liveVariant = $this->prophesize(ProductDataVariantInterface::class);
         $liveVariant->getCode()->willReturn('variant-1');
 
         $variantRepository->create($liveProduct->reveal(), 'variant-1')->shouldNotBeCalled();
 
+        $liveProduct->setName('Product One')->shouldBeCalled()->willReturn($liveProduct->reveal());
         $liveProduct->getVariants()->willReturn([$liveVariant->reveal()]);
         $liveProduct->removeVariant($liveVariant->reveal())->willReturn($liveProduct->reveal());
 
@@ -227,8 +246,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -250,14 +269,16 @@ class PublishProductMessageHandlerTest extends TestCase
         $draftDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($liveDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+                        [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductInterface::class);
-        $draftProduct = $this->prophesize(ProductInterface::class);
+        $liveProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct = $this->prophesize(ProductDataInterface::class);
 
         $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
@@ -266,16 +287,21 @@ class PublishProductMessageHandlerTest extends TestCase
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
-        $draftVariant = $this->prophesize(ProductVariantInterface::class);
+        $draftVariant = $this->prophesize(ProductDataVariantInterface::class);
         $draftVariant->getCode()->willReturn('variant-1');
+        $draftVariant->getName()->willReturn('Product Variant One');
 
         $draftProduct->getVariants()->willReturn([$draftVariant->reveal()]);
+        $draftProduct->getName()->willReturn('Product One');
 
-        $liveVariant = $this->prophesize(ProductVariantInterface::class);
+        $liveVariant = $this->prophesize(ProductDataVariantInterface::class);
         $liveVariant->getCode()->willReturn('variant-1');
+        $liveVariant->getName()->willReturn('Product Variant One');
+        $liveVariant->setName('Product Variant One')->willReturn($liveVariant->reveal());
 
         $variantRepository->create($liveProduct->reveal(), 'variant-1')->shouldNotBeCalled();
 
+        $liveProduct->setName('Product One')->shouldBeCalled()->willReturn($liveProduct->reveal());
         $liveProduct->findVariantByCode('variant-1')->willReturn($liveVariant->reveal());
         $liveProduct->getVariants()->willReturn([$liveVariant->reveal()]);
         $liveProduct->removeVariant(Argument::any())->shouldNotBeCalled();
@@ -289,8 +315,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -333,17 +359,20 @@ class PublishProductMessageHandlerTest extends TestCase
         $draftDimension = $this->prophesize(DimensionInterface::class);
 
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($liveDimension->reveal());
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+             DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductInterface::class);
-        $draftProduct = $this->prophesize(ProductInterface::class);
+        $liveProduct = $this->prophesize(ProductDataInterface::class);
+        $draftProduct = $this->prophesize(ProductDataInterface::class);
 
         $liveProduct->getVariants()->willReturn([]);
         $draftProduct->getVariants()->willReturn([]);
+        $draftProduct->getName()->willReturn('Product One');
 
         $productRepository->findByCode('product-1', $liveDimension->reveal())->willReturn(null)->shouldBeCalled();
         $productRepository->findByCode('product-1', $draftDimension->reveal())
@@ -353,6 +382,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $productRepository->create('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
             ->shouldBeCalled();
+
+        $liveProduct->setName('Product One')->shouldBeCalled()->willReturn($liveProduct->reveal());
 
         $handler->__invoke($message->reveal());
     }

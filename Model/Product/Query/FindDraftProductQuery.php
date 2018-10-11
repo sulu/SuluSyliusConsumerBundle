@@ -13,20 +13,31 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query;
 
-class FindProductQuery
+class FindDraftProductQuery
 {
     /**
      * @var string
      */
     private $code;
 
-    public function __construct(string $code)
+    /**
+     * @var string
+     */
+    private $locale;
+
+    public function __construct(string $code, string $locale)
     {
         $this->code = $code;
+        $this->locale = $locale;
     }
 
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->locale;
     }
 }

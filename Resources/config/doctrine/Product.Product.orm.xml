@@ -8,21 +8,5 @@
         <id name="code" column="product_code" type="string">
             <generator strategy="NONE"/>
         </id>
-        <id name="dimension" type="guid" association-key="true">
-            <generator strategy="NONE"/>
-        </id>
-
-        <one-to-many field="variants"
-                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant"
-                     mapped-by="product"
-                     orphan-removal="true"
-                     index-by="code">
-            <cascade>
-                <cascade-persist/>
-                <cascade-remove/>
-            </cascade>
-        </one-to-many>
-
-        <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
     </entity>
 </doctrine-mapping>

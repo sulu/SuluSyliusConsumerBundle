@@ -15,14 +15,14 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductDataTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductTest extends SuluTestCase
 {
     use DimensionTrait;
-    use ProductTrait;
+    use ProductDataTrait;
 
     public function setUp()
     {
@@ -34,8 +34,30 @@ class SynchronizeProductTest extends SuluTestCase
         $message = new SynchronizeProductMessage(
             'product-1',
             [
+               'translations' => [
+                   'en' => [
+                       'locale' => 'en',
+                       'name' => 'Product One',
+                   ],
+                   'de' => [
+                       'locale' => 'de',
+                       'name' => 'Produkt Eins',
+                   ],
+               ],
                'variants' => [
-                   ['code' => 'variant-1'],
+                   [
+                       'code' => 'variant-1',
+                       'translations' => [
+                           [
+                               'locale' => 'en',
+                               'name' => 'Product Variant One',
+                           ],
+                           [
+                               'locale' => 'de',
+                               'name' => 'Produkt Variante Eins',
+                           ],
+                       ],
+                   ],
                ],
            ]
         );
@@ -44,14 +66,28 @@ class SynchronizeProductTest extends SuluTestCase
         $messageBus = $this->getContainer()->get('sulu_sylius_consumer_test.messenger.bus.default');
         $messageBus->dispatch($message);
 
-        $result = $this->findProduct('product-1');
+        $result = $this->findProductData('product-1', 'de');
         $this->assertNotNull($result);
         if (!$result) {
             return;
         }
 
         $this->assertEquals('product-1', $result->getCode());
+        $this->assertEquals('Produkt Eins', $result->getName());
         $this->assertCount(1, $result->getVariants());
         $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());
+        $this->assertEquals('Produkt Variante Eins', $result->getVariants()[0]->getName());
+
+        $result = $this->findProductData('product-1', 'en');
+        $this->assertNotNull($result);
+        if (!$result) {
+            return;
+        }
+
+        $this->assertEquals('product-1', $result->getCode());
+        $this->assertEquals('Product One', $result->getName());
+        $this->assertCount(1, $result->getVariants());
+        $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());
+        $this->assertEquals('Product Variant One', $result->getVariants()[0]->getName());
     }
 }
