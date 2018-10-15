@@ -9,7 +9,7 @@
             searchability="no"
         >
             <orm:field-name>code</orm:field-name>
-            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData</orm:entity-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
         </property>
 
         <property
@@ -18,7 +18,7 @@
             searchability="yes"
         >
             <orm:field-name>code</orm:field-name>
-            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData</orm:entity-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
         </property>
 
         <concatenation-property
@@ -36,7 +36,7 @@
             searchability="yes"
         >
             <orm:field-name>name</orm:field-name>
-            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData</orm:entity-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
         </property>
 
         <property
@@ -50,7 +50,7 @@
             <orm:joins>
                 <orm:join>
                     <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</orm:entity-name>
-                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData.dimension</orm:field-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation.dimension</orm:field-name>
                 </orm:join>
                 <orm:join>
                     <orm:entity-name>attribute_locale</orm:entity-name>
@@ -71,7 +71,7 @@
             <orm:joins>
                 <orm:join>
                     <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</orm:entity-name>
-                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData.dimension</orm:field-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation.dimension</orm:field-name>
                 </orm:join>
                 <orm:join>
                     <orm:entity-name>attribute_stage</orm:entity-name>

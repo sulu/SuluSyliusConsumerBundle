@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
@@ -48,10 +48,10 @@ class ProductViewFactory implements ProductViewFactoryInterface
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function create(ProductDataInterface $product, array $dimensions): ProductViewInterface
+    public function create(ProductInformationInterface $product, array $dimensions): ProductViewInterface
     {
         $viewProduct = new ProductView($product->getCode());
-        $viewProduct->setProductData($product);
+        $viewProduct->setProductInformation($product);
 
         $contentDimensions = $this->contentRepository->findByDimensions(
             ProductInterface::RESOURCE_KEY,

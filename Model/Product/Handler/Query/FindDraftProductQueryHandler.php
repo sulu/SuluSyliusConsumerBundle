@@ -15,15 +15,15 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 
 class FindDraftProductQueryHandler
 {
     /**
-     * @var ProductDataRepositoryInterface
+     * @var ProductInformationRepositoryInterface
      */
     private $productRepository;
 
@@ -33,14 +33,14 @@ class FindDraftProductQueryHandler
     private $dimensionRepository;
 
     public function __construct(
-        ProductDataRepositoryInterface $productRepository,
+        ProductInformationRepositoryInterface $productRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(FindDraftProductQuery $query): ProductDataInterface
+    public function __invoke(FindDraftProductQuery $query): ProductInformationInterface
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -51,7 +51,7 @@ class FindDraftProductQueryHandler
 
         $product = $this->productRepository->findByCode($query->getCode(), $dimension);
         if (!$product) {
-            throw new ProductDataNotFoundException($query->getCode());
+            throw new ProductInformationNotFoundException($query->getCode());
         }
 
         return $product;

@@ -18,7 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInte
 
 interface ProductViewInterface extends ProductInterface
 {
-    public function setProductData(ProductDataInterface $productData): ProductViewInterface;
+    public function setProductInformation(ProductInformationInterface $productInformation): ProductViewInterface;
 
     public function setContent(ContentInterface $content): ProductViewInterface;
 
@@ -27,7 +27,7 @@ interface ProductViewInterface extends ProductInterface
     public function getName(): string;
 
     /**
-     * @return ProductDataVariantInterface[]
+     * @return ProductInformationVariantInterface[]
      */
     public function getVariants(): array;
 

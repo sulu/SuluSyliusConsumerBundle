@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 
 interface ProductViewFactoryInterface
@@ -22,5 +22,5 @@ interface ProductViewFactoryInterface
     /**
      * @param DimensionInterface[] $dimensions
      */
-    public function create(ProductDataInterface $product, array $dimensions): ProductViewInterface;
+    public function create(ProductInformationInterface $product, array $dimensions): ProductViewInterface;
 }

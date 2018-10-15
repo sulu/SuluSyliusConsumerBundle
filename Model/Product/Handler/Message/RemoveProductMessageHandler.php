@@ -13,10 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
 class RemoveProductMessageHandler
@@ -27,16 +27,16 @@ class RemoveProductMessageHandler
     private $productRepository;
 
     /**
-     * @var ProductDataRepositoryInterface
+     * @var ProductInformationRepositoryInterface
      */
-    private $productDataRepository;
+    private $productInformationRepository;
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductDataRepositoryInterface $productDataRepository
+        ProductInformationRepositoryInterface $productInformationRepository
     ) {
         $this->productRepository = $productRepository;
-        $this->productDataRepository = $productDataRepository;
+        $this->productInformationRepository = $productInformationRepository;
     }
 
     public function __invoke(RemoveProductMessage $message): void
@@ -48,13 +48,13 @@ class RemoveProductMessageHandler
 
         $this->productRepository->remove($product);
 
-        $productDatas = $this->productDataRepository->findAllByCode($message->getCode());
-        if (empty($productDatas)) {
-            throw new ProductDataNotFoundException($message->getCode());
+        $productInformations = $this->productInformationRepository->findAllByCode($message->getCode());
+        if (empty($productInformations)) {
+            throw new ProductInformationNotFoundException($message->getCode());
         }
 
-        foreach ($productDatas as $productData) {
-            $this->productDataRepository->remove($productData);
+        foreach ($productInformations as $productInformation) {
+            $this->productInformationRepository->remove($productInformation);
         }
     }
 }

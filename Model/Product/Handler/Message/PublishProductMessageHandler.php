@@ -16,12 +16,12 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
@@ -30,12 +30,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 class PublishProductMessageHandler
 {
     /**
-     * @var ProductDataRepositoryInterface
+     * @var ProductInformationRepositoryInterface
      */
-    private $productDataRepository;
+    private $productInformationRepository;
 
     /**
-     * @var ProductDataVariantRepositoryInterface
+     * @var ProductInformationVariantRepositoryInterface
      */
     private $variantRepository;
 
@@ -55,24 +55,24 @@ class PublishProductMessageHandler
     private $slugifier;
 
     public function __construct(
-        ProductDataRepositoryInterface $productDataRepository,
-        ProductDataVariantRepositoryInterface $variantRepository,
+        ProductInformationRepositoryInterface $productInformationRepository,
+        ProductInformationVariantRepositoryInterface $variantRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
         SlugifierInterface $slugifier
     ) {
-        $this->productDataRepository = $productDataRepository;
+        $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
         $this->slugifier = $slugifier;
         $this->variantRepository = $variantRepository;
     }
 
-    public function __invoke(PublishProductMessage $message): ProductDataInterface
+    public function __invoke(PublishProductMessage $message): ProductInformationInterface
     {
         try {
-            $liveProduct = $this->publishProductData($message->getCode(), $message->getLocale());
-        } catch (ProductDataNotFoundException $exception) {
+            $liveProduct = $this->publishProductInformation($message->getCode(), $message->getLocale());
+        } catch (ProductInformationNotFoundException $exception) {
             throw new ProductNotFoundException($message->getCode(), 0, $exception);
         }
 
@@ -94,7 +94,7 @@ class PublishProductMessageHandler
         return $liveProduct;
     }
 
-    private function publishProductData(string $code, string $locale): ProductDataInterface
+    private function publishProductInformation(string $code, string $locale): ProductInformationInterface
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -109,14 +109,14 @@ class PublishProductMessageHandler
             ]
         );
 
-        $draftProduct = $this->productDataRepository->findByCode($code, $draftDimension);
+        $draftProduct = $this->productInformationRepository->findByCode($code, $draftDimension);
         if (!$draftProduct) {
-            throw new ProductDataNotFoundException($code);
+            throw new ProductInformationNotFoundException($code);
         }
 
-        $liveProduct = $this->productDataRepository->findByCode($code, $liveDimension);
+        $liveProduct = $this->productInformationRepository->findByCode($code, $liveDimension);
         if (!$liveProduct) {
-            $liveProduct = $this->productDataRepository->create($code, $liveDimension);
+            $liveProduct = $this->productInformationRepository->create($code, $liveDimension);
         }
 
         $liveProduct->setName($draftProduct->getName());
@@ -126,7 +126,7 @@ class PublishProductMessageHandler
         return $liveProduct;
     }
 
-    private function synchronizeVariants(ProductDataInterface $draftProduct, ProductDataInterface $liveProduct): void
+    private function synchronizeVariants(ProductInformationInterface $draftProduct, ProductInformationInterface $liveProduct): void
     {
         $codes = [];
         foreach ($draftProduct->getVariants() as $draftVariant) {

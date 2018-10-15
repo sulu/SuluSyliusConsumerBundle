@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-interface ProductDataVariantInterface
+interface ProductInformationVariantInterface
 {
-    public function __construct(ProductDataInterface $product, string $code);
+    public function __construct(ProductInformationInterface $product, string $code);
 
-    public function getProduct(): ProductDataInterface;
+    public function getProduct(): ProductInformationInterface;
 
     public function getCode(): string;
 

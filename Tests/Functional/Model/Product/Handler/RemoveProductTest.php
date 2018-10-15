@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductDataTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -24,7 +24,7 @@ class RemoveProductTest extends SuluTestCase
 {
     use DimensionTrait;
     use ProductTrait;
-    use ProductDataTrait;
+    use ProductInformationTrait;
 
     public function setUp()
     {
@@ -34,17 +34,17 @@ class RemoveProductTest extends SuluTestCase
     public function testSynchronizeProductCreate()
     {
         $product = $this->createProduct('product-1');
-        $productDataEN = $this->createProductData('product-1', 'en');
-        $productDataDE = $this->createProductData('product-1', 'de');
+        $productInformationEN = $this->createProductInformation('product-1', 'en');
+        $productInformationDE = $this->createProductInformation('product-1', 'de');
 
-        $message = new RemoveProductMessage($productDataEN->getCode());
+        $message = new RemoveProductMessage($productInformationEN->getCode());
 
         /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getContainer()->get('sulu_sylius_consumer_test.messenger.bus.default');
         $messageBus->dispatch($message);
 
         $this->assertNull($this->findProduct($product->getCode()));
-        $this->assertNull($this->findProductData($productDataEN->getCode(), 'en'));
-        $this->assertNull($this->findProductData($productDataDE->getCode(), 'de'));
+        $this->assertNull($this->findProductInformation($productInformationEN->getCode(), 'en'));
+        $this->assertNull($this->findProductInformation($productInformationDE->getCode(), 'de'));
     }
 }

@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product;
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
@@ -31,22 +31,22 @@ class ProductViewTest extends TestCase
 
     public function testGetName(): void
     {
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productData->getName()->willReturn('Sulu is awesome');
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getName()->willReturn('Sulu is awesome');
 
         $productView = new ProductView('product-1');
-        $productView->setProductData($productData->reveal());
+        $productView->setProductInformation($productInformation->reveal());
 
         $this->assertEquals('Sulu is awesome', $productView->getName());
     }
 
     public function testGetVariants(): void
     {
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productData->getVariants()->willReturn([]);
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
 
         $productView = new ProductView('product-1');
-        $productView->setProductData($productData->reveal());
+        $productView->setProductInformation($productInformation->reveal());
 
         $this->assertEquals([], $productView->getVariants());
     }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Routing;
 
 use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
 use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
@@ -77,7 +77,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
             $this->loadProduct($id, $locale);
 
             return true;
-        } catch (ProductDataNotFoundException $exception) {
+        } catch (ProductInformationNotFoundException $exception) {
             return false;
         }
     }

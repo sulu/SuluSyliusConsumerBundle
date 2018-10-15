@@ -15,12 +15,12 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Mess
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\RemoveProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -32,16 +32,19 @@ class RemoveProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $handler = new RemoveProductMessageHandler($productRepository->reveal(), $productDataRepository->reveal());
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $handler = new RemoveProductMessageHandler(
+            $productRepository->reveal(),
+            $productInformationRepository->reveal()
+        );
 
         $product = $this->prophesize(ProductInterface::class);
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
         $productRepository->remove($product->reveal())->shouldBeCalled();
 
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productDataRepository->findAllByCode('product-1')->willReturn([$productData->reveal()]);
-        $productDataRepository->remove($productData->reveal())->shouldBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformationRepository->findAllByCode('product-1')->willReturn([$productInformation->reveal()]);
+        $productInformationRepository->remove($productInformation->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }
@@ -54,34 +57,40 @@ class RemoveProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $handler = new RemoveProductMessageHandler($productRepository->reveal(), $productDataRepository->reveal());
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $handler = new RemoveProductMessageHandler(
+            $productRepository->reveal(),
+            $productInformationRepository->reveal()
+        );
 
         $productRepository->findByCode('product-1')->willReturn(null);
         $productRepository->remove(Argument::any())->shouldNotBeCalled();
-        $productDataRepository->remove(Argument::any())->shouldNotBeCalled();
+        $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
     }
 
-    public function testInvokeProductDataNotFound(): void
+    public function testInvokeProductInformationNotFound(): void
     {
-        $this->expectException(ProductDataNotFoundException::class);
+        $this->expectException(ProductInformationNotFoundException::class);
 
         $message = $this->prophesize(RemoveProductMessage::class);
         $message->getCode()->willReturn('product-1');
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $handler = new RemoveProductMessageHandler($productRepository->reveal(), $productDataRepository->reveal());
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $handler = new RemoveProductMessageHandler(
+            $productRepository->reveal(),
+            $productInformationRepository->reveal()
+        );
 
         $product = $this->prophesize(ProductInterface::class);
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
         $productRepository->remove($product->reveal())->shouldBeCalled();
 
-        $productDataRepository->findAllByCode('product-1')->willReturn([]);
-        $productDataRepository->remove(Argument::any())->shouldNotBeCalled();
-        $productDataRepository->remove(Argument::any())->shouldNotBeCalled();
+        $productInformationRepository->findAllByCode('product-1')->willReturn([]);
+        $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
+        $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
     }

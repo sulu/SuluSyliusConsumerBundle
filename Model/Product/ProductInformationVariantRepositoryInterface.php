@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-interface ProductDataVariantRepositoryInterface
+interface ProductInformationVariantRepositoryInterface
 {
-    public function create(ProductDataInterface $product, string $code): ProductDataVariantInterface;
+    public function create(ProductInformationInterface $product, string $code): ProductInformationVariantInterface;
 }

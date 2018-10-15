@@ -59,6 +59,7 @@ class ListProductsQueryHandler
         $listBuilder->setIdField($fieldDescriptors['identifier']);
 
         $listBuilder->addSelectField($fieldDescriptors['id']);
+        $listBuilder->sort($fieldDescriptors['id']);
 
         $listBuilder->where(
             $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_STAGE],

@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\ModelNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 
-class ProductDataNotFoundException extends ModelNotFoundException
+class ProductInformationNotFoundException extends ModelNotFoundException
 {
     public function __construct(string $productCode, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(ProductData::class, $productCode, $code, $previous);
+        parent::__construct(ProductInformation::class, $productCode, $code, $previous);
     }
 }

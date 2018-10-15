@@ -15,13 +15,13 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductDataTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class ProductControllerTest extends SuluTestCase
 {
     use DimensionTrait;
-    use ProductDataTrait;
+    use ProductInformationTrait;
 
     public function setUp()
     {
@@ -30,7 +30,7 @@ class ProductControllerTest extends SuluTestCase
 
     public function testGetAction(): void
     {
-        $product = $this->createProductData('product-1', 'en');
+        $product = $this->createProductInformation('product-1', 'en');
         $product->setName('Product One');
         $this->getEntityManager()->flush();
 
@@ -46,11 +46,11 @@ class ProductControllerTest extends SuluTestCase
 
     public function testCGetAction(): void
     {
-        $product1 = $this->createProductData('product-1', 'en');
+        $product1 = $this->createProductInformation('product-1', 'en');
         $product1->setName('Product One');
         $this->getEntityManager()->flush();
 
-        $product2 = $this->createProductData('product-1', 'de');
+        $product2 = $this->createProductInformation('product-1', 'de');
         $product2->setName('Produkt Eins');
         $this->getEntityManager()->flush();
 

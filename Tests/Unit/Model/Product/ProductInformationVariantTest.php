@@ -15,21 +15,21 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariant;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariant;
 
-class ProductDataVariantTest extends TestCase
+class ProductInformationVariantTest extends TestCase
 {
     public function testGetProduct(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getId()->willReturn('dimension-1');
 
-        $product = $this->prophesize(ProductData::class);
+        $product = $this->prophesize(ProductInformation::class);
         $product->getCode()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
-        $variant = new ProductDataVariant($product->reveal(), 'variant-1');
+        $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
 
         $this->assertEquals($product->reveal(), $variant->getProduct());
     }
@@ -39,11 +39,11 @@ class ProductDataVariantTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getId()->willReturn('dimension-1');
 
-        $product = $this->prophesize(ProductData::class);
+        $product = $this->prophesize(ProductInformation::class);
         $product->getCode()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
-        $variant = new ProductDataVariant($product->reveal(), 'variant-1');
+        $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
 
         $this->assertEquals('variant-1', $variant->getCode());
     }
@@ -53,11 +53,11 @@ class ProductDataVariantTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getId()->willReturn('dimension-1');
 
-        $product = $this->prophesize(ProductData::class);
+        $product = $this->prophesize(ProductInformation::class);
         $product->getCode()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
-        $variant = new ProductDataVariant($product->reveal(), 'variant-1');
+        $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
 
         $this->assertEquals('', $variant->getName());
     }
@@ -67,11 +67,11 @@ class ProductDataVariantTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimension->getId()->willReturn('dimension-1');
 
-        $product = $this->prophesize(ProductData::class);
+        $product = $this->prophesize(ProductInformation::class);
         $product->getCode()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
-        $variant = new ProductDataVariant($product->reveal(), 'variant-1');
+        $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
 
         $this->assertEquals($variant, $variant->setName('Sulu is awesome'));
         $this->assertEquals('Sulu is awesome', $variant->getName());

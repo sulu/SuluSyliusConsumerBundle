@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Component\HttpKernel\SuluKernel;
 use Symfony\Component\Config\FileLocator;
@@ -95,7 +95,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                         ],
                         'resources' => [
                             'product_contents' => [
-                                'datagrid' => ProductData::class,
+                                'datagrid' => ProductInformation::class,
                                 'types' => [ProductInterface::RESOURCE_KEY],
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
@@ -123,7 +123,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
             [
                 'resources' => [
                     ProductInterface::RESOURCE_KEY => [
-                        'datagrid' => ProductData::class,
+                        'datagrid' => ProductInformation::class,
                         'form' => ['@SuluSyliusConsumerBundle/Resources/config/forms/Product.Product.xml'],
                         'endpoint' => 'sulu_sylius_product.get_products',
                     ],

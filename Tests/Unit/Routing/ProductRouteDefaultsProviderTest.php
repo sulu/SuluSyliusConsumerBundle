@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Controller\Product\WebsiteProductController;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
@@ -118,7 +118,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
                     return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
                 }
             )
-        )->willThrow(new ProductDataNotFoundException('product-1'))->shouldBeCalled();
+        )->willThrow(new ProductInformationNotFoundException('product-1'))->shouldBeCalled();
 
         $this->assertFalse($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }

@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 
-class ProductDataVariantRepository extends EntityRepository implements ProductDataVariantRepositoryInterface
+class ProductInformationVariantRepository extends EntityRepository implements ProductInformationVariantRepositoryInterface
 {
-    public function create(ProductDataInterface $product, string $code): ProductDataVariantInterface
+    public function create(ProductInformationInterface $product, string $code): ProductInformationVariantInterface
     {
         $className = $this->getClassName();
         $variant = new $className($product, $code);

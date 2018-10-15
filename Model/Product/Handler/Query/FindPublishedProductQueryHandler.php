@@ -15,8 +15,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
@@ -24,7 +24,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterf
 class FindPublishedProductQueryHandler
 {
     /**
-     * @var ProductDataRepositoryInterface
+     * @var ProductInformationRepositoryInterface
      */
     private $productRepository;
 
@@ -39,7 +39,7 @@ class FindPublishedProductQueryHandler
     private $productViewFactory;
 
     public function __construct(
-        ProductDataRepositoryInterface $productRepository,
+        ProductInformationRepositoryInterface $productRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ProductViewFactoryInterface $productViewFactory
     ) {
@@ -62,7 +62,7 @@ class FindPublishedProductQueryHandler
 
         $product = $this->productRepository->findByCode($query->getCode(), $localizedLiveDimension);
         if (!$product) {
-            throw new ProductDataNotFoundException($query->getCode());
+            throw new ProductInformationNotFoundException($query->getCode());
         }
 
         return $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);

@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
-class ProductData implements ProductDataInterface
+class ProductInformation implements ProductInformationInterface
 {
     /**
      * @var DimensionInterface
@@ -35,7 +35,7 @@ class ProductData implements ProductDataInterface
     private $name = '';
 
     /**
-     * @var Collection|ProductDataVariantInterface[]
+     * @var Collection|ProductInformationVariantInterface[]
      */
     private $variants;
 
@@ -62,7 +62,7 @@ class ProductData implements ProductDataInterface
         return $this->name;
     }
 
-    public function setName(string $name): ProductDataInterface
+    public function setName(string $name): ProductInformationInterface
     {
         $this->name = $name;
 
@@ -74,7 +74,7 @@ class ProductData implements ProductDataInterface
         return $this->variants->getValues();
     }
 
-    public function findVariantByCode(string $code): ?ProductDataVariantInterface
+    public function findVariantByCode(string $code): ?ProductInformationVariantInterface
     {
         if (!$this->variants->containsKey($code)) {
             return null;
@@ -83,14 +83,14 @@ class ProductData implements ProductDataInterface
         return $this->variants->get($code);
     }
 
-    public function addVariant(ProductDataVariantInterface $variant): ProductDataInterface
+    public function addVariant(ProductInformationVariantInterface $variant): ProductInformationInterface
     {
         $this->variants->set($variant->getCode(), $variant);
 
         return $this;
     }
 
-    public function removeVariant(ProductDataVariantInterface $variant): ProductDataInterface
+    public function removeVariant(ProductInformationVariantInterface $variant): ProductInformationInterface
     {
         $this->variants->remove($variant->getCode());
 

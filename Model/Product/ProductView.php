@@ -19,9 +19,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInte
 class ProductView extends Product implements ProductViewInterface
 {
     /**
-     * @var ProductDataInterface
+     * @var ProductInformationInterface
      */
-    private $productData;
+    private $productInformation;
 
     /**
      * @var ContentInterface
@@ -33,9 +33,9 @@ class ProductView extends Product implements ProductViewInterface
      */
     private $routableResource;
 
-    public function setProductData(ProductDataInterface $productData): ProductViewInterface
+    public function setProductInformation(ProductInformationInterface $productInformation): ProductViewInterface
     {
-        $this->productData = $productData;
+        $this->productInformation = $productInformation;
 
         return $this;
     }
@@ -56,12 +56,12 @@ class ProductView extends Product implements ProductViewInterface
 
     public function getName(): string
     {
-        return $this->productData->getName();
+        return $this->productInformation->getName();
     }
 
     public function getVariants(): array
     {
-        return $this->productData->getVariants();
+        return $this->productInformation->getVariants();
     }
 
     public function getContentType(): ?string

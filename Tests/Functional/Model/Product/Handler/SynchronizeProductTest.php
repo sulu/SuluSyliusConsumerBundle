@@ -15,14 +15,14 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductDataTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductTest extends SuluTestCase
 {
     use DimensionTrait;
-    use ProductDataTrait;
+    use ProductInformationTrait;
 
     public function setUp()
     {
@@ -66,7 +66,7 @@ class SynchronizeProductTest extends SuluTestCase
         $messageBus = $this->getContainer()->get('sulu_sylius_consumer_test.messenger.bus.default');
         $messageBus->dispatch($message);
 
-        $result = $this->findProductData('product-1', 'de');
+        $result = $this->findProductInformation('product-1', 'de');
         $this->assertNotNull($result);
         if (!$result) {
             return;
@@ -78,7 +78,7 @@ class SynchronizeProductTest extends SuluTestCase
         $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());
         $this->assertEquals('Produkt Variante Eins', $result->getVariants()[0]->getName());
 
-        $result = $this->findProductData('product-1', 'en');
+        $result = $this->findProductInformation('product-1', 'en');
         $this->assertNotNull($result);
         if (!$result) {
             return;

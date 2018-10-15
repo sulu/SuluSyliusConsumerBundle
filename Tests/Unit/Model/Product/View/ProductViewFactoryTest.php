@@ -19,7 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactory;
@@ -42,7 +42,7 @@ class ProductViewFactoryTest extends TestCase
 
         $dimension = $this->prophesize(DimensionInterface::class);
 
-        $product = $this->prophesize(ProductDataInterface::class);
+        $product = $this->prophesize(ProductInformationInterface::class);
         $product->getDimension()->willReturn($dimension->reveal());
         $product->getCode()->willReturn('product-1');
         $product->getName()->willReturn('Product One');

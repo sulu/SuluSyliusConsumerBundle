@@ -20,10 +20,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
@@ -37,8 +37,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -93,8 +93,8 @@ class PublishProductMessageHandlerTest extends TestCase
             ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductDataInterface::class);
-        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $liveProduct = $this->prophesize(ProductInformationInterface::class);
+        $draftProduct = $this->prophesize(ProductInformationInterface::class);
 
         $draftProduct->getVariants()->willReturn([]);
         $draftProduct->getName()->willReturn('Product One');
@@ -118,8 +118,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -149,11 +149,11 @@ class PublishProductMessageHandlerTest extends TestCase
              DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductDataInterface::class);
-        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $liveProduct = $this->prophesize(ProductInformationInterface::class);
+        $draftProduct = $this->prophesize(ProductInformationInterface::class);
         $draftProduct->getName()->willReturn('Product One');
 
-        $variant = $this->prophesize(ProductDataVariantInterface::class);
+        $variant = $this->prophesize(ProductInformationVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
         $variant->getName()->willReturn('Product Variant One');
         $draftProduct->getVariants()->willReturn([$variant->reveal()]);
@@ -166,7 +166,7 @@ class PublishProductMessageHandlerTest extends TestCase
             ->shouldBeCalled();
 
         $liveProduct->findVariantByCode('variant-1')->willReturn(null);
-        $liveVariant = $this->prophesize(ProductDataVariantInterface::class);
+        $liveVariant = $this->prophesize(ProductInformationVariantInterface::class);
         $liveVariant->getCode()->willReturn('variant-1');
         $liveVariant->setName('Product Variant One')->shouldBeCalled($liveVariant->reveal());
         $variantRepository->create($liveProduct->reveal(), 'variant-1')->shouldBeCalled()
@@ -184,8 +184,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -215,8 +215,8 @@ class PublishProductMessageHandlerTest extends TestCase
              DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductDataInterface::class);
-        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $liveProduct = $this->prophesize(ProductInformationInterface::class);
+        $draftProduct = $this->prophesize(ProductInformationInterface::class);
         $draftProduct->getName()->willReturn('Product One');
 
         $draftProduct->getVariants()->willReturn([]);
@@ -228,7 +228,7 @@ class PublishProductMessageHandlerTest extends TestCase
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
-        $liveVariant = $this->prophesize(ProductDataVariantInterface::class);
+        $liveVariant = $this->prophesize(ProductInformationVariantInterface::class);
         $liveVariant->getCode()->willReturn('variant-1');
 
         $variantRepository->create($liveProduct->reveal(), 'variant-1')->shouldNotBeCalled();
@@ -246,8 +246,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -277,8 +277,8 @@ class PublishProductMessageHandlerTest extends TestCase
              DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductDataInterface::class);
-        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $liveProduct = $this->prophesize(ProductInformationInterface::class);
+        $draftProduct = $this->prophesize(ProductInformationInterface::class);
 
         $productRepository->findByCode('product-1', $liveDimension->reveal())
             ->willReturn($liveProduct->reveal())
@@ -287,14 +287,14 @@ class PublishProductMessageHandlerTest extends TestCase
             ->willReturn($draftProduct->reveal())
             ->shouldBeCalled();
 
-        $draftVariant = $this->prophesize(ProductDataVariantInterface::class);
+        $draftVariant = $this->prophesize(ProductInformationVariantInterface::class);
         $draftVariant->getCode()->willReturn('variant-1');
         $draftVariant->getName()->willReturn('Product Variant One');
 
         $draftProduct->getVariants()->willReturn([$draftVariant->reveal()]);
         $draftProduct->getName()->willReturn('Product One');
 
-        $liveVariant = $this->prophesize(ProductDataVariantInterface::class);
+        $liveVariant = $this->prophesize(ProductInformationVariantInterface::class);
         $liveVariant->getCode()->willReturn('variant-1');
         $liveVariant->getName()->willReturn('Product Variant One');
         $liveVariant->setName('Product Variant One')->willReturn($liveVariant->reveal());
@@ -315,8 +315,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -367,8 +367,8 @@ class PublishProductMessageHandlerTest extends TestCase
              DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en', ]
         )->willReturn($draftDimension->reveal());
 
-        $liveProduct = $this->prophesize(ProductDataInterface::class);
-        $draftProduct = $this->prophesize(ProductDataInterface::class);
+        $liveProduct = $this->prophesize(ProductInformationInterface::class);
+        $draftProduct = $this->prophesize(ProductInformationInterface::class);
 
         $liveProduct->getVariants()->willReturn([]);
         $draftProduct->getVariants()->willReturn([]);

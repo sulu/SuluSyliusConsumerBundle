@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
-interface ProductDataInterface
+interface ProductInformationInterface
 {
     public function __construct(string $code, DimensionInterface $dimension, array $variants = []);
 
@@ -28,13 +28,13 @@ interface ProductDataInterface
     public function setName(string $name): self;
 
     /**
-     * @return ProductDataVariantInterface[]
+     * @return ProductInformationVariantInterface[]
      */
     public function getVariants(): array;
 
-    public function findVariantByCode(string $code): ?ProductDataVariantInterface;
+    public function findVariantByCode(string $code): ?ProductInformationVariantInterface;
 
-    public function addVariant(ProductDataVariantInterface $variant): self;
+    public function addVariant(ProductInformationVariantInterface $variant): self;
 
-    public function removeVariant(ProductDataVariantInterface $variant): self;
+    public function removeVariant(ProductInformationVariantInterface $variant): self;
 }

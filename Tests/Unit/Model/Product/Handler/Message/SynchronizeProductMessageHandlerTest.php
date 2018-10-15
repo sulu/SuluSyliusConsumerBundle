@@ -22,10 +22,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationVal
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -43,13 +43,13 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
-            $productDataRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
@@ -65,13 +65,13 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $productDataRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productData->getVariants()->willReturn([]);
-        $productData->setName('Product One')->shouldBeCalled()->willReturn($productData->reveal());
-        $productDataRepository->create('product-1', $dimension->reveal())
+        $productInformationRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
+        $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
+        $productInformationRepository->create('product-1', $dimension->reveal())
             ->shouldBeCalled()
-            ->willReturn($productData->reveal());
+            ->willReturn($productInformation->reveal());
 
         $handler->__invoke($message->reveal());
     }
@@ -88,13 +88,13 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
-            $productDataRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
@@ -110,11 +110,12 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productData->getVariants()->willReturn([]);
-        $productData->setName('Product One')->shouldBeCalled()->willReturn($productData->reveal());
-        $productDataRepository->findByCode('product-1', $dimension->reveal())->willReturn($productData->reveal());
-        $productDataRepository->create(Argument::cetera())->shouldNotBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
+        $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
+        $productInformationRepository->findByCode('product-1', $dimension->reveal())
+            ->willReturn($productInformation->reveal());
+        $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
     }
@@ -143,13 +144,13 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
-            $productDataRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
@@ -165,17 +166,20 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productData->getVariants()->willReturn([]);
-        $productData->findVariantByCode('variant-1')->willReturn(null);
-        $productData->setName('Product One')->willReturn($productData->reveal())->shouldBeCalled();
-        $productDataRepository->findByCode('product-1', $dimension->reveal())->willReturn($productData->reveal());
-        $productDataRepository->create(Argument::cetera())->shouldNotBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
+        $productInformation->findVariantByCode('variant-1')->willReturn(null);
+        $productInformation->setName('Product One')->willReturn($productInformation->reveal())->shouldBeCalled();
+        $productInformationRepository->findByCode('product-1', $dimension->reveal())
+            ->willReturn($productInformation->reveal());
+        $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
-        $variant = $this->prophesize(ProductDataVariantInterface::class);
+        $variant = $this->prophesize(ProductInformationVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
         $variant->setName('Variant One')->willReturn($variant->reveal())->shouldBeCalled();
-        $variantRepository->create($productData->reveal(), 'variant-1')->shouldBeCalled()->willReturn($variant->reveal());
+        $variantRepository->create($productInformation->reveal(), 'variant-1')
+            ->shouldBeCalled()
+            ->willReturn($variant->reveal());
 
         $handler->__invoke($message->reveal());
     }
@@ -192,13 +196,13 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $productDataRepository = $this->prophesize(ProductDataRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductDataVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
-            $productDataRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
@@ -214,16 +218,17 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $productData = $this->prophesize(ProductDataInterface::class);
-        $productDataRepository->findByCode('product-1', $dimension->reveal())->willReturn($productData->reveal());
-        $productDataRepository->create(Argument::cetera())->shouldNotBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformationRepository->findByCode('product-1', $dimension->reveal())
+            ->willReturn($productInformation->reveal());
+        $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
-        $variant = $this->prophesize(ProductDataVariantInterface::class);
+        $variant = $this->prophesize(ProductInformationVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
-        $productData->getVariants()->willReturn([$variant->reveal()]);
-        $productData->setName('Product One')->willReturn($productData->reveal())->shouldBeCalled();
+        $productInformation->getVariants()->willReturn([$variant->reveal()]);
+        $productInformation->setName('Product One')->willReturn($productInformation->reveal())->shouldBeCalled();
 
-        $productData->removeVariant($variant->reveal())->shouldBeCalled()->willReturn($productData->reveal());
+        $productInformation->removeVariant($variant->reveal())->shouldBeCalled()->willReturn($productInformation->reveal());
 
         $handler->__invoke($message->reveal());
     }

@@ -18,9 +18,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataVariantRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
 class SynchronizeProductMessageHandler
@@ -31,12 +31,12 @@ class SynchronizeProductMessageHandler
     private $productRepository;
 
     /**
-     * @var ProductDataRepositoryInterface
+     * @var ProductInformationRepositoryInterface
      */
-    private $productDataRepository;
+    private $productInformationRepository;
 
     /**
-     * @var ProductDataVariantRepositoryInterface
+     * @var ProductInformationVariantRepositoryInterface
      */
     private $variantRepository;
 
@@ -47,12 +47,12 @@ class SynchronizeProductMessageHandler
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductDataRepositoryInterface $productDataRepository,
-        ProductDataVariantRepositoryInterface $variantRepository,
+        ProductInformationRepositoryInterface $productInformationRepository,
+        ProductInformationVariantRepositoryInterface $variantRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
-        $this->productDataRepository = $productDataRepository;
+        $this->productInformationRepository = $productInformationRepository;
         $this->variantRepository = $variantRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
@@ -77,9 +77,9 @@ class SynchronizeProductMessageHandler
             ]
         );
 
-        $product = $this->productDataRepository->findByCode($message->getCode(), $dimension);
+        $product = $this->productInformationRepository->findByCode($message->getCode(), $dimension);
         if (!$product) {
-            $product = $this->productDataRepository->create($message->getCode(), $dimension);
+            $product = $this->productInformationRepository->create($message->getCode(), $dimension);
         }
 
         $product->setName($translationValueObject->getName());
@@ -90,7 +90,7 @@ class SynchronizeProductMessageHandler
     /**
      * @param ProductVariantValueObject[] $variantValueObjects
      */
-    private function synchronizeVariants(array $variantValueObjects, ProductDataInterface $product, string $locale): void
+    private function synchronizeVariants(array $variantValueObjects, ProductInformationInterface $product, string $locale): void
     {
         $codes = [];
         foreach ($variantValueObjects as $variantValueObject) {

@@ -16,17 +16,17 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Quer
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindDraftProductQueryHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 
 class FindDraftProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
@@ -43,7 +43,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $product = $this->prophesize(ProductDataInterface::class);
+        $product = $this->prophesize(ProductInformationInterface::class);
         $productRepository->findByCode('product-1', $dimension->reveal())
             ->willReturn($product->reveal())
             ->shouldBeCalled();
@@ -54,9 +54,9 @@ class FindDraftProductQueryHandlerTest extends TestCase
 
     public function testInvokeProductNotFound(): void
     {
-        $this->expectException(ProductDataNotFoundException::class);
+        $this->expectException(ProductInformationNotFoundException::class);
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());

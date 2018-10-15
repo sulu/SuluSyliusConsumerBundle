@@ -16,10 +16,10 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Quer
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductDataNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindPublishedProductQueryHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductDataRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
@@ -28,7 +28,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
@@ -55,13 +55,13 @@ class FindPublishedProductQueryHandlerTest extends TestCase
             ]
         )->willReturn($localizedDimension->reveal());
 
-        $productData = $this->prophesize(ProductDataInterface::class);
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productRepository->findByCode('product-1', $localizedDimension->reveal())
-            ->willReturn($productData->reveal())
+            ->willReturn($productInformation->reveal())
             ->shouldBeCalled();
 
         $productView = $this->prophesize(ProductViewInterface::class);
-        $productViewFactory->create($productData->reveal(), [$dimension->reveal(), $localizedDimension->reveal()])
+        $productViewFactory->create($productInformation->reveal(), [$dimension->reveal(), $localizedDimension->reveal()])
             ->shouldBeCalled()
             ->willReturn($productView->reveal());
 
@@ -71,9 +71,9 @@ class FindPublishedProductQueryHandlerTest extends TestCase
 
     public function testInvokeProductNotFound(): void
     {
-        $this->expectException(ProductDataNotFoundException::class);
+        $this->expectException(ProductInformationNotFoundException::class);
 
-        $productRepository = $this->prophesize(ProductDataRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 

@@ -15,11 +15,11 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 
-trait ProductDataTrait
+trait ProductInformationTrait
 {
-    protected function createProductData(string $code, string $locale): ProductData
+    protected function createProductInformation(string $code, string $locale): ProductInformation
     {
         $dimension = $this->findDimension(
             [
@@ -28,7 +28,7 @@ trait ProductDataTrait
             ]
         );
 
-        $product = new ProductData($code, $dimension);
+        $product = new ProductInformation($code, $dimension);
 
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();
@@ -36,7 +36,7 @@ trait ProductDataTrait
         return $product;
     }
 
-    protected function findProductData(string $code, string $locale): ?ProductData
+    protected function findProductInformation(string $code, string $locale): ?ProductInformation
     {
         $dimension = $this->findDimension(
             [
@@ -45,7 +45,7 @@ trait ProductDataTrait
             ]
         );
 
-        return $this->getEntityManager()->find(ProductData::class, ['code' => $code, 'dimension' => $dimension]);
+        return $this->getEntityManager()->find(ProductInformation::class, ['code' => $code, 'dimension' => $dimension]);
     }
 
     abstract protected function findDimension(array $attributes): DimensionInterface;

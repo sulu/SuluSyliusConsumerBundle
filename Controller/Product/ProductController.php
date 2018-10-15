@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductData;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
@@ -44,7 +44,7 @@ class ProductController implements ClassResourceInterface
     {
         $listResult = $this->messageBus->dispatch(
             new ListProductsQuery(
-                ProductData::class, // TODO use container parameter
+                ProductInformation::class, // TODO use container parameter
                 ProductInterface::RESOURCE_KEY,
                 $request->query->get('locale'),
                 $request->get('_route'),
