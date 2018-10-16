@@ -22,7 +22,7 @@ class PublishProductMessageTest extends TestCase
     {
         $message = new PublishProductMessage('product-1', 'en');
 
-        $this->assertEquals('product-1', $message->getCode());
+        $this->assertEquals('product-1', $message->getId());
     }
 
     public function testGetLocale(): void

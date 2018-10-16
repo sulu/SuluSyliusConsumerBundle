@@ -23,8 +23,18 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 
 class DimensionRepository extends EntityRepository implements DimensionRepositoryInterface
 {
+    /**
+     * @var DimensionInterface[]
+     */
+    private $cachedEntities = [];
+
     public function create(array $attributes = []): DimensionInterface
     {
+        $key = md5(serialize($attributes));
+        if (array_key_exists($key, $this->cachedEntities)) {
+            return $this->cachedEntities[$key];
+        }
+
         $attributeEntities = [];
         foreach ($attributes as $type => $value) {
             $attributeEntities[] = $attributeEntity = new DimensionAttribute($type, $value);
@@ -33,7 +43,7 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
         $dimension = new Dimension(Uuid::uuid4()->toString(), $attributeEntities);
         $this->getEntityManager()->persist($dimension);
 
-        return $dimension;
+        return $this->cachedEntities[$key] = $dimension;
     }
 
     public function findOrCreateByAttributes(array $attributes): DimensionInterface
@@ -51,10 +61,12 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
         $queryBuilder = $this->createQueryBuilder('dimension')
             ->where('dimension.attributeCount = ' . count($attributes));
 
-        foreach ($attributes as $type => $value) {
-            $queryBuilder->join('dimension.attributes', $type)
-                ->andWhere($type . '.value = :' . $type)
-                ->setParameter($type, $value);
+        foreach ($attributes as $key => $value) {
+            $queryBuilder->join('dimension.attributes', $key)
+                ->andWhere($key . '.value = :' . $key . 'Value')
+                ->andWhere($key . '.key = :' . $key . 'Key')
+                ->setParameter($key . 'Key', $key)
+                ->setParameter($key . 'Value', $value);
         }
 
         try {

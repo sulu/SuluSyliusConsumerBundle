@@ -110,7 +110,7 @@ class FindContentQueryHandlerTest extends TestCase
         $contentRepository->findByDimensions(
             ProductInterface::RESOURCE_KEY,
             'product-1',
-             [$draftDimension->reveal(), $localizedDimension->reveal()]
+            [$draftDimension->reveal(), $localizedDimension->reveal()]
         )->willReturn([])->shouldBeCalled();
 
         $contentViewFactory->create(Argument::any())->willReturn(null);

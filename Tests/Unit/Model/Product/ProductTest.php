@@ -14,119 +14,23 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class ProductTest extends TestCase
 {
-    public function testGetDimension(): void
+    public function testGetId(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product('product-1', $dimension->reveal());
+        $id = Uuid::uuid4()->toString();
+        $product = new Product($id, 'product-1');
 
-        $this->assertEquals($dimension->reveal(), $product->getDimension());
+        $this->assertEquals($id, $product->getId());
     }
 
     public function testGetCode(): void
     {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product('product-1', $dimension->reveal());
+        $product = new Product(Uuid::uuid4()->toString(), 'product-1');
 
         $this->assertEquals('product-1', $product->getCode());
-    }
-
-    public function testGetVariants(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $variant = $this->prophesize(ProductVariantInterface::class);
-
-        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
-
-        $this->assertEquals([$variant->reveal()], $product->getVariants());
-    }
-
-    public function testFindVariantByCode(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $variant = $this->prophesize(ProductVariantInterface::class);
-
-        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
-
-        $this->assertEquals($variant->reveal(), $product->findVariantByCode('variant-1'));
-    }
-
-    public function testFindVariantByCodeNotFound(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $variant = $this->prophesize(ProductVariantInterface::class);
-
-        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
-
-        $this->assertNull($product->findVariantByCode('variant-2'));
-    }
-
-    public function testAddVariant(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $variant = $this->prophesize(ProductVariantInterface::class);
-        $variant->getCode()->willReturn('variant-1');
-
-        $product = new Product('product-1', $dimension->reveal());
-        $this->assertEquals($product, $product->addVariant($variant->reveal()));
-
-        $this->assertEquals([$variant->reveal()], $product->getVariants());
-    }
-
-    public function testRemoveVariant(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $variant = $this->prophesize(ProductVariantInterface::class);
-        $variant->getCode()->willReturn('variant-1');
-
-        $product = new Product('product-1', $dimension->reveal(), ['variant-1' => $variant->reveal()]);
-        $this->assertEquals($product, $product->removeVariant($variant->reveal()));
-
-        $this->assertEmpty($product->getVariants());
-    }
-
-    public function testGetContent(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product('product-1', $dimension->reveal());
-
-        $this->assertNull($product->getContent());
-    }
-
-    public function testSetContent(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product('product-1', $dimension->reveal());
-
-        $content = $this->prophesize(ContentInterface::class);
-        $this->assertEquals($product, $product->setContent($content->reveal()));
-
-        $this->assertEquals($content->reveal(), $product->getContent());
-    }
-
-    public function testGetRoutable(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product('product-1', $dimension->reveal());
-
-        $this->assertNull($product->getRoutableResource());
-    }
-
-    public function testSetRoutable(): void
-    {
-        $dimension = $this->prophesize(DimensionInterface::class);
-        $product = new Product('product-1', $dimension->reveal());
-
-        $routable = $this->prophesize(RoutableResourceInterface::class);
-        $this->assertEquals($product, $product->setRoutableResource($routable->reveal()));
-
-        $this->assertEquals($routable->reveal(), $product->getRoutableResource());
     }
 }

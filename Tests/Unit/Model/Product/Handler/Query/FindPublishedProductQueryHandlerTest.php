@@ -16,10 +16,11 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Quer
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindPublishedProductQueryHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
@@ -27,7 +28,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
@@ -38,7 +39,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(FindPublishedProductQuery::class);
-        $message->getCode()->willReturn('product-1');
+        $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
         $dimension = $this->prophesize(DimensionInterface::class);
@@ -54,24 +55,25 @@ class FindPublishedProductQueryHandlerTest extends TestCase
             ]
         )->willReturn($localizedDimension->reveal());
 
-        $product = $this->prophesize(ProductInterface::class);
-        $productRepository->findByCode('product-1', $dimension->reveal())
-            ->willReturn($product->reveal())
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productRepository->findById('123-123-123', $localizedDimension->reveal())
+            ->willReturn($productInformation->reveal())
             ->shouldBeCalled();
 
-        $productViewFactory->create($product->reveal(), [$dimension->reveal(), $localizedDimension->reveal()])
+        $productView = $this->prophesize(ProductViewInterface::class);
+        $productViewFactory->create($productInformation->reveal(), [$dimension->reveal(), $localizedDimension->reveal()])
             ->shouldBeCalled()
-            ->willReturn($product->reveal());
+            ->willReturn($productView->reveal());
 
         $result = $handler->__invoke($message->reveal());
-        $this->assertEquals($product->reveal(), $result);
+        $this->assertEquals($productView->reveal(), $result);
     }
 
     public function testInvokeProductNotFound(): void
     {
-        $this->expectException(ProductNotFoundException::class);
+        $this->expectException(ProductInformationNotFoundException::class);
 
-        $productRepository = $this->prophesize(ProductRepositoryInterface::class);
+        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
@@ -92,10 +94,10 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         )->willReturn($localizedDimension->reveal());
 
         $message = $this->prophesize(FindPublishedProductQuery::class);
-        $message->getCode()->willReturn('product-1');
+        $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
-        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
+        $productRepository->findById('123-123-123', $localizedDimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

@@ -5,24 +5,18 @@
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"
             table="pr_products"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductRepository">
-        <id name="code" column="product_code" type="string">
-            <generator strategy="NONE"/>
-        </id>
-        <id name="dimension" type="guid" association-key="true">
+        <unique-constraints>
+            <unique-constraint columns="product_code"/>
+        </unique-constraints>
+
+        <id name="id" type="guid">
             <generator strategy="NONE"/>
         </id>
 
-        <one-to-many field="variants"
-                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant"
-                     mapped-by="product"
-                     orphan-removal="true"
-                     index-by="code">
-            <cascade>
-                <cascade-persist/>
-                <cascade-remove/>
-            </cascade>
-        </one-to-many>
+        <field name="code" column="product_code" type="string"/>
 
-        <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
+        <one-to-many field="productInformations"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
+                     mapped-by="product"/>
     </entity>
 </doctrine-mapping>

@@ -15,15 +15,15 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 
-class FindProductQueryHandler
+class FindDraftProductQueryHandler
 {
     /**
-     * @var ProductRepositoryInterface
+     * @var ProductInformationRepositoryInterface
      */
     private $productRepository;
 
@@ -33,22 +33,25 @@ class FindProductQueryHandler
     private $dimensionRepository;
 
     public function __construct(
-        ProductRepositoryInterface $productRepository,
+        ProductInformationRepositoryInterface $productRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(FindProductQuery $query): ProductInterface
+    public function __invoke(FindDraftProductQuery $query): ProductInformationInterface
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $query->getLocale(),
+            ]
         );
 
-        $product = $this->productRepository->findByCode($query->getCode(), $dimension);
+        $product = $this->productRepository->findById($query->getId(), $dimension);
         if (!$product) {
-            throw new ProductNotFoundException($query->getCode());
+            throw new ProductInformationNotFoundException($query->getId());
         }
 
         return $product;

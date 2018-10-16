@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
@@ -50,20 +53,28 @@ class ListProductsQueryHandler
 
     public function __invoke(ListProductsQuery $query): ListRepresentation
     {
-        $fieldDescriptors = $this->getFieldDescriptors($query->getEntityClass());
+        $fieldDescriptors = $this->getFieldDescriptors(Product::class, $query->getLocale());
 
         /** @var DoctrineListBuilder $listBuilder */
-        $listBuilder = $this->listBuilderFactory->create($query->getEntityClass());
+        $listBuilder = $this->listBuilderFactory->create(Product::class);
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
-        $listBuilder->setIdField($fieldDescriptors['id']);
+        $listBuilder->setIdField($fieldDescriptors['identifier']);
 
         $listBuilder->addSelectField($fieldDescriptors['id']);
+        $listBuilder->sort($fieldDescriptors['id']);
+
+        $listBuilder->where(
+            $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_STAGE],
+            DimensionInterface::ATTRIBUTE_VALUE_DRAFT
+        );
+        $listBuilder->where($fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_LOCALE], $query->getLocale());
+        $listBuilder->distinct();
 
         $listResponse = $listBuilder->execute();
 
         return new ListRepresentation(
             $listResponse,
-            $query->getResourceKey(),
+            ProductInterface::RESOURCE_KEY,
             $query->getRoute(),
             $query->getQuery(),
             $listBuilder->getCurrentPage(),
@@ -75,10 +86,13 @@ class ListProductsQueryHandler
     /**
      * @return FieldDescriptor[]
      */
-    protected function getFieldDescriptors(string $entityClass): array
+    protected function getFieldDescriptors(string $entityClass, string $locale): array
     {
         /** @var FieldDescriptor[] $fieldDescriptors */
-        $fieldDescriptors = $this->fieldDescriptorsFactory->getFieldDescriptorForClass($entityClass);
+        $fieldDescriptors = $this->fieldDescriptorsFactory->getFieldDescriptorForClass(
+            $entityClass,
+            ['locale' => $locale]
+        );
 
         return $fieldDescriptors;
     }

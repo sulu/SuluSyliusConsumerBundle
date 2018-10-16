@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
+            table="pr_product_informations"
+            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductInformationRepository">
+        <id name="product" type="guid" association-key="true">
+            <generator strategy="NONE"/>
+        </id>
+        <id name="dimension" type="guid" association-key="true">
+            <generator strategy="NONE"/>
+        </id>
+
+        <field name="name" type="string" nullable="false"/>
+
+        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"/>
+
+        <one-to-many field="variants"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariant"
+                     mapped-by="product"
+                     orphan-removal="true"
+                     index-by="code">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
+    </entity>
+</doctrine-mapping>

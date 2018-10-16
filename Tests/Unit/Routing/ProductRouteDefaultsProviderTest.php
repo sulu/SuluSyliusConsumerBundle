@@ -17,9 +17,9 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Controller\Product\WebsiteProductController;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
@@ -42,15 +42,13 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $cacheLifetimeResolver->reveal()
         );
 
-        $product = $this->prophesize(ProductInterface::class);
-        $content = $this->prophesize(ContentInterface::class);
-        $content->getType()->willReturn('default');
-        $product->getContent()->willReturn($content);
+        $product = $this->prophesize(ProductViewInterface::class);
+        $product->getContentType()->willReturn('default');
 
         $messageBus->dispatch(
             Argument::that(
                 function (FindPublishedProductQuery $query) {
-                    return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
         )->willReturn($product->reveal())->shouldBeCalled();
@@ -89,12 +87,12 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $cacheLifetimeResolver->reveal()
         );
 
-        $product = $this->prophesize(ProductInterface::class);
+        $product = $this->prophesize(ProductViewInterface::class);
 
         $messageBus->dispatch(
             Argument::that(
                 function (FindPublishedProductQuery $query) {
-                    return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
         )->willReturn($product->reveal())->shouldBeCalled();
@@ -117,10 +115,10 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function (FindPublishedProductQuery $query) {
-                    return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willThrow(new ProductNotFoundException('product-1'))->shouldBeCalled();
+        )->willThrow(new ProductInformationNotFoundException('product-1'))->shouldBeCalled();
 
         $this->assertFalse($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }

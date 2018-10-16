@@ -18,144 +18,224 @@ use Prophecy\Argument;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
 class SynchronizeProductMessageHandlerTest extends TestCase
 {
     public function testInvokeCreate(): void
     {
+        $productTranslationValueObject = $this->prophesize(ProductTranslationValueObject::class);
+        $productTranslationValueObject->getLocale()->willReturn('de');
+        $productTranslationValueObject->getName()->willReturn('Product One');
+
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
         $message->getVariants()->willReturn([]);
+        $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
 
+        $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
+        $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
         )->willReturn($dimension->reveal());
 
-        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
-        $product = $this->prophesize(ProductInterface::class);
-        $product->getVariants()->willReturn([]);
-        $productRepository->create('product-1', $dimension->reveal())->shouldBeCalled()->willReturn($product->reveal());
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())->willReturn(null);
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
+        $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
+        $productInformationRepository->create($product->reveal(), $dimension->reveal())
+            ->shouldBeCalled()
+            ->willReturn($productInformation->reveal());
 
         $handler->__invoke($message->reveal());
     }
 
     public function testInvokeUpdate(): void
     {
+        $productTranslationValueObject = $this->prophesize(ProductTranslationValueObject::class);
+        $productTranslationValueObject->getLocale()->willReturn('de');
+        $productTranslationValueObject->getName()->willReturn('Product One');
+
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
         $message->getVariants()->willReturn([]);
+        $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
 
+        $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
         )->willReturn($dimension->reveal());
 
-        $product = $this->prophesize(ProductInterface::class);
-        $product->getVariants()->willReturn([]);
-        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn($product->reveal());
-        $productRepository->create(Argument::cetera())->shouldNotBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
+        $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())
+            ->willReturn($productInformation->reveal());
+        $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
     }
 
     public function testInvokeCreateVariant(): void
     {
-        $variantDTO = $this->prophesize(ProductVariantValueObject::class);
-        $variantDTO->getCode()->willReturn('variant-1');
+        $variantTranslationValueObject = $this->prophesize(ProductVariantTranslationValueObject::class);
+        $variantTranslationValueObject->getLocale()->willReturn('en');
+        $variantTranslationValueObject->getName()->willReturn('Variant One');
+
+        $variantValueObject = $this->prophesize(ProductVariantValueObject::class);
+        $variantValueObject->getCode()->willReturn('variant-1');
+        $variantValueObject->findTranslationByLocale('en')->willReturn($variantTranslationValueObject->reveal());
+
+        $productTranslationValueObject = $this->prophesize(ProductTranslationValueObject::class);
+        $productTranslationValueObject->getLocale()->willReturn('en');
+        $productTranslationValueObject->getName()->willReturn('Product One');
 
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
+        $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
         $message->getVariants()->willReturn(
             [
-                $variantDTO->reveal(),
+                $variantValueObject->reveal(),
             ]
         );
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
 
+        $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
         )->willReturn($dimension->reveal());
 
-        $product = $this->prophesize(ProductInterface::class);
-        $product->getVariants()->willReturn([]);
-        $product->findVariantByCode('variant-1')->willReturn(null);
-        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn($product->reveal());
-        $productRepository->create(Argument::cetera())->shouldNotBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getVariants()->willReturn([]);
+        $productInformation->findVariantByCode('variant-1')->willReturn(null);
+        $productInformation->setName('Product One')->willReturn($productInformation->reveal())->shouldBeCalled();
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())
+            ->willReturn($productInformation->reveal());
+        $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
-        $variant = $this->prophesize(ProductVariantInterface::class);
+        $variant = $this->prophesize(ProductInformationVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
-        $variantRepository->create($product->reveal(), 'variant-1')->shouldBeCalled()->willReturn($variant->reveal());
+        $variant->setName('Variant One')->willReturn($variant->reveal())->shouldBeCalled();
+        $variantRepository->create($productInformation->reveal(), 'variant-1')
+            ->shouldBeCalled()
+            ->willReturn($variant->reveal());
 
         $handler->__invoke($message->reveal());
     }
 
     public function testInvokeRemoveVariant(): void
     {
+        $productTranslationValueObject = $this->prophesize(ProductTranslationValueObject::class);
+        $productTranslationValueObject->getLocale()->willReturn('en');
+        $productTranslationValueObject->getName()->willReturn('Product One');
+
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
         $message->getVariants()->willReturn([]);
+        $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
-        $variantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $variantRepository = $this->prophesize(ProductInformationVariantRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $productRepository->reveal(),
+            $productInformationRepository->reveal(),
             $variantRepository->reveal(),
             $dimensionRepository->reveal()
         );
 
+        $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
+
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'en',
+            ]
         )->willReturn($dimension->reveal());
 
-        $product = $this->prophesize(ProductInterface::class);
-        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn($product->reveal());
-        $productRepository->create(Argument::cetera())->shouldNotBeCalled();
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())
+            ->willReturn($productInformation->reveal());
+        $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
-        $variant = $this->prophesize(ProductVariantInterface::class);
+        $variant = $this->prophesize(ProductInformationVariantInterface::class);
         $variant->getCode()->willReturn('variant-1');
-        $product->getVariants()->willReturn([$variant->reveal()]);
+        $productInformation->getVariants()->willReturn([$variant->reveal()]);
+        $productInformation->setName('Product One')->willReturn($productInformation->reveal())->shouldBeCalled();
 
-        $product->removeVariant($variant->reveal())->shouldBeCalled()->willReturn($product->reveal());
+        $productInformation->removeVariant($variant->reveal())
+            ->shouldBeCalled()
+            ->willReturn($productInformation->reveal());
 
         $handler->__invoke($message->reveal());
     }

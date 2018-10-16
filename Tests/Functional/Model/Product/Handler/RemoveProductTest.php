@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -23,15 +24,18 @@ class RemoveProductTest extends SuluTestCase
 {
     use DimensionTrait;
     use ProductTrait;
+    use ProductInformationTrait;
 
     public function setUp()
     {
         $this->purgeDatabase();
     }
 
-    public function testSynchronizeProductCreate()
+    public function testRemoveProduct()
     {
         $product = $this->createProduct('product-1');
+        $productInformationEN = $this->createProductInformation($product->getId(), 'en');
+        $productInformationDE = $this->createProductInformation($product->getId(), 'de');
 
         $message = new RemoveProductMessage($product->getCode());
 
@@ -40,5 +44,7 @@ class RemoveProductTest extends SuluTestCase
         $messageBus->dispatch($message);
 
         $this->assertNull($this->findProduct($product->getCode()));
+        $this->assertNull($this->findProductInformation($productInformationEN->getProductId(), 'en'));
+        $this->assertNull($this->findProductInformation($productInformationDE->getProductId(), 'de'));
     }
 }

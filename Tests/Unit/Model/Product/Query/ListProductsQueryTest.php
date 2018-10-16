@@ -14,35 +14,27 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Query;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 
 class ListProductsQueryTest extends TestCase
 {
-    public function testGetEntityClass(): void
+    public function testGetLocale(): void
     {
-        $query = new ListProductsQuery(\stdClass::class, ProductInterface::RESOURCE_KEY, 'app.products', ['page' => 1]);
+        $query = new ListProductsQuery('en', 'app.products', ['page' => 1]);
 
-        $this->assertEquals(\stdClass::class, $query->getEntityClass());
-    }
-
-    public function testGetResourceKey(): void
-    {
-        $query = new ListProductsQuery(\stdClass::class, ProductInterface::RESOURCE_KEY, 'app.products', ['page' => 1]);
-
-        $this->assertEquals(ProductInterface::RESOURCE_KEY, $query->getResourceKey());
+        $this->assertEquals('en', $query->getLocale());
     }
 
     public function testGetRoute(): void
     {
-        $query = new ListProductsQuery(\stdClass::class, ProductInterface::RESOURCE_KEY, 'app.products', ['page' => 1]);
+        $query = new ListProductsQuery('en', 'app.products', ['page' => 1]);
 
         $this->assertEquals('app.products', $query->getRoute());
     }
 
     public function testGetQuery(): void
     {
-        $query = new ListProductsQuery(\stdClass::class, ProductInterface::RESOURCE_KEY, 'app.products', ['page' => 1]);
+        $query = new ListProductsQuery('en', 'app.products', ['page' => 1]);
 
         $this->assertEquals(['page' => 1], $query->getQuery());
     }

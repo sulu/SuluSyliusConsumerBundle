@@ -14,20 +14,20 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Query;
 
 use PHPUnit\Framework\TestCase;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 
-class FindPublishedProductQueryTest extends TestCase
+class FindDraftProductQueryTest extends TestCase
 {
     public function testGetId(): void
     {
-        $query = new FindPublishedProductQuery('123-123-123', 'en');
+        $query = new FindDraftProductQuery('123-123-123', 'en');
 
         $this->assertEquals('123-123-123', $query->getId());
     }
 
     public function testGetLocale(): void
     {
-        $query = new FindPublishedProductQuery('123-123-123', 'en');
+        $query = new FindDraftProductQuery('product-1', 'en');
 
         $this->assertEquals('en', $query->getLocale());
     }

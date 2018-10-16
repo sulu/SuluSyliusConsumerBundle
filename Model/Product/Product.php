@@ -15,16 +15,13 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class Product implements ProductInterface
 {
     /**
-     * @var DimensionInterface
+     * @var string
      */
-    private $dimension;
+    private $id;
 
     /**
      * @var string
@@ -32,87 +29,25 @@ class Product implements ProductInterface
     private $code;
 
     /**
-     * @var Collection|ProductVariantInterface[]
+     * @var ProductInformation[]|Collection
      */
-    private $variants;
+    private $productInformations;
 
-    /**
-     * @var ContentInterface
-     */
-    private $content;
-
-    /**
-     * @var RoutableResourceInterface
-     */
-    private $routableResource;
-
-    public function __construct(string $code, DimensionInterface $dimension, array $variants = [])
+    public function __construct(string $id, string $code)
     {
-        $this->dimension = $dimension;
+        $this->id = $id;
         $this->code = $code;
 
-        $this->variants = new ArrayCollection($variants);
+        $this->productInformations = new ArrayCollection();
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getCode(): string
     {
         return $this->code;
-    }
-
-    public function getDimension(): DimensionInterface
-    {
-        return $this->dimension;
-    }
-
-    public function getVariants(): array
-    {
-        return $this->variants->getValues();
-    }
-
-    public function findVariantByCode(string $code): ?ProductVariantInterface
-    {
-        if (!$this->variants->containsKey($code)) {
-            return null;
-        }
-
-        return $this->variants->get($code);
-    }
-
-    public function addVariant(ProductVariantInterface $variant): ProductInterface
-    {
-        $this->variants->set($variant->getCode(), $variant);
-
-        return $this;
-    }
-
-    public function removeVariant(ProductVariantInterface $variant): ProductInterface
-    {
-        $this->variants->remove($variant->getCode());
-
-        return $this;
-    }
-
-    public function setContent(ContentInterface $content): Product
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
-    public function getContent(): ?ContentInterface
-    {
-        return $this->content;
-    }
-
-    public function setRoutableResource(RoutableResourceInterface $routableResource): Product
-    {
-        $this->routableResource = $routableResource;
-
-        return $this;
-    }
-
-    public function getRoutableResource(): ?RoutableResourceInterface
-    {
-        return $this->routableResource;
     }
 }

@@ -42,6 +42,17 @@ class ProductVariantValueObject
         );
     }
 
+    public function findTranslationByLocale(string $locale): ?ProductVariantTranslationValueObject
+    {
+        foreach ($this->getTranslations() as $translation) {
+            if ($locale === $translation->getLocale()) {
+                return $translation;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return OptionValueValueObject[]
      */
