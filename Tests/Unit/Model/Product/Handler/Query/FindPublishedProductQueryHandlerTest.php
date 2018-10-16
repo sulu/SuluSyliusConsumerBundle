@@ -39,7 +39,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(FindPublishedProductQuery::class);
-        $message->getCode()->willReturn('product-1');
+        $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
         $dimension = $this->prophesize(DimensionInterface::class);
@@ -56,7 +56,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         )->willReturn($localizedDimension->reveal());
 
         $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productRepository->findByCode('product-1', $localizedDimension->reveal())
+        $productRepository->findById('123-123-123', $localizedDimension->reveal())
             ->willReturn($productInformation->reveal())
             ->shouldBeCalled();
 
@@ -94,10 +94,10 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         )->willReturn($localizedDimension->reveal());
 
         $message = $this->prophesize(FindPublishedProductQuery::class);
-        $message->getCode()->willReturn('product-1');
+        $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
-        $productRepository->findByCode('product-1', $localizedDimension->reveal())->willReturn(null);
+        $productRepository->findById('123-123-123', $localizedDimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

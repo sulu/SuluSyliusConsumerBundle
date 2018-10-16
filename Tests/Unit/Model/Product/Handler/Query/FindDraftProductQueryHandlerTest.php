@@ -32,7 +32,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
         $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
 
         $message = $this->prophesize(FindDraftProductQuery::class);
-        $message->getCode()->willReturn('product-1');
+        $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
         $dimension = $this->prophesize(DimensionInterface::class);
@@ -44,7 +44,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
         )->willReturn($dimension->reveal());
 
         $product = $this->prophesize(ProductInformationInterface::class);
-        $productRepository->findByCode('product-1', $dimension->reveal())
+        $productRepository->findById('123-123-123', $dimension->reveal())
             ->willReturn($product->reveal())
             ->shouldBeCalled();
 
@@ -70,10 +70,10 @@ class FindDraftProductQueryHandlerTest extends TestCase
         )->willReturn($dimension->reveal());
 
         $message = $this->prophesize(FindDraftProductQuery::class);
-        $message->getCode()->willReturn('product-1');
+        $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
-        $productRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
+        $productRepository->findById('123-123-123', $dimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

@@ -9,7 +9,7 @@
             <generator strategy="NONE"/>
         </id>
 
-        <id name="productCode" type="string">
+        <id name="productId" type="string" association-key="true">
             <generator strategy="NONE"/>
         </id>
 
@@ -23,7 +23,7 @@
 
         <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation">
             <join-columns>
-                <join-column name="product_code" referenced-column-name="product_code"/>
+                <join-column name="product_id" referenced-column-name="product_id"/>
                 <join-column name="dimension_id" referenced-column-name="dimension_id"/>
             </join-columns>
         </many-to-one>

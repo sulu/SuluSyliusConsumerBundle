@@ -23,12 +23,18 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandler
 {
+    /**
+     * @var ProductRepositoryInterface
+     */
+    private $productRepository;
+
     /**
      * @var ProductInformationRepositoryInterface
      */
@@ -55,12 +61,14 @@ class PublishProductMessageHandler
     private $slugifier;
 
     public function __construct(
+        ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         ProductInformationVariantRepositoryInterface $variantRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
         SlugifierInterface $slugifier
     ) {
+        $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
@@ -70,22 +78,26 @@ class PublishProductMessageHandler
 
     public function __invoke(PublishProductMessage $message): ProductInformationInterface
     {
+        $product = $this->productRepository->findById($message->getId());
+        if (!$product) {
+            throw new ProductNotFoundException($message->getId());
+        }
+
         try {
-            $liveProduct = $this->publishProductInformation($message->getCode(), $message->getLocale());
+            $liveProduct = $this->publishProductInformation($product, $message->getLocale());
         } catch (ProductInformationNotFoundException $exception) {
-            throw new ProductNotFoundException($message->getCode(), 0, $exception);
+            throw new ProductNotFoundException($message->getId(), 0, $exception);
         }
 
         $this->messageBus->dispatch(
-            new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getCode(), $message->getLocale())
+            new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getId(), $message->getLocale())
         );
 
         // FIXME generate route by-schema
-        $routePath = '/products/' . $this->slugifier->slugify($message->getCode());
+        $routePath = '/products/' . $this->slugifier->slugify($product->getCode());
         $this->messageBus->dispatch(
             new PublishRoutableResourceMessage(
-                ProductInterface::RESOURCE_KEY,
-                $message->getCode(),
+                ProductInterface::RESOURCE_KEY, $message->getId(),
                 $message->getLocale(),
                 $routePath
             )
@@ -94,7 +106,7 @@ class PublishProductMessageHandler
         return $liveProduct;
     }
 
-    private function publishProductInformation(string $code, string $locale): ProductInformationInterface
+    private function publishProductInformation(ProductInterface $product, string $locale): ProductInformationInterface
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -109,14 +121,14 @@ class PublishProductMessageHandler
             ]
         );
 
-        $draftProduct = $this->productInformationRepository->findByCode($code, $draftDimension);
+        $draftProduct = $this->productInformationRepository->findById($product->getId(), $draftDimension);
         if (!$draftProduct) {
-            throw new ProductInformationNotFoundException($code);
+            throw new ProductInformationNotFoundException($product->getId());
         }
 
-        $liveProduct = $this->productInformationRepository->findByCode($code, $liveDimension);
+        $liveProduct = $this->productInformationRepository->findById($product->getId(), $liveDimension);
         if (!$liveProduct) {
-            $liveProduct = $this->productInformationRepository->create($code, $liveDimension);
+            $liveProduct = $this->productInformationRepository->create($product, $liveDimension);
         }
 
         $liveProduct->setName($draftProduct->getName());

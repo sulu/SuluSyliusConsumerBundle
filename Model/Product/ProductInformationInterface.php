@@ -17,9 +17,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 interface ProductInformationInterface
 {
-    public function __construct(string $code, DimensionInterface $dimension, array $variants = []);
+    public function __construct(ProductInterface $product, DimensionInterface $dimension, array $variants = []);
 
-    public function getCode(): string;
+    public function getProductId(): string;
+
+    public function getProductCode(): string;
 
     public function getDimension(): DimensionInterface;
 

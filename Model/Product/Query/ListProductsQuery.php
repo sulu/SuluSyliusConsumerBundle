@@ -18,16 +18,6 @@ class ListProductsQuery
     /**
      * @var string
      */
-    private $entityClass;
-
-    /**
-     * @var string
-     */
-    private $resourceKey;
-
-    /**
-     * @var string
-     */
     private $locale;
 
     /**
@@ -40,23 +30,11 @@ class ListProductsQuery
      */
     private $query;
 
-    public function __construct(string $entityClass, string $resourceKey, string $locale, string $route, array $query)
+    public function __construct(string $locale, string $route, array $query)
     {
-        $this->entityClass = $entityClass;
-        $this->resourceKey = $resourceKey;
         $this->locale = $locale;
         $this->route = $route;
         $this->query = $query;
-    }
-
-    public function getEntityClass(): string
-    {
-        return $this->entityClass;
-    }
-
-    public function getResourceKey(): string
-    {
-        return $this->resourceKey;
     }
 
     public function getLocale(): string

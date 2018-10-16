@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
@@ -51,10 +53,10 @@ class ListProductsQueryHandler
 
     public function __invoke(ListProductsQuery $query): ListRepresentation
     {
-        $fieldDescriptors = $this->getFieldDescriptors($query->getEntityClass(), $query->getLocale());
+        $fieldDescriptors = $this->getFieldDescriptors(Product::class, $query->getLocale());
 
         /** @var DoctrineListBuilder $listBuilder */
-        $listBuilder = $this->listBuilderFactory->create($query->getEntityClass());
+        $listBuilder = $this->listBuilderFactory->create(Product::class);
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
         $listBuilder->setIdField($fieldDescriptors['identifier']);
 
@@ -72,7 +74,7 @@ class ListProductsQueryHandler
 
         return new ListRepresentation(
             $listResponse,
-            $query->getResourceKey(),
+            ProductInterface::RESOURCE_KEY,
             $query->getRoute(),
             $query->getQuery(),
             $listBuilder->getCurrentPage(),

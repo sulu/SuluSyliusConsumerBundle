@@ -5,8 +5,18 @@
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"
             table="pr_products"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductRepository">
-        <id name="code" column="product_code" type="string">
+        <unique-constraints>
+            <unique-constraint columns="product_code"/>
+        </unique-constraints>
+
+        <id name="id" type="guid">
             <generator strategy="NONE"/>
         </id>
+
+        <field name="code" column="product_code" type="string"/>
+
+        <one-to-many field="productInformations"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
+                     mapped-by="product"/>
     </entity>
 </doctrine-mapping>

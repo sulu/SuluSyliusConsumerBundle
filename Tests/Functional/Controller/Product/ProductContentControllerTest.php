@@ -17,6 +17,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ContentTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class ProductContentControllerTest extends SuluTestCase
@@ -24,6 +25,7 @@ class ProductContentControllerTest extends SuluTestCase
     use ContentTrait;
     use DimensionTrait;
     use ProductInformationTrait;
+    use ProductTrait;
 
     public function setUp()
     {
@@ -64,10 +66,12 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionCreate(): void
     {
+        $product = $this->createProduct('product-1');
+
         $data = ['template' => 'default', 'title' => 'Sulu', 'article' => 'Sulu is awesome'];
 
         $client = $this->createAuthenticatedClient();
-        $client->request('PUT', '/api/product-contents/product-1?locale=en&action=draft', $data);
+        $client->request('PUT', '/api/product-contents/' . $product->getId() . '?locale=en&action=draft', $data);
 
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -98,12 +102,13 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionCreateAndPublish(): void
     {
-        $this->createProductInformation('product-1', 'en');
+        $product = $this->createProduct('product-1');
+        $this->createProductInformation($product->getId(), 'en');
 
         $data = ['template' => 'default', 'title' => 'Sulu', 'article' => 'Sulu is awesome'];
 
         $client = $this->createAuthenticatedClient();
-        $client->request('PUT', '/api/product-contents/product-1?locale=en&action=publish', $data);
+        $client->request('PUT', '/api/product-contents/' . $product->getId() . '?locale=en&action=publish', $data);
 
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
@@ -115,10 +120,11 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testPutActionUpdateAndPublish(): void
     {
-        $this->createProductInformation('product-1', 'en');
+        $product = $this->createProduct('product-1');
+        $this->createProductInformation($product->getId(), 'en');
         $content = $this->createContent(
             ProductInterface::RESOURCE_KEY,
-            'product-1',
+            $product->getId(),
             'en',
             'homepage',
             ['title' => 'Zoolu', 'article' => 'Zoolu is great']

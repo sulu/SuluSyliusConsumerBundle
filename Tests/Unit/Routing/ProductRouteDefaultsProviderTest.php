@@ -48,7 +48,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function (FindPublishedProductQuery $query) {
-                    return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
         )->willReturn($product->reveal())->shouldBeCalled();
@@ -92,7 +92,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function (FindPublishedProductQuery $query) {
-                    return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
         )->willReturn($product->reveal())->shouldBeCalled();
@@ -115,7 +115,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function (FindPublishedProductQuery $query) {
-                    return 'product-1' === $query->getCode() && 'en' === $query->getLocale();
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
         )->willThrow(new ProductInformationNotFoundException('product-1'))->shouldBeCalled();

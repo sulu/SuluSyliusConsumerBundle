@@ -50,12 +50,12 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
     public function create(ProductInformationInterface $product, array $dimensions): ProductViewInterface
     {
-        $viewProduct = new ProductView($product->getCode());
+        $viewProduct = new ProductView($product->getProductId(), $product->getProductCode());
         $viewProduct->setProductInformation($product);
 
         $contentDimensions = $this->contentRepository->findByDimensions(
             ProductInterface::RESOURCE_KEY,
-            $product->getCode(),
+            $product->getProductId(),
             $dimensions
         );
 
@@ -66,7 +66,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
         $routableResource = $this->routableResourceRepository->findOrCreateByResource(
             ProductInterface::RESOURCE_KEY,
-            $product->getCode(),
+            $product->getProductId(),
             $product->getDimension()
         );
         $viewProduct->setRoutableResource($routableResource);

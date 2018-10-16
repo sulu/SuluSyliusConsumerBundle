@@ -48,9 +48,9 @@ class RemoveProductMessageHandler
 
         $this->productRepository->remove($product);
 
-        $productInformations = $this->productInformationRepository->findAllByCode($message->getCode());
+        $productInformations = $this->productInformationRepository->findAllById($product->getId());
         if (empty($productInformations)) {
-            throw new ProductInformationNotFoundException($message->getCode());
+            throw new ProductInformationNotFoundException($product->getId());
         }
 
         foreach ($productInformations as $productInformation) {

@@ -14,13 +14,22 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product;
 
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 
 class ProductTest extends TestCase
 {
+    public function testGetId(): void
+    {
+        $id = Uuid::uuid4()->toString();
+        $product = new Product($id, 'product-1');
+
+        $this->assertEquals($id, $product->getId());
+    }
+
     public function testGetCode(): void
     {
-        $product = new Product('product-1');
+        $product = new Product(Uuid::uuid4()->toString(), 'product-1');
 
         $this->assertEquals('product-1', $product->getCode());
     }

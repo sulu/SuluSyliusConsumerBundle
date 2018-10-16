@@ -19,5 +19,7 @@ interface ProductRepositoryInterface
 
     public function findByCode(string $code): ?ProductInterface;
 
+    public function findById(string $id): ?ProductInterface;
+
     public function remove(ProductInterface $product): void;
 }

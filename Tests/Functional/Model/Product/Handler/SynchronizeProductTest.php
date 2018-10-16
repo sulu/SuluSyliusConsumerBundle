@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -64,27 +65,29 @@ class SynchronizeProductTest extends SuluTestCase
 
         /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getContainer()->get('sulu_sylius_consumer_test.messenger.bus.default');
-        $messageBus->dispatch($message);
 
-        $result = $this->findProductInformation('product-1', 'de');
+        /** @var ProductInterface $product */
+        $product = $messageBus->dispatch($message);
+
+        $result = $this->findProductInformation($product->getId(), 'de');
         $this->assertNotNull($result);
         if (!$result) {
             return;
         }
 
-        $this->assertEquals('product-1', $result->getCode());
+        $this->assertEquals($product->getId(), $result->getProductId());
         $this->assertEquals('Produkt Eins', $result->getName());
         $this->assertCount(1, $result->getVariants());
         $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());
         $this->assertEquals('Produkt Variante Eins', $result->getVariants()[0]->getName());
 
-        $result = $this->findProductInformation('product-1', 'en');
+        $result = $this->findProductInformation($product->getId(), 'en');
         $this->assertNotNull($result);
         if (!$result) {
             return;
         }
 
-        $this->assertEquals('product-1', $result->getCode());
+        $this->assertEquals($product->getId(), $result->getProductId());
         $this->assertEquals('Product One', $result->getName());
         $this->assertCount(1, $result->getVariants());
         $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());

@@ -3,13 +3,17 @@
     xmlns:orm="http://schemas.sulu.io/class/doctrine"
 >
     <properties>
+        <concatenation-property name="identifier" visibility="never">
+            <orm:field property-ref="id"/>
+            <orm:field property-ref="locale"/>
+        </concatenation-property>
+
         <property
             name="id"
             visibility="never"
-            searchability="no"
         >
-            <orm:field-name>code</orm:field-name>
-            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
+            <orm:field-name>id</orm:field-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product</orm:entity-name>
         </property>
 
         <property
@@ -18,17 +22,8 @@
             searchability="yes"
         >
             <orm:field-name>code</orm:field-name>
-            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
+            <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product</orm:entity-name>
         </property>
-
-        <concatenation-property
-                name="identifier"
-                orm:glue="#"
-                searchability="no"
-        >
-            <orm:field property-ref="code"/>
-            <orm:field property-ref="locale"/>
-        </concatenation-property>
 
         <property
             name="name"
@@ -37,6 +32,13 @@
         >
             <orm:field-name>name</orm:field-name>
             <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
+
+            <orm:joins>
+                <orm:join>
+                    <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product.productInformations</orm:field-name>
+                </orm:join>
+            </orm:joins>
         </property>
 
         <property
@@ -48,6 +50,10 @@
             <orm:entity-name>attribute_locale</orm:entity-name>
 
             <orm:joins>
+                <orm:join>
+                    <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product.productInformations</orm:field-name>
+                </orm:join>
                 <orm:join>
                     <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</orm:entity-name>
                     <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation.dimension</orm:field-name>
@@ -69,6 +75,10 @@
             <orm:entity-name>attribute_stage</orm:entity-name>
 
             <orm:joins>
+                <orm:join>
+                    <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</orm:entity-name>
+                    <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product.productInformations</orm:field-name>
+                </orm:join>
                 <orm:join>
                     <orm:entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</orm:entity-name>
                     <orm:field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation.dimension</orm:field-name>

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
+use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -22,7 +23,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
     public function create(string $code): ProductInterface
     {
         $className = $this->getClassName();
-        $product = new $className($code);
+        $product = new $className(Uuid::uuid4()->toString(), $code);
         $this->getEntityManager()->persist($product);
 
         return $product;
@@ -31,7 +32,15 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
     public function findByCode(string $code): ?ProductInterface
     {
         /** @var ProductInterface $product */
-        $product = $this->find($code);
+        $product = $this->findOneBy(['code' => $code]);
+
+        return $product;
+    }
+
+    public function findById(string $id): ?ProductInterface
+    {
+        /** @var ProductInterface $product */
+        $product = $this->find($id);
 
         return $product;
     }

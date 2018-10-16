@@ -18,16 +18,16 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQue
 
 class FindPublishedProductQueryTest extends TestCase
 {
-    public function testGetCode(): void
+    public function testGetId(): void
     {
-        $query = new FindPublishedProductQuery('product-1', 'en');
+        $query = new FindPublishedProductQuery('123-123-123', 'en');
 
-        $this->assertEquals('product-1', $query->getCode());
+        $this->assertEquals('123-123-123', $query->getId());
     }
 
     public function testGetLocale(): void
     {
-        $query = new FindPublishedProductQuery('product-1', 'en');
+        $query = new FindPublishedProductQuery('123-123-123', 'en');
 
         $this->assertEquals('en', $query->getLocale());
     }

@@ -30,7 +30,7 @@ class ProductInformationVariant implements ProductInformationVariantInterface
     /**
      * @var string
      */
-    private $productCode;
+    private $productId;
 
     /**
      * @var string
@@ -46,7 +46,7 @@ class ProductInformationVariant implements ProductInformationVariantInterface
     {
         $this->product = $product;
         $this->code = $code;
-        $this->productCode = $product->getCode();
+        $this->productId = $product->getProductId();
         $this->dimension = $product->getDimension();
     }
 

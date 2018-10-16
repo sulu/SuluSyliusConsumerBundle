@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 
 trait ProductTrait
 {
     protected function createProduct(string $code): Product
     {
-        $product = new Product($code);
+        $product = new Product(Uuid::uuid4()->toString(), $code);
 
         $this->getEntityManager()->persist($product);
         $this->getEntityManager()->flush();

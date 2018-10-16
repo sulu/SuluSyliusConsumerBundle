@@ -39,11 +39,12 @@ class RemoveProductMessageHandlerTest extends TestCase
         );
 
         $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
         $productRepository->remove($product->reveal())->shouldBeCalled();
 
         $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productInformationRepository->findAllByCode('product-1')->willReturn([$productInformation->reveal()]);
+        $productInformationRepository->findAllById('123-123-123')->willReturn([$productInformation->reveal()]);
         $productInformationRepository->remove($productInformation->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
@@ -85,10 +86,11 @@ class RemoveProductMessageHandlerTest extends TestCase
         );
 
         $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
         $productRepository->remove($product->reveal())->shouldBeCalled();
 
-        $productInformationRepository->findAllByCode('product-1')->willReturn([]);
+        $productInformationRepository->findAllById('123-123-123')->willReturn([]);
         $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
         $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
 

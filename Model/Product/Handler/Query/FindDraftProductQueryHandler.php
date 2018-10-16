@@ -49,9 +49,9 @@ class FindDraftProductQueryHandler
             ]
         );
 
-        $product = $this->productRepository->findByCode($query->getCode(), $dimension);
+        $product = $this->productRepository->findById($query->getId(), $dimension);
         if (!$product) {
-            throw new ProductInformationNotFoundException($query->getCode());
+            throw new ProductInformationNotFoundException($query->getId());
         }
 
         return $product;

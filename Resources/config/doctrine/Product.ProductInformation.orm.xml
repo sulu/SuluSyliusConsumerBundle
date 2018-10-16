@@ -5,7 +5,7 @@
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
             table="pr_product_informations"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductInformationRepository">
-        <id name="code" column="product_code" type="string">
+        <id name="product" type="guid" association-key="true">
             <generator strategy="NONE"/>
         </id>
         <id name="dimension" type="guid" association-key="true">
@@ -13,6 +13,8 @@
         </id>
 
         <field name="name" type="string" nullable="false"/>
+
+        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"/>
 
         <one-to-many field="variants"
                      target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariant"

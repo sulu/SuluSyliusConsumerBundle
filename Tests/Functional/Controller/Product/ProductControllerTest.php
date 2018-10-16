@@ -16,12 +16,14 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 
 class ProductControllerTest extends SuluTestCase
 {
     use DimensionTrait;
     use ProductInformationTrait;
+    use ProductTrait;
 
     public function setUp()
     {
@@ -30,28 +32,30 @@ class ProductControllerTest extends SuluTestCase
 
     public function testGetAction(): void
     {
-        $product = $this->createProductInformation('product-1', 'en');
-        $product->setName('Product One');
+        $product = $this->createProduct('product-1');
+        $productInformation = $this->createProductInformation($product->getId(), 'en');
+        $productInformation->setName('Product One');
         $this->getEntityManager()->flush();
 
         $client = $this->createAuthenticatedClient();
-        $client->request('GET', '/api/products/' . $product->getCode() . '?locale=en');
+        $client->request('GET', '/api/products/' . $productInformation->getProductId() . '?locale=en');
 
         $response = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
-        $this->assertEquals($product->getCode(), $response['code']);
-        $this->assertEquals($product->getName(), $response['name']);
+        $this->assertEquals($productInformation->getProductId(), $response['id']);
+        $this->assertEquals($productInformation->getName(), $response['name']);
     }
 
     public function testCGetAction(): void
     {
-        $product1 = $this->createProductInformation('product-1', 'en');
-        $product1->setName('Product One');
+        $product = $this->createProduct('product-1');
+        $productInformation1 = $this->createProductInformation($product->getId(), 'en');
+        $productInformation1->setName('Product One');
         $this->getEntityManager()->flush();
 
-        $product2 = $this->createProductInformation('product-1', 'de');
-        $product2->setName('Produkt Eins');
+        $productInformation2 = $this->createProductInformation($product->getId(), 'de');
+        $productInformation2->setName('Produkt Eins');
         $this->getEntityManager()->flush();
 
         $client = $this->createAuthenticatedClient();
@@ -61,7 +65,7 @@ class ProductControllerTest extends SuluTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertCount(1, $response['_embedded'][ProductInterface::RESOURCE_KEY]);
-        $this->assertEquals($product1->getCode(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['code']);
-        $this->assertEquals($product1->getName(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['name']);
+        $this->assertEquals($productInformation1->getProductId(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['id']);
+        $this->assertEquals($productInformation1->getName(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['name']);
     }
 }

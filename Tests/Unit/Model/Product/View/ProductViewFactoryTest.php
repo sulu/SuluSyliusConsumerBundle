@@ -44,15 +44,16 @@ class ProductViewFactoryTest extends TestCase
 
         $product = $this->prophesize(ProductInformationInterface::class);
         $product->getDimension()->willReturn($dimension->reveal());
-        $product->getCode()->willReturn('product-1');
+        $product->getProductId()->willReturn('123-123-123');
+        $product->getProductCode()->willReturn('product-1');
         $product->getName()->willReturn('Product One');
         $product->getVariants()->willReturn([]);
 
         $content = $this->prophesize(ContentInterface::class);
         $content->getDimension()->willReturn($dimension->reveal());
         $content->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
-        $content->getResourceId()->willReturn('product-1');
-        $contentRepository->findByDimensions(ProductInterface::RESOURCE_KEY, 'product-1', [$dimension->reveal()])
+        $content->getResourceId()->willReturn('123-123-123');
+        $contentRepository->findByDimensions(ProductInterface::RESOURCE_KEY, '123-123-123', [$dimension->reveal()])
             ->willReturn([$content->reveal()]);
 
         $route = $this->prophesize(RouteInterface::class);
@@ -61,7 +62,7 @@ class ProductViewFactoryTest extends TestCase
         $routable->getRoute()->willReturn($route->reveal());
         $routableResourceRepository->findOrCreateByResource(
             ProductInterface::RESOURCE_KEY,
-            'product-1',
+            '123-123-123',
             $dimension->reveal()
         )->willReturn($routable->reveal());
 
@@ -73,6 +74,7 @@ class ProductViewFactoryTest extends TestCase
         $result = $factory->create($product->reveal(), [$dimension->reveal()]);
 
         $this->assertInstanceOf(ProductViewInterface::class, $result);
+        $this->assertEquals('123-123-123', $result->getId());
         $this->assertEquals('product-1', $result->getCode());
         $this->assertEquals('Product One', $result->getName());
         $this->assertEquals([], $result->getVariants());

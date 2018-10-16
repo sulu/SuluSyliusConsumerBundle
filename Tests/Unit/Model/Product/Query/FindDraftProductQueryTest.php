@@ -18,11 +18,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
 
 class FindDraftProductQueryTest extends TestCase
 {
-    public function testGetCode(): void
+    public function testGetId(): void
     {
-        $query = new FindDraftProductQuery('product-1', 'en');
+        $query = new FindDraftProductQuery('123-123-123', 'en');
 
-        $this->assertEquals('product-1', $query->getCode());
+        $this->assertEquals('123-123-123', $query->getId());
     }
 
     public function testGetLocale(): void

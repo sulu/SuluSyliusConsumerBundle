@@ -13,16 +13,37 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
 class Product implements ProductInterface
 {
     /**
      * @var string
      */
+    private $id;
+
+    /**
+     * @var string
+     */
     private $code;
 
-    public function __construct(string $code)
+    /**
+     * @var ProductInformation[]|Collection
+     */
+    private $productInformations;
+
+    public function __construct(string $id, string $code)
     {
+        $this->id = $id;
         $this->code = $code;
+
+        $this->productInformations = new ArrayCollection();
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getCode(): string

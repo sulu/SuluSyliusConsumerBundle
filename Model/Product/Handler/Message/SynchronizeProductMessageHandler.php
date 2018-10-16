@@ -21,6 +21,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMes
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
 class SynchronizeProductMessageHandler
@@ -57,18 +58,24 @@ class SynchronizeProductMessageHandler
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(SynchronizeProductMessage $message): void
+    public function __invoke(SynchronizeProductMessage $message): ProductInterface
     {
-        $this->productRepository->create($message->getCode());
+        $product = $this->productRepository->findByCode($message->getCode());
+        if (!$product) {
+            $product = $this->productRepository->create($message->getCode());
+        }
 
         foreach ($message->getTranslations() as $translation) {
-            $this->synchronizeProduct($message, $translation);
+            $this->synchronizeProduct($message, $translation, $product);
         }
+
+        return $product;
     }
 
     private function synchronizeProduct(
         SynchronizeProductMessage $message,
-        ProductTranslationValueObject $translationValueObject
+        ProductTranslationValueObject $translationValueObject,
+        ProductInterface $product
     ): void {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -77,14 +84,14 @@ class SynchronizeProductMessageHandler
             ]
         );
 
-        $product = $this->productInformationRepository->findByCode($message->getCode(), $dimension);
-        if (!$product) {
-            $product = $this->productInformationRepository->create($message->getCode(), $dimension);
+        $productInformation = $this->productInformationRepository->findById($product->getId(), $dimension);
+        if (!$productInformation) {
+            $productInformation = $this->productInformationRepository->create($product, $dimension);
         }
 
-        $product->setName($translationValueObject->getName());
+        $productInformation->setName($translationValueObject->getName());
 
-        $this->synchronizeVariants($message->getVariants(), $product, $translationValueObject->getLocale());
+        $this->synchronizeVariants($message->getVariants(), $productInformation, $translationValueObject->getLocale());
     }
 
     /**

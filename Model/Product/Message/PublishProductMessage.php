@@ -18,22 +18,22 @@ class PublishProductMessage
     /**
      * @var string
      */
-    private $code;
+    private $id;
 
     /**
      * @var string
      */
     private $locale;
 
-    public function __construct(string $code, string $locale)
+    public function __construct(string $id, string $locale)
     {
-        $this->code = $code;
+        $this->id = $id;
         $this->locale = $locale;
     }
 
-    public function getCode(): string
+    public function getId(): string
     {
-        return $this->code;
+        return $this->id;
     }
 
     public function getLocale(): string

@@ -24,7 +24,7 @@ class ProductViewTest extends TestCase
 {
     public function testGetCode(): void
     {
-        $productView = new ProductView('product-1');
+        $productView = new ProductView('123-123-123', 'product-1');
 
         $this->assertEquals('product-1', $productView->getCode());
     }
@@ -34,7 +34,7 @@ class ProductViewTest extends TestCase
         $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productInformation->getName()->willReturn('Sulu is awesome');
 
-        $productView = new ProductView('product-1');
+        $productView = new ProductView('123-123-123', 'product-1');
         $productView->setProductInformation($productInformation->reveal());
 
         $this->assertEquals('Sulu is awesome', $productView->getName());
@@ -45,7 +45,7 @@ class ProductViewTest extends TestCase
         $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productInformation->getVariants()->willReturn([]);
 
-        $productView = new ProductView('product-1');
+        $productView = new ProductView('123-123-123', 'product-1');
         $productView->setProductInformation($productInformation->reveal());
 
         $this->assertEquals([], $productView->getVariants());
@@ -56,7 +56,7 @@ class ProductViewTest extends TestCase
         $content = $this->prophesize(ContentInterface::class);
         $content->getType()->willReturn('default');
 
-        $productView = new ProductView('product-1');
+        $productView = new ProductView('123-123-123', 'product-1');
         $productView->setContent($content->reveal());
 
         $this->assertEquals('default', $productView->getContentType());
@@ -67,7 +67,7 @@ class ProductViewTest extends TestCase
         $content = $this->prophesize(ContentInterface::class);
         $content->getData()->willReturn(['title' => 'Sulu is awesome']);
 
-        $productView = new ProductView('product-1');
+        $productView = new ProductView('123-123-123', 'product-1');
         $productView->setContent($content->reveal());
 
         $this->assertEquals(['title' => 'Sulu is awesome'], $productView->getContentData());
@@ -80,7 +80,7 @@ class ProductViewTest extends TestCase
         $routableResource = $this->prophesize(RoutableResourceInterface::class);
         $routableResource->getRoute()->willReturn($route->reveal());
 
-        $productView = new ProductView('product-1');
+        $productView = new ProductView('123-123-123', 'product-1');
         $productView->setRoutableResource($routableResource->reveal());
 
         $this->assertEquals('/test', $productView->getRoutePath());

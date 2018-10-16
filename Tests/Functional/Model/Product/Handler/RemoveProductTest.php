@@ -31,20 +31,20 @@ class RemoveProductTest extends SuluTestCase
         $this->purgeDatabase();
     }
 
-    public function testSynchronizeProductCreate()
+    public function testRemoveProduct()
     {
         $product = $this->createProduct('product-1');
-        $productInformationEN = $this->createProductInformation('product-1', 'en');
-        $productInformationDE = $this->createProductInformation('product-1', 'de');
+        $productInformationEN = $this->createProductInformation($product->getId(), 'en');
+        $productInformationDE = $this->createProductInformation($product->getId(), 'de');
 
-        $message = new RemoveProductMessage($productInformationEN->getCode());
+        $message = new RemoveProductMessage($product->getCode());
 
         /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getContainer()->get('sulu_sylius_consumer_test.messenger.bus.default');
         $messageBus->dispatch($message);
 
         $this->assertNull($this->findProduct($product->getCode()));
-        $this->assertNull($this->findProductInformation($productInformationEN->getCode(), 'en'));
-        $this->assertNull($this->findProductInformation($productInformationDE->getCode(), 'de'));
+        $this->assertNull($this->findProductInformation($productInformationEN->getProductId(), 'en'));
+        $this->assertNull($this->findProductInformation($productInformationDE->getProductId(), 'de'));
     }
 }

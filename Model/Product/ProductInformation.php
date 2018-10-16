@@ -27,11 +27,6 @@ class ProductInformation implements ProductInformationInterface
     /**
      * @var string
      */
-    private $code;
-
-    /**
-     * @var string
-     */
     private $name = '';
 
     /**
@@ -39,17 +34,28 @@ class ProductInformation implements ProductInformationInterface
      */
     private $variants;
 
-    public function __construct(string $code, DimensionInterface $dimension, array $variants = [])
+    /**
+     * @var ProductInterface
+     */
+    private $product;
+
+    public function __construct(ProductInterface $product, DimensionInterface $dimension, array $variants = [])
     {
         $this->dimension = $dimension;
-        $this->code = $code;
+        $this->product = $product;
+        $this->product = $product;
 
         $this->variants = new ArrayCollection($variants);
     }
 
-    public function getCode(): string
+    public function getProductId(): string
     {
-        return $this->code;
+        return $this->product->getId();
+    }
+
+    public function getProductCode(): string
+    {
+        return $this->product->getCode();
     }
 
     public function getDimension(): DimensionInterface

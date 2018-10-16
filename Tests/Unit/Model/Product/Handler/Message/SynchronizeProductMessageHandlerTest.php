@@ -55,6 +55,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
         $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimension = $this->prophesize(DimensionInterface::class);
@@ -65,11 +67,11 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $productInformationRepository->findByCode('product-1', $dimension->reveal())->willReturn(null);
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())->willReturn(null);
         $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productInformation->getVariants()->willReturn([]);
         $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformationRepository->create('product-1', $dimension->reveal())
+        $productInformationRepository->create($product->reveal(), $dimension->reveal())
             ->shouldBeCalled()
             ->willReturn($productInformation->reveal());
 
@@ -100,7 +102,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $product = $this->prophesize(ProductInterface::class);
-        $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
@@ -113,7 +116,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productInformation->getVariants()->willReturn([]);
         $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformationRepository->findByCode('product-1', $dimension->reveal())
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())
             ->willReturn($productInformation->reveal());
         $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
@@ -156,7 +159,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $product = $this->prophesize(ProductInterface::class);
-        $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
@@ -170,7 +174,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformation->getVariants()->willReturn([]);
         $productInformation->findVariantByCode('variant-1')->willReturn(null);
         $productInformation->setName('Product One')->willReturn($productInformation->reveal())->shouldBeCalled();
-        $productInformationRepository->findByCode('product-1', $dimension->reveal())
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())
             ->willReturn($productInformation->reveal());
         $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
@@ -208,7 +212,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $product = $this->prophesize(ProductInterface::class);
-        $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
+        $product->getId()->willReturn('123-123-123');
+        $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
@@ -219,7 +224,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         )->willReturn($dimension->reveal());
 
         $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productInformationRepository->findByCode('product-1', $dimension->reveal())
+        $productInformationRepository->findById('123-123-123', $dimension->reveal())
             ->willReturn($productInformation->reveal());
         $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
@@ -228,7 +233,9 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformation->getVariants()->willReturn([$variant->reveal()]);
         $productInformation->setName('Product One')->willReturn($productInformation->reveal())->shouldBeCalled();
 
-        $productInformation->removeVariant($variant->reveal())->shouldBeCalled()->willReturn($productInformation->reveal());
+        $productInformation->removeVariant($variant->reveal())
+            ->shouldBeCalled()
+            ->willReturn($productInformation->reveal());
 
         $handler->__invoke($message->reveal());
     }

@@ -26,7 +26,7 @@ class ProductInformationVariantTest extends TestCase
         $dimension->getId()->willReturn('dimension-1');
 
         $product = $this->prophesize(ProductInformation::class);
-        $product->getCode()->willReturn('product-1');
+        $product->getProductId()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
         $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
@@ -40,7 +40,7 @@ class ProductInformationVariantTest extends TestCase
         $dimension->getId()->willReturn('dimension-1');
 
         $product = $this->prophesize(ProductInformation::class);
-        $product->getCode()->willReturn('product-1');
+        $product->getProductId()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
         $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
@@ -54,7 +54,7 @@ class ProductInformationVariantTest extends TestCase
         $dimension->getId()->willReturn('dimension-1');
 
         $product = $this->prophesize(ProductInformation::class);
-        $product->getCode()->willReturn('product-1');
+        $product->getProductId()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
         $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
@@ -68,7 +68,7 @@ class ProductInformationVariantTest extends TestCase
         $dimension->getId()->willReturn('dimension-1');
 
         $product = $this->prophesize(ProductInformation::class);
-        $product->getCode()->willReturn('product-1');
+        $product->getProductId()->willReturn('product-1');
         $product->getDimension()->willReturn($dimension->reveal());
 
         $variant = new ProductInformationVariant($product->reveal(), 'variant-1');
