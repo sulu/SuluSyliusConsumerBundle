@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serializer>
+    <class name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView" exclusion-policy="ALL">
+        <virtual-property method="getCode" serialized-name="uuid" expose="true"/>
+        <virtual-property method="getContentType" serialized-name="template" expose="true"/>
+    </class>
+</serializer>

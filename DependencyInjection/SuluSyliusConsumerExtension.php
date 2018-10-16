@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Component\Content\Compat\Structure\StructureBridge;
 use Sulu\Component\HttpKernel\SuluKernel;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -87,6 +88,9 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
             [
                 'content' => [
                     'structure' => [
+                        'type_map' => [
+                            ProductInterface::RESOURCE_KEY => StructureBridge::class,
+                        ],
                         'paths' => [
                             ProductInterface::RESOURCE_KEY => [
                                 'path' => '%kernel.project_dir%/config/templates/products',

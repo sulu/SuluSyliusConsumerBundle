@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class ProductView extends Product implements ProductViewInterface
@@ -52,6 +53,11 @@ class ProductView extends Product implements ProductViewInterface
         $this->routableResource = $routableResource;
 
         return $this;
+    }
+
+    public function getLocale(): string
+    {
+        return $this->productInformation->getDimension()->getAttributeValue(DimensionInterface::ATTRIBUTE_KEY_LOCALE);
     }
 
     public function getName(): string

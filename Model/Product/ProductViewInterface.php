@@ -24,6 +24,8 @@ interface ProductViewInterface extends ProductInterface
 
     public function setRoutableResource(RoutableResourceInterface $routableResource): ProductViewInterface;
 
+    public function getLocale(): string;
+
     public function getName(): string;
 
     /**
