@@ -10,6 +10,7 @@ phpunit.xml
 .php_cs.cache
 
 # tests
+.env
 Tests/app/cache
 Tests/app/data
 Tests/var

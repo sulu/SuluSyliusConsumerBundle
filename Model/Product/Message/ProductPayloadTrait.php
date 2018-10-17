@@ -24,12 +24,12 @@ trait ProductPayloadTrait
      */
     public function getTranslations(): array
     {
-        return array_map(
-            function (array $payload) {
-                return new ProductTranslationValueObject($payload);
-            },
-            $this->getArrayValue('translations')
-        );
+        $translations = [];
+        foreach ($this->getArrayValue('translations') as $locale => $translationData) {
+            $translations[] = new ProductTranslationValueObject($translationData);
+        }
+
+        return $translations;
     }
 
     /**

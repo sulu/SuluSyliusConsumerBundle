@@ -30,6 +30,41 @@ class ProductInformation implements ProductInformationInterface
     private $name = '';
 
     /**
+     * @var string
+     */
+    private $slug = '';
+
+    /**
+     * @var string
+     */
+    private $description = '';
+
+    /**
+     * @var string
+     */
+    private $metaKeywords = '';
+
+    /**
+     * @var string
+     */
+    private $metaDescription = '';
+
+    /**
+     * @var string
+     */
+    private $shortDescription = '';
+
+    /**
+     * @var string
+     */
+    private $unit = '';
+
+    /**
+     * @var string
+     */
+    private $marketingText = '';
+
+    /**
      * @var Collection|ProductInformationVariantInterface[]
      */
     private $variants;
@@ -42,7 +77,6 @@ class ProductInformation implements ProductInformationInterface
     public function __construct(ProductInterface $product, DimensionInterface $dimension, array $variants = [])
     {
         $this->dimension = $dimension;
-        $this->product = $product;
         $this->product = $product;
 
         $this->variants = new ArrayCollection($variants);
@@ -71,6 +105,90 @@ class ProductInformation implements ProductInformationInterface
     public function setName(string $name): ProductInformationInterface
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): ProductInformationInterface
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): ProductInformationInterface
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getMetaKeywords(): string
+    {
+        return $this->metaKeywords;
+    }
+
+    public function setMetaKeywords(string $metaKeywords): ProductInformationInterface
+    {
+        $this->metaKeywords = $metaKeywords;
+
+        return $this;
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->metaKeywords;
+    }
+
+    public function setMetaDescription(string $metaDescription): ProductInformationInterface
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function getShortDescription(): string
+    {
+        return $this->shortDescription;
+    }
+
+    public function setShortDescription(string $shortDescription): ProductInformationInterface
+    {
+        $this->shortDescription = $shortDescription;
+
+        return $this;
+    }
+
+    public function getUnit(): string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(string $unit): ProductInformationInterface
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getMarketingText(): string
+    {
+        return $this->marketingText;
+    }
+
+    public function setMarketingText(string $marketingText): ProductInformationInterface
+    {
+        $this->marketingText = $marketingText;
 
         return $this;
     }

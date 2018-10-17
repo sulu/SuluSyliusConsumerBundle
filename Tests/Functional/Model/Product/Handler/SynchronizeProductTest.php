@@ -33,34 +33,8 @@ class SynchronizeProductTest extends SuluTestCase
     public function testSynchronizeProductCreate()
     {
         $message = new SynchronizeProductMessage(
-            'product-1',
-            [
-               'translations' => [
-                   'en' => [
-                       'locale' => 'en',
-                       'name' => 'Product One',
-                   ],
-                   'de' => [
-                       'locale' => 'de',
-                       'name' => 'Produkt Eins',
-                   ],
-               ],
-               'variants' => [
-                   [
-                       'code' => 'variant-1',
-                       'translations' => [
-                           [
-                               'locale' => 'en',
-                               'name' => 'Product Variant One',
-                           ],
-                           [
-                               'locale' => 'de',
-                               'name' => 'Produkt Variante Eins',
-                           ],
-                       ],
-                   ],
-               ],
-           ]
+            ExampleSynchronizeProductMessage::getCode(),
+            ExampleSynchronizeProductMessage::getPayload()
         );
 
         /** @var MessageBusInterface $messageBus */

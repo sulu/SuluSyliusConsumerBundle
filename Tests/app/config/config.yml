@@ -1,8 +1,7 @@
 # Doctrine Configuration
 doctrine:
     dbal:
-        host: 127.0.0.1
-        dbname: "su_sylius_test"
+        url: '%env(resolve:DATABASE_URL)%'
     orm:
         mappings:
             gedmo_tree:
@@ -23,9 +22,9 @@ sulu_core:
     content:
         structure:
             paths:
-                  products:
-                        path: "%kernel.project_dir%/app/Resources/templates/products"
-                        type: "products"
+                products:
+                    path: "%kernel.project_dir%/app/Resources/templates/products"
+                    type: "products"
 
 sulu_route:
     mappings:

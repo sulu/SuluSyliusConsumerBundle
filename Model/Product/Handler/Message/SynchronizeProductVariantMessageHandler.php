@@ -24,7 +24,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepo
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
-class SynchronizeProductMessageHandler
+class SynchronizeProductVariantMessageHandler
 {
     /**
      * @var ProductRepositoryInterface
@@ -72,30 +72,29 @@ class SynchronizeProductMessageHandler
         return $product;
     }
 
-    /**
-     * @param ProductVariantValueObject[] $variantValueObjects
-     */
-    private function synchronizeVariants(array $variantValueObjects, ProductInformationInterface $product, string $locale): void
-    {
-        $codes = [];
-        foreach ($variantValueObjects as $variantValueObject) {
-            $variant = $product->findVariantByCode($variantValueObject->getCode());
-            if (!$variant) {
-                $variant = $this->variantRepository->create($product, $variantValueObject->getCode());
-            }
+    private function synchronizeTranslation(
+        ProductTranslationValueObject $translationValueObject,
+        ProductInterface $product
+    ): void {
+        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+            ]
+        );
 
-            $variantTranslationValueObject = $variantValueObject->findTranslationByLocale($locale);
-            if ($variantTranslationValueObject) {
-                $variant->setName($variantTranslationValueObject->getName());
-            }
-
-            $codes[] = $variant->getCode();
+        $productInformation = $this->productInformationRepository->findById($product->getId(), $dimension);
+        if (!$productInformation) {
+            $productInformation = $this->productInformationRepository->create($product, $dimension);
         }
 
-        foreach ($product->getVariants() as $variant) {
-            if (!in_array($variant->getCode(), $codes)) {
-                $product->removeVariant($variant);
-            }
-        }
+        $productInformation->setName($translationValueObject->getName());
+        $productInformation->setSlug($translationValueObject->getSlug());
+        $productInformation->setDescription($translationValueObject->getDescription());
+        $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
+        $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
+        $productInformation->setShortDescription($translationValueObject->getShortDescription());
+        $productInformation->setUnit($translationValueObject->getUnit());
+        $productInformation->setMarketingText($translationValueObject->getMarketingText());
     }
 }

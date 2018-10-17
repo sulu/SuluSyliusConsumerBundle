@@ -13,6 +13,13 @@
         </id>
 
         <field name="name" type="string" nullable="false"/>
+        <field name="slug" type="string" nullable="false"/>
+        <field name="description" type="text" nullable="false"/>
+        <field name="metaKeywords" column="metaKeywords" type="string" nullable="false"/>
+        <field name="metaDescription" column="metaDescription" type="string" nullable="false"/>
+        <field name="shortDescription" column="shortDescription" type="text" nullable="false"/>
+        <field name="unit" type="string" nullable="false"/>
+        <field name="marketingText" column="marketingText" type="string" nullable="false"/>
 
         <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"/>
 
