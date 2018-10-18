@@ -23,17 +23,6 @@
 
         <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"/>
 
-        <one-to-many field="variants"
-                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariant"
-                     mapped-by="product"
-                     orphan-removal="true"
-                     index-by="code">
-            <cascade>
-                <cascade-persist/>
-                <cascade-remove/>
-            </cascade>
-        </one-to-many>
-
         <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
     </entity>
 </doctrine-mapping>

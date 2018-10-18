@@ -60,7 +60,7 @@ class FindPublishedProductQueryHandler
             ]
         );
 
-        $product = $this->productRepository->findById($query->getId(), $localizedLiveDimension);
+        $product = $this->productRepository->findByProductId($query->getId(), $localizedLiveDimension);
         if (!$product) {
             throw new ProductInformationNotFoundException($query->getId());
         }

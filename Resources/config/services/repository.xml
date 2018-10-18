@@ -13,9 +13,14 @@
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</argument>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface">
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
-            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariant</argument>
+            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant</argument>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformation</argument>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface">

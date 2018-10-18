@@ -18,5 +18,16 @@
         <one-to-many field="productInformations"
                      target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
                      mapped-by="product"/>
+
+        <one-to-many field="productVariants"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant"
+                     mapped-by="product"
+                     orphan-removal="true"
+                     index-by="code">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
     </entity>
 </doctrine-mapping>

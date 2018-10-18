@@ -25,7 +25,7 @@ class FindDraftProductQueryHandler
     /**
      * @var ProductInformationRepositoryInterface
      */
-    private $productRepository;
+    private $productInformationRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -33,10 +33,10 @@ class FindDraftProductQueryHandler
     private $dimensionRepository;
 
     public function __construct(
-        ProductInformationRepositoryInterface $productRepository,
+        ProductInformationRepositoryInterface $productInformationRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
-        $this->productRepository = $productRepository;
+        $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
 
@@ -49,7 +49,7 @@ class FindDraftProductQueryHandler
             ]
         );
 
-        $product = $this->productRepository->findById($query->getId(), $dimension);
+        $product = $this->productInformationRepository->findByProductId($query->getId(), $dimension);
         if (!$product) {
             throw new ProductInformationNotFoundException($query->getId());
         }

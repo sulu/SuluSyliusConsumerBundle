@@ -48,7 +48,7 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
 
     public function findOrCreateByAttributes(array $attributes): DimensionInterface
     {
-        $dimension = $this->findByAttributes($attributes);
+        $dimension = $this->findOneByAttributes($attributes);
         if ($dimension) {
             return $dimension;
         }
@@ -56,7 +56,7 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
         return $this->create($attributes);
     }
 
-    protected function findByAttributes(array $attributes): ?DimensionInterface
+    protected function findOneByAttributes(array $attributes): ?DimensionInterface
     {
         $queryBuilder = $this->createQueryBuilder('dimension')
             ->where('dimension.attributeCount = ' . count($attributes));
@@ -71,6 +71,29 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
 
         try {
             return $queryBuilder->getQuery()->getSingleResult();
+        } catch (NoResultException $exception) {
+            return null;
+        }
+    }
+
+    /**
+     * @return DimensionInterface[]
+     */
+    public function findByAttributes(array $attributes): array
+    {
+        $queryBuilder = $this->createQueryBuilder('dimension')
+            ->where('dimension.attributeCount = ' . count($attributes));
+
+        foreach ($attributes as $key => $value) {
+            $queryBuilder->join('dimension.attributes', $key)
+                ->andWhere($key . '.value = :' . $key . 'Value')
+                ->andWhere($key . '.key = :' . $key . 'Key')
+                ->setParameter($key . 'Key', $key)
+                ->setParameter($key . 'Value', $value);
+        }
+
+        try {
+            return $queryBuilder->getQuery()->getResult();
         } catch (NoResultException $exception) {
             return null;
         }

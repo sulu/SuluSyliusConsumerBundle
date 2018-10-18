@@ -45,26 +45,7 @@ class SynchronizeProductTest extends SuluTestCase
 
         $result = $this->findProductInformation($product->getId(), 'de');
         $this->assertNotNull($result);
-        if (!$result) {
-            return;
-        }
-
         $this->assertEquals($product->getId(), $result->getProductId());
-        $this->assertEquals('Produkt Eins', $result->getName());
-        $this->assertCount(1, $result->getVariants());
-        $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());
-        $this->assertEquals('Produkt Variante Eins', $result->getVariants()[0]->getName());
-
-        $result = $this->findProductInformation($product->getId(), 'en');
-        $this->assertNotNull($result);
-        if (!$result) {
-            return;
-        }
-
-        $this->assertEquals($product->getId(), $result->getProductId());
-        $this->assertEquals('Product One', $result->getName());
-        $this->assertCount(1, $result->getVariants());
-        $this->assertEquals('variant-1', $result->getVariants()[0]->getCode());
-        $this->assertEquals('Product Variant One', $result->getVariants()[0]->getName());
+        $this->assertEquals('T-Shirt "nihil"', $result->getName());
     }
 }

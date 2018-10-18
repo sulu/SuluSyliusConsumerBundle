@@ -13,7 +13,15 @@
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductVariantMessageHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
 
             <tag name="messenger.message_handler"/>
@@ -29,10 +37,17 @@
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface"/>
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
             <argument type="service" id="message_bus"/>
             <argument type="service" id="sulu_document_manager.slugifier"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductVariantMessageHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>

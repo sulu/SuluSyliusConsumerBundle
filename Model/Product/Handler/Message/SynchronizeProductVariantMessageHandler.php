@@ -15,14 +15,12 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantTranslationValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductVariantMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
 class SynchronizeProductVariantMessageHandler
 {
@@ -32,14 +30,14 @@ class SynchronizeProductVariantMessageHandler
     private $productRepository;
 
     /**
-     * @var ProductInformationRepositoryInterface
+     * @var ProductVariantRepositoryInterface
      */
-    private $productInformationRepository;
+    private $productVariantRepository;
 
     /**
-     * @var ProductInformationVariantRepositoryInterface
+     * @var ProductVariantInformationRepositoryInterface
      */
-    private $variantRepository;
+    private $productVariantInformationRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -48,33 +46,45 @@ class SynchronizeProductVariantMessageHandler
 
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductInformationRepositoryInterface $productInformationRepository,
-        ProductInformationVariantRepositoryInterface $variantRepository,
+        ProductVariantRepositoryInterface $productionVariantRepository,
+        ProductVariantInformationRepositoryInterface $productVariantInformationRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
-        $this->productInformationRepository = $productInformationRepository;
-        $this->variantRepository = $variantRepository;
+        $this->productVariantRepository = $productionVariantRepository;
+        $this->productVariantInformationRepository = $productVariantInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(SynchronizeProductMessage $message): ProductInterface
+    public function __invoke(SynchronizeProductVariantMessage $message): ProductVariantInterface
     {
-        $product = $this->productRepository->findByCode($message->getCode());
+        $product = $this->productRepository->findByCode($message->getProductCode());
         if (!$product) {
-            $product = $this->productRepository->create($message->getCode());
+            throw new \InvalidArgumentException('Product with code "' . $message->getProductCode() . '" not found');
         }
 
-        foreach ($message->getTranslations() as $translation) {
-            $this->synchronizeTranslation($translation, $product);
+        $productVariant = $product->findVariantByCode($message->getCode());
+        if (!$productVariant) {
+            $productVariant = $this->productVariantRepository->create($product, $message->getCode());
         }
 
-        return $product;
+        $this->synchronizeProductVariant($message, $productVariant);
+
+        return $productVariant;
     }
 
-    private function synchronizeTranslation(
-        ProductTranslationValueObject $translationValueObject,
-        ProductInterface $product
+    protected function synchronizeProductVariant(
+        SynchronizeProductVariantMessage $message,
+        ProductVariantInterface $productVariant
+    ): void {
+        foreach ($message->getTranslations() as $translation) {
+            $this->synchronizeTranslation($translation, $productVariant);
+        }
+    }
+
+    protected function synchronizeTranslation(
+        ProductVariantTranslationValueObject $translationValueObject,
+        ProductVariantInterface $productVariant
     ): void {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -83,18 +93,11 @@ class SynchronizeProductVariantMessageHandler
             ]
         );
 
-        $productInformation = $this->productInformationRepository->findById($product->getId(), $dimension);
-        if (!$productInformation) {
-            $productInformation = $this->productInformationRepository->create($product, $dimension);
+        $productVariantInformation = $this->productVariantInformationRepository->findByVariantId($productVariant->getId(), $dimension);
+        if (!$productVariantInformation) {
+            $productVariantInformation = $this->productVariantInformationRepository->create($productVariant, $dimension);
         }
 
-        $productInformation->setName($translationValueObject->getName());
-        $productInformation->setSlug($translationValueObject->getSlug());
-        $productInformation->setDescription($translationValueObject->getDescription());
-        $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
-        $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
-        $productInformation->setShortDescription($translationValueObject->getShortDescription());
-        $productInformation->setUnit($translationValueObject->getUnit());
-        $productInformation->setMarketingText($translationValueObject->getMarketingText());
+        $productVariantInformation->setName($translationValueObject->getName());
     }
 }

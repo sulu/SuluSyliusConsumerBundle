@@ -27,7 +27,7 @@ interface ProductViewInterface extends ProductInterface
     public function getName(): string;
 
     /**
-     * @return ProductInformationVariantInterface[]
+     * @return ProductVariantInformationInterface[]
      */
     public function getVariants(): array;
 

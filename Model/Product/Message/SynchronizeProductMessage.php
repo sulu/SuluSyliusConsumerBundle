@@ -13,9 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
+
 class SynchronizeProductMessage
 {
-    use ProductPayloadTrait;
+    use PayloadTrait;
 
     /**
      * @var string
@@ -31,5 +33,18 @@ class SynchronizeProductMessage
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    /**
+     * @return ProductTranslationValueObject[]
+     */
+    public function getTranslations(): array
+    {
+        $translations = [];
+        foreach ($this->getArrayValue('translations') as $locale => $translationData) {
+            $translations[] = new ProductTranslationValueObject($translationData);
+        }
+
+        return $translations;
     }
 }

@@ -20,7 +20,7 @@ class ExampleSynchronizeProductMessage {
 
     static function getPayload(): array {
         return json_decode('{
-    "name": "T-Shirt \"nihil\"x",
+    "name": "T-Shirt \"nihil\"",
     "id": 53,
     "code": "0602fd01-1e26-313f-9544-420369277dd6",
     "attributes": [
@@ -8220,7 +8220,7 @@ class ExampleSynchronizeProductMessage {
         "de": {
             "locale": "de",
             "id": 53,
-            "name": "T-Shirt \"nihil\"x",
+            "name": "T-Shirt \"nihil\"",
             "slug": "t-shirt-nihil",
             "description": "Similique autem culpa perferendis minima commodi sed fugiat iste. Sunt et quidem optio labore soluta. Quia velit soluta iste consectetur qui odit qui.\r\n\r\nIpsa et porro occaecati nesciunt tempore. Iste itaque impedit est. Quis suscipit at similique est aut repellendus. Ut ad impedit ut ea totam eius.\r\n\r\nQui perspiciatis nam est vitae sequi saepe. Ratione sed et sunt sequi quasi molestiae sed. Voluptatem sed voluptates ut officia sit. Blanditiis voluptas praesentium a ut culpa.",
             "shortDescription": "Qui reiciendis mollitia possimus expedita voluptates. Rerum odit modi ipsam omnis aliquid iusto. Nisi corporis rerum aut corporis. Aut exercitationem at consequatur non."

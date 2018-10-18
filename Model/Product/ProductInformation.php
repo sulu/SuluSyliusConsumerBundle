@@ -65,21 +65,14 @@ class ProductInformation implements ProductInformationInterface
     private $marketingText = '';
 
     /**
-     * @var Collection|ProductInformationVariantInterface[]
-     */
-    private $variants;
-
-    /**
      * @var ProductInterface
      */
     private $product;
 
-    public function __construct(ProductInterface $product, DimensionInterface $dimension, array $variants = [])
+    public function __construct(ProductInterface $product, DimensionInterface $dimension)
     {
         $this->dimension = $dimension;
         $this->product = $product;
-
-        $this->variants = new ArrayCollection($variants);
     }
 
     public function getProductId(): string
@@ -189,34 +182,6 @@ class ProductInformation implements ProductInformationInterface
     public function setMarketingText(string $marketingText): ProductInformationInterface
     {
         $this->marketingText = $marketingText;
-
-        return $this;
-    }
-
-    public function getVariants(): array
-    {
-        return $this->variants->getValues();
-    }
-
-    public function findVariantByCode(string $code): ?ProductInformationVariantInterface
-    {
-        if (!$this->variants->containsKey($code)) {
-            return null;
-        }
-
-        return $this->variants->get($code);
-    }
-
-    public function addVariant(ProductInformationVariantInterface $variant): ProductInformationInterface
-    {
-        $this->variants->set($variant->getCode(), $variant);
-
-        return $this;
-    }
-
-    public function removeVariant(ProductInformationVariantInterface $variant): ProductInformationInterface
-    {
-        $this->variants->remove($variant->getCode());
 
         return $this;
     }

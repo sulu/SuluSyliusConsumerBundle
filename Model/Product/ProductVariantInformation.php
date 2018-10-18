@@ -15,22 +15,17 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
-class ProductInformationVariant implements ProductInformationVariantInterface
+class ProductVariantInformation implements ProductVariantInformationInterface
 {
     /**
-     * @var ProductInformationInterface
+     * @var ProductVariantInterface
      */
-    private $product;
+    private $productVariant;
 
     /**
      * @var DimensionInterface
      */
     private $dimension;
-
-    /**
-     * @var string
-     */
-    private $productId;
 
     /**
      * @var string
@@ -42,17 +37,15 @@ class ProductInformationVariant implements ProductInformationVariantInterface
      */
     private $name = '';
 
-    public function __construct(ProductInformationInterface $product, string $code)
+    public function __construct(ProductVariantInterface $productVariant, DimensionInterface $dimension)
     {
-        $this->product = $product;
-        $this->code = $code;
-        $this->productId = $product->getProductId();
-        $this->dimension = $product->getDimension();
+        $this->productVariant = $productVariant;
+        $this->dimension = $dimension;
     }
 
-    public function getProduct(): ProductInformationInterface
+    public function getProductVariant(): ProductVariantInterface
     {
-        return $this->product;
+        return $this->productVariant;
     }
 
     public function getCode(): string
@@ -65,7 +58,7 @@ class ProductInformationVariant implements ProductInformationVariantInterface
         return $this->name;
     }
 
-    public function setName(string $name): ProductInformationVariantInterface
+    public function setName(string $name): ProductVariantInformationInterface
     {
         $this->name = $name;
 

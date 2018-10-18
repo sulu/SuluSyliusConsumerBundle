@@ -33,12 +33,18 @@ class Product implements ProductInterface
      */
     private $productInformations;
 
+    /**
+     * @var ProductVariant[]|Collection
+     */
+    private $productVariants;
+
     public function __construct(string $id, string $code)
     {
         $this->id = $id;
         $this->code = $code;
 
         $this->productInformations = new ArrayCollection();
+        $this->productVariants = new ArrayCollection();
     }
 
     public function getId(): string
@@ -49,5 +55,33 @@ class Product implements ProductInterface
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getVariants(): array
+    {
+        return $this->productVariants->getValues();
+    }
+
+    public function findVariantByCode(string $code): ?ProductVariantInterface
+    {
+        if (!$this->productVariants->containsKey($code)) {
+            return null;
+        }
+
+        return $this->productVariants->get($code);
+    }
+
+    public function addVariant(ProductVariantInterface $productVariant): ProductInterface
+    {
+        $this->productVariants->set($productVariant->getCode(), $productVariant);
+
+        return $this;
+    }
+
+    public function removeVariant(ProductVariantInterface $productVariant): ProductInterface
+    {
+        $this->productVariants->remove($productVariant->getCode());
+
+        return $this;
     }
 }

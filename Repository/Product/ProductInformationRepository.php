@@ -25,28 +25,20 @@ class ProductInformationRepository extends EntityRepository implements ProductIn
     public function create(ProductInterface $product, DimensionInterface $dimension): ProductInformationInterface
     {
         $className = $this->getClassName();
-        $product = new $className($product, $dimension);
-        $this->getEntityManager()->persist($product);
+        $productInformation = new $className($product, $dimension);
+        $this->getEntityManager()->persist($productInformation);
 
-        return $product;
+        return $productInformation;
     }
 
-    public function findByCode(string $code, DimensionInterface $dimension): ?ProductInformationInterface
-    {
-        /** @var ProductInformationInterface $product */
-        $product = $this->findOneBy(['code' => $code, 'dimension' => $dimension]);
-
-        return $product;
-    }
-
-    public function findById(string $id, DimensionInterface $dimension): ?ProductInformationInterface
+    public function findByProductId(string $productId, DimensionInterface $dimension): ?ProductInformationInterface
     {
         $queryBuilder = $this->createQueryBuilder('product_information')
             ->addSelect('product')
             ->join('product_information.product', 'product')
-            ->where('product.id = :id')
+            ->where('product.id = :productId')
             ->andWhere('IDENTITY(product_information.dimension) = :dimensionId')
-            ->setParameter('id', $id)
+            ->setParameter('productId', $productId)
             ->setParameter('dimensionId', $dimension->getId());
 
         try {
@@ -54,23 +46,18 @@ class ProductInformationRepository extends EntityRepository implements ProductIn
         } catch (NoResultException $exception) {
             return null;
         }
-
-        /** @var ProductInformationInterface $product */
-        $product = $this->find(['product' => $id, 'dimension' => $dimension]);
-
-        return $product;
-    }
-
-    public function remove(ProductInformationInterface $product): void
-    {
-        $this->getEntityManager()->remove($product);
     }
 
     /**
      * @return ProductInformationInterface[]
      */
-    public function findAllById(string $id): array
+    public function findAllByProductId(string $productId): array
     {
-        return $this->findBy(['product' => $id]);
+        return $this->findBy(['product' => $productId]);
+    }
+
+    public function remove(ProductInformationInterface $productInformation): void
+    {
+        $this->getEntityManager()->remove($productInformation);
     }
 }
