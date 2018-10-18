@@ -52,6 +52,6 @@ class ContentRepository extends EntityRepository implements ContentRepositoryInt
 
     public function findByDimensions(string $resourceKey, string $resourceId, array $dimensions): array
     {
-        return $this->findBy(['dimension' => $dimensions]);
+        return $this->findBy(['resourceKey' => $resourceKey, 'resourceId' => $resourceId, 'dimension' => $dimensions]);
     }
 }
