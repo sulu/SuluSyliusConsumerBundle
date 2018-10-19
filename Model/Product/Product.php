@@ -29,22 +29,22 @@ class Product implements ProductInterface
     private $code;
 
     /**
-     * @var ProductInformation[]|Collection
-     */
-    private $productInformations;
-
-    /**
      * @var ProductVariant[]|Collection
      */
     private $productVariants;
+
+    /**
+     * @var ProductInformation[]|Collection
+     */
+    private $productInformations;
 
     public function __construct(string $id, string $code)
     {
         $this->id = $id;
         $this->code = $code;
 
-        $this->productInformations = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
+        $this->productInformations = new ArrayCollection();
     }
 
     public function getId(): string

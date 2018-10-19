@@ -26,10 +26,10 @@ class FindDraftProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
+        $handler = new FindDraftProductQueryHandler($productInformationRepository->reveal(), $dimensionRepository->reveal());
 
         $message = $this->prophesize(FindDraftProductQuery::class);
         $message->getId()->willReturn('123-123-123');
@@ -44,7 +44,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
         )->willReturn($dimension->reveal());
 
         $product = $this->prophesize(ProductInformationInterface::class);
-        $productRepository->findById('123-123-123', $dimension->reveal())
+        $productInformationRepository->findByProductId('123-123-123', $dimension->reveal())
             ->willReturn($product->reveal())
             ->shouldBeCalled();
 
@@ -56,10 +56,10 @@ class FindDraftProductQueryHandlerTest extends TestCase
     {
         $this->expectException(ProductInformationNotFoundException::class);
 
-        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindDraftProductQueryHandler($productRepository->reveal(), $dimensionRepository->reveal());
+        $handler = new FindDraftProductQueryHandler($productInformationRepository->reveal(), $dimensionRepository->reveal());
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
@@ -73,7 +73,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
         $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
-        $productRepository->findById('123-123-123', $dimension->reveal())->willReturn(null);
+        $productInformationRepository->findByProductId('123-123-123', $dimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

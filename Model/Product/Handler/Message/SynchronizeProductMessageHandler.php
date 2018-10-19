@@ -62,22 +62,34 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
-        foreach ($message->getTranslations() as $translation) {
-            $this->synchronizeTranslation($translation, $product);
+        $this->synchronizeTranslations($message, $product);
+    }
+
+    protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void {
+        foreach ($message->getTranslations() as $translationValueObject) {
+            $dimensionDraft = $this->dimensionRepository->findOrCreateByAttributes(
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                ]
+            );
+            $dimensionLive = $this->dimensionRepository->findOrCreateByAttributes(
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                ]
+            );
+
+            $this->synchronizeTranslation($translationValueObject, $product, $dimensionDraft);
+            $this->synchronizeTranslation($translationValueObject, $product, $dimensionLive);
         }
     }
 
     protected function synchronizeTranslation(
         ProductTranslationValueObject $translationValueObject,
-        ProductInterface $product
+        ProductInterface $product,
+        DimensionInterface $dimension
     ): void {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
-            ]
-        );
-
         $productInformation = $this->productInformationRepository->findByProductId($product->getId(), $dimension);
         if (!$productInformation) {
             $productInformation = $this->productInformationRepository->create($product, $dimension);
@@ -89,7 +101,5 @@ class SynchronizeProductMessageHandler
         $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
         $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
-        $productInformation->setUnit($translationValueObject->getUnit());
-        $productInformation->setMarketingText($translationValueObject->getMarketingText());
     }
 }

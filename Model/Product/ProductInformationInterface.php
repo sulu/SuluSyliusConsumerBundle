@@ -43,9 +43,5 @@ interface ProductInformationInterface
     public function getShortDescription(): string;
     public function setShortDescription(string $shortDescription): self;
 
-    public function getUnit(): string;
-    public function setUnit(string $unit): self;
-
-    public function getMarketingText(): string;
-    public function setMarketingText(string $marketingText): self;
+    public function mapPublishProperties(self $draft): void;
 }

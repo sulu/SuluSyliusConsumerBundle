@@ -42,12 +42,11 @@ class ProductViewFactoryTest extends TestCase
 
         $dimension = $this->prophesize(DimensionInterface::class);
 
-        $product = $this->prophesize(ProductInformationInterface::class);
-        $product->getDimension()->willReturn($dimension->reveal());
-        $product->getProductId()->willReturn('123-123-123');
-        $product->getProductCode()->willReturn('product-1');
-        $product->getName()->willReturn('Product One');
-        $product->getVariants()->willReturn([]);
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+        $productInformation->getDimension()->willReturn($dimension->reveal());
+        $productInformation->getProductId()->willReturn('123-123-123');
+        $productInformation->getProductCode()->willReturn('product-1');
+        $productInformation->getName()->willReturn('Product One');
 
         $content = $this->prophesize(ContentInterface::class);
         $content->getDimension()->willReturn($dimension->reveal());
@@ -71,13 +70,12 @@ class ProductViewFactoryTest extends TestCase
         $viewContent->getType()->willReturn('default');
         $contentViewFactory->create([$content->reveal()])->willReturn($viewContent->reveal());
 
-        $result = $factory->create($product->reveal(), [$dimension->reveal()]);
+        $result = $factory->create($productInformation->reveal(), [$dimension->reveal()]);
 
         $this->assertInstanceOf(ProductViewInterface::class, $result);
         $this->assertEquals('123-123-123', $result->getId());
         $this->assertEquals('product-1', $result->getCode());
         $this->assertEquals('Product One', $result->getName());
-        $this->assertEquals([], $result->getVariants());
         $this->assertEquals('default', $result->getContentType());
         $this->assertEquals(['title' => 'Sulu is awesome'], $result->getContentData());
         $this->assertEquals('/test', $result->getRoutePath());

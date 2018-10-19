@@ -77,25 +77,46 @@ class SynchronizeProductVariantMessageHandler
         SynchronizeProductVariantMessage $message,
         ProductVariantInterface $productVariant
     ): void {
-        foreach ($message->getTranslations() as $translation) {
-            $this->synchronizeTranslation($translation, $productVariant);
+        $this->synchronizeTranslations($message, $productVariant);
+    }
+
+    protected function synchronizeTranslations(
+        SynchronizeProductVariantMessage $message,
+        ProductVariantInterface $productVariant
+    ): void {
+        foreach ($message->getTranslations() as $translationValueObject) {
+            $dimensionDraft = $this->dimensionRepository->findOrCreateByAttributes(
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                ]
+            );
+            $dimensionLive = $this->dimensionRepository->findOrCreateByAttributes(
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                ]
+            );
+
+            $this->synchronizeTranslation($translationValueObject, $productVariant, $dimensionDraft);
+            $this->synchronizeTranslation($translationValueObject, $productVariant, $dimensionLive);
         }
     }
 
     protected function synchronizeTranslation(
         ProductVariantTranslationValueObject $translationValueObject,
-        ProductVariantInterface $productVariant
+        ProductVariantInterface $productVariant,
+        DimensionInterface $dimension
     ): void {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
-            ]
+        $productVariantInformation = $this->productVariantInformationRepository->findByVariantId(
+            $productVariant->getId(),
+            $dimension
         );
-
-        $productVariantInformation = $this->productVariantInformationRepository->findByVariantId($productVariant->getId(), $dimension);
         if (!$productVariantInformation) {
-            $productVariantInformation = $this->productVariantInformationRepository->create($productVariant, $dimension);
+            $productVariantInformation = $this->productVariantInformationRepository->create(
+                $productVariant,
+                $dimension
+            );
         }
 
         $productVariantInformation->setName($translationValueObject->getName());

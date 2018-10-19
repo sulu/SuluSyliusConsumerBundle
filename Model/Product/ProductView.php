@@ -59,11 +59,6 @@ class ProductView extends Product implements ProductViewInterface
         return $this->productInformation->getName();
     }
 
-    public function getVariants(): array
-    {
-        return $this->productInformation->getVariants();
-    }
-
     public function getContentType(): ?string
     {
         return $this->content->getType();

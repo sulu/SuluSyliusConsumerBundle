@@ -58,14 +58,4 @@ class ProductTranslationValueObject
     {
         return $this->getStringValueWithDefault('shortDescription', '');
     }
-
-    public function getUnit(): string
-    {
-        return $this->getStringValueWithDefault('unit', '');
-    }
-
-    public function getMarketingText(): string
-    {
-        return $this->getStringValueWithDefault('marketingText', '');
-    }
 }

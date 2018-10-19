@@ -28,12 +28,12 @@ class FindPublishedProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
         $handler = new FindPublishedProductQueryHandler(
-            $productRepository->reveal(),
+            $productInformationRepository->reveal(),
             $dimensionRepository->reveal(),
             $productViewFactory->reveal()
         );
@@ -56,7 +56,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         )->willReturn($localizedDimension->reveal());
 
         $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productRepository->findById('123-123-123', $localizedDimension->reveal())
+        $productInformationRepository->findByProductId('123-123-123', $localizedDimension->reveal())
             ->willReturn($productInformation->reveal())
             ->shouldBeCalled();
 
@@ -73,12 +73,12 @@ class FindPublishedProductQueryHandlerTest extends TestCase
     {
         $this->expectException(ProductInformationNotFoundException::class);
 
-        $productRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
         $handler = new FindPublishedProductQueryHandler(
-            $productRepository->reveal(),
+            $productInformationRepository->reveal(),
             $dimensionRepository->reveal(),
             $productViewFactory->reveal()
         );
@@ -97,7 +97,7 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
-        $productRepository->findById('123-123-123', $localizedDimension->reveal())->willReturn(null);
+        $productInformationRepository->findByProductId('123-123-123', $localizedDimension->reveal())->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

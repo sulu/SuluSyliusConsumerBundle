@@ -55,16 +55,6 @@ class ProductInformation implements ProductInformationInterface
     private $shortDescription = '';
 
     /**
-     * @var string
-     */
-    private $unit = '';
-
-    /**
-     * @var string
-     */
-    private $marketingText = '';
-
-    /**
      * @var ProductInterface
      */
     private $product;
@@ -162,27 +152,18 @@ class ProductInformation implements ProductInformationInterface
         return $this;
     }
 
-    public function getUnit(): string
+    public function mapPublishProperties(ProductInformationInterface $draft): void
     {
-        return $this->unit;
-    }
+        $setters = array_filter(get_class_methods(ProductInformation::class), function($method) {
+            return strpos($method, 'set') === 0;
+        });
 
-    public function setUnit(string $unit): ProductInformationInterface
-    {
-        $this->unit = $unit;
+        foreach ($setters as $setter) {
+            $getter = str_replace('set', 'get', $setter);
 
-        return $this;
-    }
-
-    public function getMarketingText(): string
-    {
-        return $this->marketingText;
-    }
-
-    public function setMarketingText(string $marketingText): ProductInformationInterface
-    {
-        $this->marketingText = $marketingText;
-
-        return $this;
+            if (method_exists($draft, $getter)) {
+                $this->$setter($draft->$getter());
+            }
+        }
     }
 }
