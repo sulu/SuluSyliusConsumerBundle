@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 class ProductInformation implements ProductInformationInterface
@@ -154,8 +152,8 @@ class ProductInformation implements ProductInformationInterface
 
     public function mapPublishProperties(ProductInformationInterface $draft): void
     {
-        $setters = array_filter(get_class_methods(ProductInformation::class), function($method) {
-            return strpos($method, 'set') === 0;
+        $setters = array_filter(get_class_methods(ProductInformation::class), function ($method) {
+            return 0 === strpos($method, 'set');
         });
 
         foreach ($setters as $setter) {

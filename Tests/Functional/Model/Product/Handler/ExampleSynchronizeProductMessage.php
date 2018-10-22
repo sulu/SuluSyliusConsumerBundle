@@ -13,12 +13,15 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
-class ExampleSynchronizeProductMessage {
-    static function getCode(): string {
+class ExampleSynchronizeProductMessage
+{
+    public static function getCode(): string
+    {
         return '0602fd01-1e26-313f-9544-420369277dd6';
     }
 
-    static function getPayload(): array {
+    public static function getPayload(): array
+    {
         return json_decode('{
     "name": "T-Shirt \"nihil\"",
     "id": 53,

@@ -65,7 +65,8 @@ class SynchronizeProductMessageHandler
         $this->synchronizeTranslations($message, $product);
     }
 
-    protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void {
+    protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
         foreach ($message->getTranslations() as $translationValueObject) {
             $dimensionDraft = $this->dimensionRepository->findOrCreateByAttributes(
                 [

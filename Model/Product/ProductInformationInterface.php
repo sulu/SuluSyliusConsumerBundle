@@ -26,21 +26,27 @@ interface ProductInformationInterface
     public function getDimension(): DimensionInterface;
 
     public function getName(): string;
+
     public function setName(string $name): self;
 
     public function getSlug(): string;
+
     public function setSlug(string $slug): self;
 
     public function getDescription(): string;
+
     public function setDescription(string $description): self;
 
     public function getMetaKeywords(): string;
+
     public function setMetaKeywords(string $metaKeywords): self;
 
     public function getMetaDescription(): string;
+
     public function setMetaDescription(string $metaDescription): self;
 
     public function getShortDescription(): string;
+
     public function setShortDescription(string $shortDescription): self;
 
     public function mapPublishProperties(self $draft): void;
