@@ -14,9 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
@@ -24,14 +23,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterf
 class FindPublishedProductQueryHandler
 {
     /**
-     * @var ProductInformationRepositoryInterface
+     * @var ProductRepositoryInterface
      */
     private $productRepository;
-
-    /**
-     * @var DimensionRepositoryInterface
-     */
-    private $dimensionRepository;
 
     /**
      * @var ProductViewFactoryInterface
@@ -39,32 +33,24 @@ class FindPublishedProductQueryHandler
     private $productViewFactory;
 
     public function __construct(
-        ProductInformationRepositoryInterface $productRepository,
-        DimensionRepositoryInterface $dimensionRepository,
+        ProductRepositoryInterface $productRepository,
         ProductViewFactoryInterface $productViewFactory
     ) {
         $this->productRepository = $productRepository;
-        $this->dimensionRepository = $dimensionRepository;
         $this->productViewFactory = $productViewFactory;
     }
 
     public function __invoke(FindPublishedProductQuery $query): ProductViewInterface
     {
-        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
-        );
-        $localizedLiveDimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $query->getLocale(),
-            ]
-        );
-
-        $product = $this->productRepository->findByProductId($query->getId(), $localizedLiveDimension);
+        $product = $this->productRepository->findById($query->getId());
         if (!$product) {
-            throw new ProductInformationNotFoundException($query->getId());
+            throw new ProductNotFoundException($query->getId());
         }
 
-        return $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+        return $this->productViewFactory->create(
+            $product,
+            DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+            $query->getLocale()
+        );
     }
 }

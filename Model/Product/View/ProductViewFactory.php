@@ -15,18 +15,27 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductInformationRepository;
 
 class ProductViewFactory implements ProductViewFactoryInterface
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var DimensionRepositoryInterface
      */
-    private $contentRepository;
+    private $dimensionRepository;
+
+    /**
+     * @var ProductInformationRepositoryInterface
+     */
+    private $productInformationRepository;
 
     /**
      * @var RoutableResourceRepositoryInterface
@@ -39,37 +48,44 @@ class ProductViewFactory implements ProductViewFactoryInterface
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
+        DimensionRepositoryInterface $dimensionRepository,
+        ProductInformationRepositoryInterface $productInformationRepository,
         RoutableResourceRepositoryInterface $routableResourceRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
+        $this->dimensionRepository = $dimensionRepository;
+        $this->productInformationRepository = $productInformationRepository;
         $this->routableResourceRepository = $routableResourceRepository;
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function create(ProductInformationInterface $product, array $dimensions): ProductViewInterface
+    public function create(ProductInterface $product, string $stage, string $locale): ProductViewInterface
     {
-        $viewProduct = new ProductView($product->getProductId(), $product->getProductCode());
-        $viewProduct->setProductInformation($product);
-
-        $contentDimensions = $this->contentRepository->findByDimensions(
-            ProductInterface::RESOURCE_KEY,
-            $product->getProductId(),
-            $dimensions
+        $localizedDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+            ]
+        );
+        $productInformation = $this->productInformationRepository->findByProductId(
+            $product->getId(),
+            $localizedDimension
         );
 
-        $content = $this->contentViewFactory->create($contentDimensions);
-        if ($content) {
-            $viewProduct->setContent($content);
-        }
+        $content = $this->contentViewFactory->create(
+            ProductInterface::RESOURCE_KEY,
+            $product->getId(),
+            $stage,
+            $locale
+        );
 
         $routableResource = $this->routableResourceRepository->findOrCreateByResource(
             ProductInterface::RESOURCE_KEY,
-            $product->getProductId(),
-            $product->getDimension()
+            $product->getId(),
+            $localizedDimension
         );
-        $viewProduct->setRoutableResource($routableResource);
+
+        $viewProduct = new ProductView($locale, $product, $productInformation, $content, $routableResource);
 
         return $viewProduct;
     }

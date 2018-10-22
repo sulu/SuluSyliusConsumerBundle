@@ -13,19 +13,28 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
-class ProductView extends Product implements ProductViewInterface
+class ProductView implements ProductViewInterface
 {
+    /**
+     * @var string
+     */
+    private $locale;
+
+    /**
+     * @var ProductInterface
+     */
+    private $product;
+
     /**
      * @var ProductInformationInterface
      */
     private $productInformation;
 
     /**
-     * @var ContentInterface
+     * @var ContentViewInterface
      */
     private $content;
 
@@ -34,49 +43,42 @@ class ProductView extends Product implements ProductViewInterface
      */
     private $routableResource;
 
-    public function setProductInformation(ProductInformationInterface $productInformation): ProductViewInterface
-    {
+    public function __construct(
+        string $locale,
+        ProductInterface $product,
+        ProductInformationInterface $productInformation,
+        ContentViewInterface $content,
+        RoutableResourceInterface $routableResource
+    ) {
+        $this->locale = $locale;
+        $this->product = $product;
         $this->productInformation = $productInformation;
-
-        return $this;
-    }
-
-    public function setContent(ContentInterface $content): ProductViewInterface
-    {
         $this->content = $content;
-
-        return $this;
-    }
-
-    public function setRoutableResource(RoutableResourceInterface $routableResource): ProductViewInterface
-    {
         $this->routableResource = $routableResource;
-
-        return $this;
     }
 
     public function getLocale(): string
     {
-        return $this->productInformation->getDimension()->getAttributeValue(DimensionInterface::ATTRIBUTE_KEY_LOCALE);
+        return $this->locale;
     }
 
-    public function getName(): string
+    public function getProduct(): ProductInterface
     {
-        return $this->productInformation->getName();
+        return $this->product;
     }
 
-    public function getContentType(): ?string
+    public function getProductInformation(): ProductInformationInterface
     {
-        return $this->content->getType();
+        return $this->productInformation;
     }
 
-    public function getContentData(): array
+    public function getContent(): ContentViewInterface
     {
-        return $this->content->getData();
+        return $this->content;
     }
 
-    public function getRoutePath(): string
+    public function getRoutableResource(): RoutableResourceInterface
     {
-        return $this->routableResource->getRoute()->getPath();
+        return $this->routableResource;
     }
 }

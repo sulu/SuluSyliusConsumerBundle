@@ -13,32 +13,55 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\View;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentView;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 
 class ContentViewFactory implements ContentViewFactoryInterface
 {
     /**
+     * @var DimensionRepositoryInterface
+     */
+    private $dimensionRepository;
+
+    /**
+     * @var ContentRepositoryInterface
+     */
+    private $contentRepository;
+
+    public function __construct(
+        DimensionRepositoryInterface $dimensionRepository,
+        ContentRepositoryInterface $contentRepository
+    ) {
+        $this->dimensionRepository = $dimensionRepository;
+        $this->contentRepository = $contentRepository;
+    }
+
+    /**
      * @param ContentInterface[] $dimensions
      */
-    public function create(array $dimensions): ?ContentInterface
+    public function create(string $resourceKey, string $resourceId, string $stage, string $locale): ContentView
     {
-        $firstDimension = reset($dimensions);
-        if (!$firstDimension) {
-            return null;
-        }
+        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage]
+        );
+        $localizedDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+            ]
+        );
 
-        $data = [];
-        foreach ($dimensions as $dimension) {
-            $data = array_merge($data, $dimension->getData());
-        }
+        $content = $this->contentRepository->findByResource($resourceKey, $resourceId, $dimension);
+        $localizedContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $localizedDimension);
 
-        return new Content(
-            $firstDimension->getDimension(),
-            $firstDimension->getResourceKey(),
-            $firstDimension->getResourceId(),
-            $firstDimension->getType(),
-            $data
+        return new ContentView(
+            $resourceKey,
+            $resourceId,
+            $content->getType(),
+            array_merge($content->getData(), $localizedContent->getData())
         );
     }
 }

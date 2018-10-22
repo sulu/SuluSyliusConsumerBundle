@@ -21,6 +21,8 @@ interface ProductInformationRepositoryInterface
 
     public function findByProductId(string $productId, DimensionInterface $dimension): ?ProductInformationInterface;
 
+    public function findByProductIdAndDimensions(string $productId, array $dimensions): array;
+
     /**
      * @return ProductInformationInterface[]
      */
