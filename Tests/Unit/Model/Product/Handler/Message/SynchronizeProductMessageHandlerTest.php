@@ -73,16 +73,28 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         )->willReturn($dimensionLive->reveal());
 
         $productInformationRepository->findByProductId('123-123-123', $dimensionDraft->reveal())->willReturn(null);
-        $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformation->setSlug('/nice-slug')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformation->setDescription('Very nice description! Yes!')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformation->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformation->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformation->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformation->reveal());
+        $productInformationDraft = $this->prophesize(ProductInformationInterface::class);
+        $productInformationDraft->setName('Product One')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setSlug('/nice-slug')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setDescription('Very nice description! Yes!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationRepository->create($product->reveal(), $dimensionDraft->reveal())
             ->shouldBeCalled()
-            ->willReturn($productInformation->reveal());
+            ->willReturn($productInformationDraft->reveal());
+
+        $productInformationRepository->findByProductId('123-123-123', $dimensionLive->reveal())->willReturn(null);
+        $productInformationLive = $this->prophesize(ProductInformationInterface::class);
+        $productInformationLive->setName('Product One')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setSlug('/nice-slug')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setDescription('Very nice description! Yes!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationRepository->create($product->reveal(), $dimensionLive->reveal())
+            ->shouldBeCalled()
+            ->willReturn($productInformationLive->reveal());
 
         $handler->__invoke($message->reveal());
     }
@@ -92,10 +104,14 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productTranslationValueObject = $this->prophesize(ProductTranslationValueObject::class);
         $productTranslationValueObject->getLocale()->willReturn('de');
         $productTranslationValueObject->getName()->willReturn('Product One');
+        $productTranslationValueObject->getSlug()->willReturn('/nice-slug');
+        $productTranslationValueObject->getDescription()->willReturn('Very nice description! Yes!');
+        $productTranslationValueObject->getShortDescription()->willReturn('Nice, but short!');
+        $productTranslationValueObject->getMetaKeywords()->willReturn('123, 123, 123');
+        $productTranslationValueObject->getMetaDescription()->willReturn('Meta description..');
 
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
-        $message->getSlug()->willReturn('/nice-slug');
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -112,18 +128,41 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->getId()->willReturn('123-123-123');
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
-        $dimension = $this->prophesize(DimensionInterface::class);
+        $dimensionDraft = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
                 DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
             ]
-        )->willReturn($dimension->reveal());
+        )->willReturn($dimensionDraft->reveal());
+        $dimensionLive = $this->prophesize(DimensionInterface::class);
+        $dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => 'de',
+            ]
+        )->willReturn($dimensionLive->reveal());
 
-        $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productInformation->setName('Product One')->shouldBeCalled()->willReturn($productInformation->reveal());
-        $productInformationRepository->findByProductId('123-123-123', $dimension->reveal())
-            ->willReturn($productInformation->reveal());
+        $productInformationDraft = $this->prophesize(ProductInformationInterface::class);
+        $productInformationDraft->setName('Product One')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setSlug('/nice-slug')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setDescription('Very nice description! Yes!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationRepository->findByProductId('123-123-123', $dimensionDraft->reveal())
+            ->willReturn($productInformationDraft->reveal());
+
+        $productInformationLive = $this->prophesize(ProductInformationInterface::class);
+        $productInformationLive->setName('Product One')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setSlug('/nice-slug')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setDescription('Very nice description! Yes!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationRepository->findByProductId('123-123-123', $dimensionLive->reveal())
+            ->willReturn($productInformationLive->reveal());
+
         $productInformationRepository->create(Argument::cetera())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
