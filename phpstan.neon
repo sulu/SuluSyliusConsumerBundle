@@ -14,3 +14,5 @@ parameters:
         - %currentWorkingDirectory%/Tests/var/*
     symfony:
         container_xml_path: %rootDir%/../../../Tests/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml
+    ignoreErrors:
+        - '#GenericSerializationVisitor::setData#'

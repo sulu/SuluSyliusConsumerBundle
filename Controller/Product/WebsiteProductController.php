@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 
+use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\HttpCacheBundle\Cache\SuluHttpCache;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
@@ -29,14 +30,44 @@ class WebsiteProductController implements ContainerAwareInterface
 
     public function indexAction(Request $request, ProductViewInterface $object, string $view): Response
     {
+        return $this->renderProduct($request, $object, $view);
+    }
+
+    protected function renderProduct(
+        Request $request,
+        ProductViewInterface $object,
+        string $view,
+        array $attributes = []
+    ): Response {
         $requestFormat = $request->getRequestFormat();
         $viewTemplate = $view . '.' . $requestFormat . '.twig';
 
         return $this->render(
             $viewTemplate,
-            $this->getAttributeResolver()->resolve(['product' => $object]),
+            $this->getAttributes($attributes, $object),
             $this->createResponse($request)
         );
+    }
+
+    protected function getAttributes(array $attributes, ProductViewInterface $object): array
+    {
+        return $this->getAttributeResolver()->resolve(array_merge($this->serialize($object), $attributes));
+    }
+
+    protected function serialize(ProductViewInterface $object): array
+    {
+        /** @var array $result */
+        $result = $this->getSerializer()->serialize($object, 'array');
+
+        return $result;
+    }
+
+    protected function getSerializer(): SerializerInterface
+    {
+        /** @var SerializerInterface $serializer */
+        $serializer = $this->get('jms_serializer');
+
+        return $serializer;
     }
 
     protected function getAttributeResolver(): TemplateAttributeResolverInterface

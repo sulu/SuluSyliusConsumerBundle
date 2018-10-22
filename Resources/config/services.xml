@@ -23,6 +23,14 @@
             <tag name="jms_serializer.event_subscriber"/>
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ProductSerializerSubscriber">
+            <argument type="service" id="sulu.content.structure_manager"/>
+            <argument type="service" id="sulu.content.type_manager"/>
+            <argument type="service" id="request_stack"/>
+
+            <tag name="jms_serializer.event_subscriber"/>
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider">
             <argument type="service" id="message_bus"/>
             <argument type="service" id="sulu_content.structure.factory"/>
