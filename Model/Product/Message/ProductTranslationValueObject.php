@@ -33,4 +33,29 @@ class ProductTranslationValueObject
     {
         return $this->getStringValueWithDefault('name', '');
     }
+
+    public function getSlug(): string
+    {
+        return $this->getStringValueWithDefault('slug', '');
+    }
+
+    public function getDescription(): string
+    {
+        return $this->getStringValueWithDefault('description', '');
+    }
+
+    public function getMetaKeywords(): string
+    {
+        return $this->getStringValueWithDefault('metaKeywords', '');
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->getStringValueWithDefault('metaDescription', '');
+    }
+
+    public function getShortDescription(): string
+    {
+        return $this->getStringValueWithDefault('shortDescription', '');
+    }
 }

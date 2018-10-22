@@ -17,7 +17,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 interface ProductInformationInterface
 {
-    public function __construct(ProductInterface $product, DimensionInterface $dimension, array $variants = []);
+    public function __construct(ProductInterface $product, DimensionInterface $dimension);
 
     public function getProductId(): string;
 
@@ -29,14 +29,25 @@ interface ProductInformationInterface
 
     public function setName(string $name): self;
 
-    /**
-     * @return ProductInformationVariantInterface[]
-     */
-    public function getVariants(): array;
+    public function getSlug(): string;
 
-    public function findVariantByCode(string $code): ?ProductInformationVariantInterface;
+    public function setSlug(string $slug): self;
 
-    public function addVariant(ProductInformationVariantInterface $variant): self;
+    public function getDescription(): string;
 
-    public function removeVariant(ProductInformationVariantInterface $variant): self;
+    public function setDescription(string $description): self;
+
+    public function getMetaKeywords(): string;
+
+    public function setMetaKeywords(string $metaKeywords): self;
+
+    public function getMetaDescription(): string;
+
+    public function setMetaDescription(string $metaDescription): self;
+
+    public function getShortDescription(): string;
+
+    public function setShortDescription(string $shortDescription): self;
+
+    public function mapPublishProperties(self $draft): void;
 }

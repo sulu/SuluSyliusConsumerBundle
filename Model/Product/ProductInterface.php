@@ -22,4 +22,15 @@ interface ProductInterface
     public function getId(): string;
 
     public function getCode(): string;
+
+    /**
+     * @return ProductVariantInterface[]
+     */
+    public function getVariants(): array;
+
+    public function findVariantByCode(string $code): ?ProductVariantInterface;
+
+    public function addVariant(ProductVariantInterface $productVariant): self;
+
+    public function removeVariant(ProductVariantInterface $productVariant): self;
 }

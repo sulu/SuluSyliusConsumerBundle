@@ -29,6 +29,11 @@ class Product implements ProductInterface
     private $code;
 
     /**
+     * @var ProductVariant[]|Collection
+     */
+    private $productVariants;
+
+    /**
      * @var ProductInformation[]|Collection
      */
     private $productInformations;
@@ -38,6 +43,7 @@ class Product implements ProductInterface
         $this->id = $id;
         $this->code = $code;
 
+        $this->productVariants = new ArrayCollection();
         $this->productInformations = new ArrayCollection();
     }
 
@@ -49,5 +55,33 @@ class Product implements ProductInterface
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getVariants(): array
+    {
+        return $this->productVariants->getValues();
+    }
+
+    public function findVariantByCode(string $code): ?ProductVariantInterface
+    {
+        if (!$this->productVariants->containsKey($code)) {
+            return null;
+        }
+
+        return $this->productVariants->get($code);
+    }
+
+    public function addVariant(ProductVariantInterface $productVariant): ProductInterface
+    {
+        $this->productVariants->set($productVariant->getCode(), $productVariant);
+
+        return $this;
+    }
+
+    public function removeVariant(ProductVariantInterface $productVariant): ProductInterface
+    {
+        $this->productVariants->remove($productVariant->getCode());
+
+        return $this;
     }
 }

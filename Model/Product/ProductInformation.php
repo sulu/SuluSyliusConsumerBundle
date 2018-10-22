@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 class ProductInformation implements ProductInformationInterface
@@ -30,22 +28,39 @@ class ProductInformation implements ProductInformationInterface
     private $name = '';
 
     /**
-     * @var Collection|ProductInformationVariantInterface[]
+     * @var string
      */
-    private $variants;
+    private $slug = '';
+
+    /**
+     * @var string
+     */
+    private $description = '';
+
+    /**
+     * @var string
+     */
+    private $metaKeywords = '';
+
+    /**
+     * @var string
+     */
+    private $metaDescription = '';
+
+    /**
+     * @var string
+     */
+    private $shortDescription = '';
 
     /**
      * @var ProductInterface
      */
     private $product;
 
-    public function __construct(ProductInterface $product, DimensionInterface $dimension, array $variants = [])
+    public function __construct(ProductInterface $product, DimensionInterface $dimension)
     {
         $this->dimension = $dimension;
         $this->product = $product;
-        $this->product = $product;
-
-        $this->variants = new ArrayCollection($variants);
     }
 
     public function getProductId(): string
@@ -75,31 +90,78 @@ class ProductInformation implements ProductInformationInterface
         return $this;
     }
 
-    public function getVariants(): array
+    public function getSlug(): string
     {
-        return $this->variants->getValues();
+        return $this->slug;
     }
 
-    public function findVariantByCode(string $code): ?ProductInformationVariantInterface
+    public function setSlug(string $slug): ProductInformationInterface
     {
-        if (!$this->variants->containsKey($code)) {
-            return null;
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): ProductInformationInterface
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getMetaKeywords(): string
+    {
+        return $this->metaKeywords;
+    }
+
+    public function setMetaKeywords(string $metaKeywords): ProductInformationInterface
+    {
+        $this->metaKeywords = $metaKeywords;
+
+        return $this;
+    }
+
+    public function getMetaDescription(): string
+    {
+        return $this->metaKeywords;
+    }
+
+    public function setMetaDescription(string $metaDescription): ProductInformationInterface
+    {
+        $this->metaDescription = $metaDescription;
+
+        return $this;
+    }
+
+    public function getShortDescription(): string
+    {
+        return $this->shortDescription;
+    }
+
+    public function setShortDescription(string $shortDescription): ProductInformationInterface
+    {
+        $this->shortDescription = $shortDescription;
+
+        return $this;
+    }
+
+    public function mapPublishProperties(ProductInformationInterface $draft): void
+    {
+        $setters = array_filter(get_class_methods(ProductInformation::class), function ($method) {
+            return 0 === strpos($method, 'set');
+        });
+
+        foreach ($setters as $setter) {
+            $getter = str_replace('set', 'get', $setter);
+
+            if (method_exists($draft, $getter)) {
+                $this->$setter($draft->$getter());
+            }
         }
-
-        return $this->variants->get($code);
-    }
-
-    public function addVariant(ProductInformationVariantInterface $variant): ProductInformationInterface
-    {
-        $this->variants->set($variant->getCode(), $variant);
-
-        return $this;
-    }
-
-    public function removeVariant(ProductInformationVariantInterface $variant): ProductInformationInterface
-    {
-        $this->variants->remove($variant->getCode());
-
-        return $this;
     }
 }

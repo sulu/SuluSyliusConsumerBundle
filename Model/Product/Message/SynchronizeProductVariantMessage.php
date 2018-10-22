@@ -15,18 +15,35 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductVariantValueObject
+class SynchronizeProductVariantMessage
 {
     use PayloadTrait;
 
-    public function __construct(array $payload)
+    /**
+     * @var string
+     */
+    private $productCode;
+
+    /**
+     * @var string
+     */
+    private $code;
+
+    public function __construct(string $productCode, string $code, array $payload)
     {
+        $this->productCode = $productCode;
+        $this->code = $code;
         $this->initializePayload($payload);
+    }
+
+    public function getProductCode(): string
+    {
+        return $this->productCode;
     }
 
     public function getCode(): string
     {
-        return $this->getStringValue('code');
+        return $this->code;
     }
 
     /**
@@ -34,23 +51,12 @@ class ProductVariantValueObject
      */
     public function getTranslations(): array
     {
-        return array_map(
-            function (array $payload) {
-                return new ProductVariantTranslationValueObject($payload);
-            },
-            $this->getArrayValue('translations')
-        );
-    }
-
-    public function findTranslationByLocale(string $locale): ?ProductVariantTranslationValueObject
-    {
-        foreach ($this->getTranslations() as $translation) {
-            if ($locale === $translation->getLocale()) {
-                return $translation;
-            }
+        $translations = [];
+        foreach ($this->getArrayValue('translations') as $locale => $translationData) {
+            $translations[] = new ProductVariantTranslationValueObject($translationData);
         }
 
-        return null;
+        return $translations;
     }
 
     /**

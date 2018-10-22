@@ -43,7 +43,6 @@ class ProductViewTest extends TestCase
     public function testGetVariants(): void
     {
         $productInformation = $this->prophesize(ProductInformationInterface::class);
-        $productInformation->getVariants()->willReturn([]);
 
         $productView = new ProductView('123-123-123', 'product-1');
         $productView->setProductInformation($productInformation->reveal());

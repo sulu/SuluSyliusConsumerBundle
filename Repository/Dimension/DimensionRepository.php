@@ -48,7 +48,7 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
 
     public function findOrCreateByAttributes(array $attributes): DimensionInterface
     {
-        $dimension = $this->findByAttributes($attributes);
+        $dimension = $this->findOneByAttributes($attributes);
         if ($dimension) {
             return $dimension;
         }
@@ -56,7 +56,7 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
         return $this->create($attributes);
     }
 
-    protected function findByAttributes(array $attributes): ?DimensionInterface
+    protected function findOneByAttributes(array $attributes): ?DimensionInterface
     {
         $queryBuilder = $this->createQueryBuilder('dimension')
             ->where('dimension.attributeCount = ' . count($attributes));

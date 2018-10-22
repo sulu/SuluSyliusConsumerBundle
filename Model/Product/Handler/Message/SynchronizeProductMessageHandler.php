@@ -16,11 +16,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -37,11 +34,6 @@ class SynchronizeProductMessageHandler
     private $productInformationRepository;
 
     /**
-     * @var ProductInformationVariantRepositoryInterface
-     */
-    private $variantRepository;
-
-    /**
      * @var DimensionRepositoryInterface
      */
     private $dimensionRepository;
@@ -49,12 +41,10 @@ class SynchronizeProductMessageHandler
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
-        ProductInformationVariantRepositoryInterface $variantRepository,
         DimensionRepositoryInterface $dimensionRepository
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
-        $this->variantRepository = $variantRepository;
         $this->dimensionRepository = $dimensionRepository;
     }
 
@@ -65,59 +55,52 @@ class SynchronizeProductMessageHandler
             $product = $this->productRepository->create($message->getCode());
         }
 
-        foreach ($message->getTranslations() as $translation) {
-            $this->synchronizeProduct($message, $translation, $product);
-        }
+        $this->synchronizeProduct($message, $product);
 
         return $product;
     }
 
-    private function synchronizeProduct(
-        SynchronizeProductMessage $message,
-        ProductTranslationValueObject $translationValueObject,
-        ProductInterface $product
-    ): void {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
-            ]
-        );
+    protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
+        $this->synchronizeTranslations($message, $product);
+    }
 
-        $productInformation = $this->productInformationRepository->findById($product->getId(), $dimension);
+    protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
+        foreach ($message->getTranslations() as $translationValueObject) {
+            $dimensionDraft = $this->dimensionRepository->findOrCreateByAttributes(
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                ]
+            );
+            $dimensionLive = $this->dimensionRepository->findOrCreateByAttributes(
+                [
+                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                ]
+            );
+
+            $this->synchronizeTranslation($translationValueObject, $product, $dimensionDraft);
+            $this->synchronizeTranslation($translationValueObject, $product, $dimensionLive);
+        }
+    }
+
+    protected function synchronizeTranslation(
+        ProductTranslationValueObject $translationValueObject,
+        ProductInterface $product,
+        DimensionInterface $dimension
+    ): void {
+        $productInformation = $this->productInformationRepository->findByProductId($product->getId(), $dimension);
         if (!$productInformation) {
             $productInformation = $this->productInformationRepository->create($product, $dimension);
         }
 
         $productInformation->setName($translationValueObject->getName());
-
-        $this->synchronizeVariants($message->getVariants(), $productInformation, $translationValueObject->getLocale());
-    }
-
-    /**
-     * @param ProductVariantValueObject[] $variantValueObjects
-     */
-    private function synchronizeVariants(array $variantValueObjects, ProductInformationInterface $product, string $locale): void
-    {
-        $codes = [];
-        foreach ($variantValueObjects as $variantValueObject) {
-            $variant = $product->findVariantByCode($variantValueObject->getCode());
-            if (!$variant) {
-                $variant = $this->variantRepository->create($product, $variantValueObject->getCode());
-            }
-
-            $variantTranslationValueObject = $variantValueObject->findTranslationByLocale($locale);
-            if ($variantTranslationValueObject) {
-                $variant->setName($variantTranslationValueObject->getName());
-            }
-
-            $codes[] = $variant->getCode();
-        }
-
-        foreach ($product->getVariants() as $variant) {
-            if (!in_array($variant->getCode(), $codes)) {
-                $product->removeVariant($variant);
-            }
-        }
+        $productInformation->setSlug($translationValueObject->getSlug());
+        $productInformation->setDescription($translationValueObject->getDescription());
+        $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
+        $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
+        $productInformation->setShortDescription($translationValueObject->getShortDescription());
     }
 }

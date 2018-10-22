@@ -19,9 +19,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductVariantMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
@@ -41,11 +40,6 @@ class PublishProductMessageHandler
     private $productInformationRepository;
 
     /**
-     * @var ProductInformationVariantRepositoryInterface
-     */
-    private $variantRepository;
-
-    /**
      * @var DimensionRepositoryInterface
      */
     private $dimensionRepository;
@@ -63,7 +57,6 @@ class PublishProductMessageHandler
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
-        ProductInformationVariantRepositoryInterface $variantRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
         SlugifierInterface $slugifier
@@ -73,10 +66,9 @@ class PublishProductMessageHandler
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
         $this->slugifier = $slugifier;
-        $this->variantRepository = $variantRepository;
     }
 
-    public function __invoke(PublishProductMessage $message): ProductInformationInterface
+    public function __invoke(PublishProductMessage $message): ProductInterface
     {
         $product = $this->productRepository->findById($message->getId());
         if (!$product) {
@@ -84,7 +76,7 @@ class PublishProductMessageHandler
         }
 
         try {
-            $liveProduct = $this->publishProductInformation($product, $message->getLocale());
+            $this->publishProductInformation($product, $message->getLocale());
         } catch (ProductInformationNotFoundException $exception) {
             throw new ProductNotFoundException($message->getId(), 0, $exception);
         }
@@ -103,10 +95,14 @@ class PublishProductMessageHandler
             )
         );
 
-        return $liveProduct;
+        foreach ($product->getVariants() as $variant) {
+            $this->messageBus->dispatch(new PublishProductVariantMessage($variant->getId(), $message->getLocale()));
+        }
+
+        return $product;
     }
 
-    private function publishProductInformation(ProductInterface $product, string $locale): ProductInformationInterface
+    private function publishProductInformation(ProductInterface $product, string $locale): void
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -121,41 +117,22 @@ class PublishProductMessageHandler
             ]
         );
 
-        $draftProduct = $this->productInformationRepository->findById($product->getId(), $draftDimension);
-        if (!$draftProduct) {
+        $draftProductInformation = $this->productInformationRepository->findByProductId(
+            $product->getId(),
+            $draftDimension
+        );
+        if (!$draftProductInformation) {
             throw new ProductInformationNotFoundException($product->getId());
         }
 
-        $liveProduct = $this->productInformationRepository->findById($product->getId(), $liveDimension);
-        if (!$liveProduct) {
-            $liveProduct = $this->productInformationRepository->create($product, $liveDimension);
+        $liveProductInformation = $this->productInformationRepository->findByProductId(
+            $product->getId(),
+            $liveDimension
+        );
+        if (!$liveProductInformation) {
+            $liveProductInformation = $this->productInformationRepository->create($product, $liveDimension);
         }
 
-        $liveProduct->setName($draftProduct->getName());
-
-        $this->synchronizeVariants($draftProduct, $liveProduct);
-
-        return $liveProduct;
-    }
-
-    private function synchronizeVariants(ProductInformationInterface $draftProduct, ProductInformationInterface $liveProduct): void
-    {
-        $codes = [];
-        foreach ($draftProduct->getVariants() as $draftVariant) {
-            $variant = $liveProduct->findVariantByCode($draftVariant->getCode());
-            if (!$variant) {
-                $variant = $this->variantRepository->create($liveProduct, $draftVariant->getCode());
-            }
-
-            $variant->setName($draftVariant->getName());
-
-            $codes[] = $variant->getCode();
-        }
-
-        foreach ($liveProduct->getVariants() as $variant) {
-            if (!in_array($variant->getCode(), $codes)) {
-                $liveProduct->removeVariant($variant);
-            }
-        }
+        $liveProductInformation->mapPublishProperties($draftProductInformation);
     }
 }

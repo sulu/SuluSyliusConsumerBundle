@@ -19,14 +19,12 @@ interface ProductInformationRepositoryInterface
 {
     public function create(ProductInterface $product, DimensionInterface $dimension): ProductInformationInterface;
 
-    public function findByCode(string $code, DimensionInterface $dimension): ?ProductInformationInterface;
-
-    public function findById(string $id, DimensionInterface $dimension): ?ProductInformationInterface;
+    public function findByProductId(string $productId, DimensionInterface $dimension): ?ProductInformationInterface;
 
     /**
      * @return ProductInformationInterface[]
      */
-    public function findAllById(string $id): array;
+    public function findAllByProductId(string $productId): array;
 
-    public function remove(ProductInformationInterface $product): void;
+    public function remove(ProductInformationInterface $productInformation): void;
 }
