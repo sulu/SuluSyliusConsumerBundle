@@ -45,6 +45,11 @@ class SynchronizeProductTest extends SuluTestCase
 
         $result = $this->findProductInformation($product->getId(), 'de');
         $this->assertNotNull($result);
+
+        if (!$result) {
+            return;
+        }
+
         $this->assertEquals($product->getId(), $result->getProductId());
         $this->assertEquals('T-Shirt "nihil"', $result->getName());
     }

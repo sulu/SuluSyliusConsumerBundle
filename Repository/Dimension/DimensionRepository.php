@@ -75,27 +75,4 @@ class DimensionRepository extends EntityRepository implements DimensionRepositor
             return null;
         }
     }
-
-    /**
-     * @return DimensionInterface[]
-     */
-    public function findByAttributes(array $attributes): array
-    {
-        $queryBuilder = $this->createQueryBuilder('dimension')
-            ->where('dimension.attributeCount = ' . count($attributes));
-
-        foreach ($attributes as $key => $value) {
-            $queryBuilder->join('dimension.attributes', $key)
-                ->andWhere($key . '.value = :' . $key . 'Value')
-                ->andWhere($key . '.key = :' . $key . 'Key')
-                ->setParameter($key . 'Key', $key)
-                ->setParameter($key . 'Value', $value);
-        }
-
-        try {
-            return $queryBuilder->getQuery()->getResult();
-        } catch (NoResultException $exception) {
-            return null;
-        }
-    }
 }
