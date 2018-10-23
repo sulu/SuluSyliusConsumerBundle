@@ -21,8 +21,6 @@ interface ProductVariantInformationInterface
 
     public function getProductVariant(): ProductVariantInterface;
 
-    public function getCode(): string;
-
     public function getName(): string;
 
     public function setName(string $name): self;

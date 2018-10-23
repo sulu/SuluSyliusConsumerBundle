@@ -13,6 +13,6 @@
 
         <field name="value" type="string" nullable="false"/>
 
-        <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
+        <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension" inversed-by="attributes"/>
     </entity>
 </doctrine-mapping>
