@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\EventSubscriber;
 
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
 use Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ProductSerializerSubscriber;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
@@ -74,7 +73,7 @@ class ProductSerializerSubscriberTest extends TestCase
         $structure->setLanguageCode('en')->shouldBeCalled();
         $property->setValue('Sulu is awesome')->shouldBeCalled();
         $visitor->setData('product', $product->reveal())->shouldBeCalled();
-        $visitor->setData('productInformation',$productInformation->reveal())->shouldBeCalled();
+        $visitor->setData('productInformation', $productInformation->reveal())->shouldBeCalled();
         $visitor->setData('content', ['title' => 'Sulu is awesome'])->shouldBeCalled();
         $visitor->setData('view', ['title' => []])->shouldBeCalled();
         $visitor->setData('extension', [])->shouldBeCalled();

@@ -17,8 +17,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 
 class ContentViewFactory implements ContentViewFactoryInterface
 {
@@ -33,6 +31,9 @@ class ContentViewFactory implements ContentViewFactoryInterface
         $this->contentRepository = $contentRepository;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function create(array $contentDimensions): ?ContentViewInterface
     {
         $firstDimension = reset($contentDimensions);
@@ -53,7 +54,7 @@ class ContentViewFactory implements ContentViewFactoryInterface
     }
 
     /**
-     * @param DimensionInterface[] $dimensions
+     * {@inheritdoc}
      */
     public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentViewInterface
     {

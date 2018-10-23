@@ -15,8 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\View;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;

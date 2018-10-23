@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -21,6 +22,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryI
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Exception\RoutableResourceNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
 class ProductViewFactory implements ProductViewFactoryInterface
@@ -89,8 +91,8 @@ class ProductViewFactory implements ProductViewFactoryInterface
         if (null === $productInformation) {
             throw new ProductInformationNotFoundException($product->getCode());
         }
-        if (null === $productInformation) {
-            throw new ProductInformationNotFoundException($product->getCode());
+        if (null === $routableResource) {
+            throw new RoutableResourceNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
         }
         if (null === $locale) {
             throw new \InvalidArgumentException('No locale found');
@@ -101,6 +103,9 @@ class ProductViewFactory implements ProductViewFactoryInterface
             $product->getId(),
             $dimensions
         );
+        if (null === $content) {
+            throw new ContentNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
+        }
 
         $viewProduct = new ProductView($locale, $product, $productInformation, $content, $routableResource);
 
