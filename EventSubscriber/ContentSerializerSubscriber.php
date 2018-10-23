@@ -17,7 +17,7 @@ use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\JsonSerializationVisitor;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 
 class ContentSerializerSubscriber implements EventSubscriberInterface
@@ -46,7 +46,7 @@ class ContentSerializerSubscriber implements EventSubscriberInterface
     public function onPostSerialize(ObjectEvent $event): void
     {
         $object = $event->getObject();
-        if (!$object instanceof ContentInterface) {
+        if (!$object instanceof ContentViewInterface) {
             return;
         }
 
