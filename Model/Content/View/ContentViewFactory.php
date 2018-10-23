@@ -39,29 +39,33 @@ class ContentViewFactory implements ContentViewFactoryInterface
         $this->contentRepository = $contentRepository;
     }
 
-    /**
-     * @param ContentInterface[] $dimensions
-     */
-    public function create(string $resourceKey, string $resourceId, string $stage, string $locale): ContentView
+    public function create(array $contentDimensions): ?ContentView
     {
-        $dimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage]
-        );
-        $localizedDimension = $this->dimensionRepository->findOrCreateByAttributes(
-            [
-                DimensionInterface::ATTRIBUTE_KEY_STAGE => $stage,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
-            ]
-        );
-
-        $content = $this->contentRepository->findByResource($resourceKey, $resourceId, $dimension);
-        $localizedContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $localizedDimension);
+        $firstDimension = reset($contentDimensions);
+        if (!$firstDimension) {
+            return null;
+        }
+        $data = [];
+        foreach ($contentDimensions as $contentDimension) {
+            $data = array_merge($data, $contentDimension->getData());
+        }
 
         return new ContentView(
-            $resourceKey,
-            $resourceId,
-            $content->getType(),
-            array_merge($content->getData(), $localizedContent->getData())
+            $firstDimension->getResourceKey(),
+            $firstDimension->getResourceId(),
+            $firstDimension->getType(),
+            $data
         );
+    }
+
+    /**
+     * @param DimensionInterface[] $dimensions
+     */
+    public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentView
+    {
+        /** @var ContentInterface[] $contentDimensions */
+        $contentDimensions = $this->contentRepository->findByDimensions($resourceKey, $resourceId, $dimensions);
+
+        return $this->create($contentDimensions);
     }
 }

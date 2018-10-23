@@ -21,5 +21,10 @@ interface ContentViewFactoryInterface
     /**
      * @param ContentInterface[] $dimensions
      */
-    public function create(string $resourceKey, string $id, string $stage, string $locale): ContentView;
+    public function create(array $dimensions): ?ContentView;
+
+    /**
+     * @param ContentInterface[] $dimensions
+     */
+    public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentView;
 }

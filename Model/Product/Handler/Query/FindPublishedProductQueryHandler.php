@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
@@ -22,6 +23,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterf
 
 class FindPublishedProductQueryHandler
 {
+    /**
+     * @var DimensionRepositoryInterface
+     */
+    private $dimensionRepository;
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -33,9 +39,11 @@ class FindPublishedProductQueryHandler
     private $productViewFactory;
 
     public function __construct(
+        DimensionRepositoryInterface $dimensionRepository,
         ProductRepositoryInterface $productRepository,
         ProductViewFactoryInterface $productViewFactory
     ) {
+        $this->dimensionRepository = $dimensionRepository;
         $this->productRepository = $productRepository;
         $this->productViewFactory = $productViewFactory;
     }
@@ -47,10 +55,16 @@ class FindPublishedProductQueryHandler
             throw new ProductNotFoundException($query->getId());
         }
 
-        return $this->productViewFactory->create(
-            $product,
-            DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-            $query->getLocale()
+        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
         );
+        $localizedLiveDimension = $this->dimensionRepository->findOrCreateByAttributes(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $query->getLocale(),
+            ]
+        );
+
+        return $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
     }
 }

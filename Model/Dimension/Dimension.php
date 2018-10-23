@@ -73,4 +73,15 @@ class Dimension implements DimensionInterface
 
         throw new DimensionAttributeNotFoundException($this, $key);
     }
+
+    public function hasAttribute(string $key): bool
+    {
+        foreach ($this->attributes as $attribute) {
+            if ($key === $attribute->getKey()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

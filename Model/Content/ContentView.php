@@ -58,22 +58,8 @@ class ContentView implements ContentViewInterface
         return $this->type;
     }
 
-    public function setType(string $type): ContentViewInterface
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getData(): array
     {
         return $this->data;
-    }
-
-    public function setData(array $data): ContentViewInterface
-    {
-        $this->data = $data;
-
-        return $this;
     }
 }

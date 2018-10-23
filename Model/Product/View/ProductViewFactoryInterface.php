@@ -22,5 +22,5 @@ interface ProductViewFactoryInterface
     /**
      * @param DimensionInterface[] $dimensions
      */
-    public function create(ProductInterface $product, string $stage, string $locale): ProductViewInterface;
+    public function create(ProductInterface $product, array $dimensions): ProductViewInterface;
 }

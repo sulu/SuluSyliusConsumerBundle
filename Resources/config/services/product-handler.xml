@@ -69,6 +69,7 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindPublishedProductQueryHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface"/>
 

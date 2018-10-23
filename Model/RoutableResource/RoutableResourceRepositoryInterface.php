@@ -22,4 +22,10 @@ interface RoutableResourceRepositoryInterface
         string $resourceId,
         DimensionInterface $dimension
     ): RoutableResourceInterface;
+
+    public function findByResource(
+        string $resourceKey,
+        string $resourceId,
+        DimensionInterface $dimension
+    ): ?RoutableResourceInterface;
 }
