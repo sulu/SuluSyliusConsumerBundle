@@ -15,7 +15,10 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\EventSubscriber;
 
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ProductSerializerSubscriber;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Component\Content\Compat\PropertyInterface;
@@ -34,15 +37,24 @@ class ProductSerializerSubscriberTest extends TestCase
 
         $eventSubscriber = new ProductSerializerSubscriber($structureManager->reveal(), $contentTypeManager->reveal());
 
-        $product = $this->prophesize(ProductViewInterface::class);
-        $product->getContentType()->willReturn('default');
-        $product->getContentData()->willReturn(['title' => 'Sulu is awesome']);
-        $product->getLocale()->willReturn('en');
+        $product = $this->prophesize(ProductInterface::class);
+
+        $productInformation = $this->prophesize(ProductInformationInterface::class);
+
+        $contentView = $this->prophesize(ContentViewInterface::class);
+        $contentView->getType()->willReturn('default');
+        $contentView->getData()->willReturn(['title' => 'Sulu is awesome']);
+
+        $productView = $this->prophesize(ProductViewInterface::class);
+        $productView->getLocale()->willReturn('en');
+        $productView->getContent()->willReturn($contentView->reveal());
+        $productView->getProduct()->willReturn($product->reveal());
+        $productView->getProductInformation()->willReturn($productInformation->reveal());
 
         $event = $this->prophesize(ObjectEvent::class);
         $visitor = $this->prophesize(ArraySerializationVisitor::class);
         $event->getVisitor()->willReturn($visitor->reveal());
-        $event->getObject()->willReturn($product->reveal());
+        $event->getObject()->willReturn($productView->reveal());
 
         $property = $this->prophesize(PropertyInterface::class);
         $property->getName()->willReturn('title');
@@ -62,6 +74,7 @@ class ProductSerializerSubscriberTest extends TestCase
         $structure->setLanguageCode('en')->shouldBeCalled();
         $property->setValue('Sulu is awesome')->shouldBeCalled();
         $visitor->setData('product', $product->reveal())->shouldBeCalled();
+        $visitor->setData('productInformation',$productInformation->reveal())->shouldBeCalled();
         $visitor->setData('content', ['title' => 'Sulu is awesome'])->shouldBeCalled();
         $visitor->setData('view', ['title' => []])->shouldBeCalled();
         $visitor->setData('extension', [])->shouldBeCalled();

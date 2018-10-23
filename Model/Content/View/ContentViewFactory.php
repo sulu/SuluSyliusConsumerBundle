@@ -16,30 +16,24 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\View;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentView;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 
 class ContentViewFactory implements ContentViewFactoryInterface
 {
     /**
-     * @var DimensionRepositoryInterface
-     */
-    private $dimensionRepository;
-
-    /**
      * @var ContentRepositoryInterface
      */
     private $contentRepository;
 
     public function __construct(
-        DimensionRepositoryInterface $dimensionRepository,
         ContentRepositoryInterface $contentRepository
     ) {
-        $this->dimensionRepository = $dimensionRepository;
         $this->contentRepository = $contentRepository;
     }
 
-    public function create(array $contentDimensions): ?ContentView
+    public function create(array $contentDimensions): ?ContentViewInterface
     {
         $firstDimension = reset($contentDimensions);
         if (!$firstDimension) {
@@ -61,7 +55,7 @@ class ContentViewFactory implements ContentViewFactoryInterface
     /**
      * @param DimensionInterface[] $dimensions
      */
-    public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentView
+    public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentViewInterface
     {
         /** @var ContentInterface[] $contentDimensions */
         $contentDimensions = $this->contentRepository->findByDimensions($resourceKey, $resourceId, $dimensions);
