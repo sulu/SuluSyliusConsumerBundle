@@ -5,7 +5,7 @@
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformation"
             table="pr_product_variant_informations"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductVariantInformationRepository">
-        <id name="product" type="guid" association-key="true">
+        <id name="productVariant" type="guid" association-key="true">
             <generator strategy="NONE"/>
         </id>
         <id name="dimension" type="guid" association-key="true">
@@ -14,7 +14,7 @@
 
         <field name="name" type="string" nullable="false"/>
 
-        <many-to-one field="productVariant" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant"/>
+        <many-to-one field="productVariant" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant" inversed-by="productVariantInformations"/>
 
         <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
     </entity>
