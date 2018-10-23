@@ -19,7 +19,7 @@
         <field name="metaDescription" column="metaDescription" type="string" nullable="false"/>
         <field name="shortDescription" column="shortDescription" type="text" nullable="false"/>
 
-        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product"/>
+        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product" inversed-by="productInformations"/>
 
         <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
     </entity>
