@@ -48,28 +48,6 @@ class ProductInformationRepository extends EntityRepository implements ProductIn
         }
     }
 
-    public function findByProductIdAndDimensions(string $productId, array $dimensions): array
-    {
-        $dimensionsIds = [];
-        foreach ($dimensions as $dimension) {
-            $dimensionsIds[] = $dimension->getId();
-        }
-
-        $queryBuilder = $this->createQueryBuilder('product_information')
-            ->addSelect('product')
-            ->join('product_information.product', 'product')
-            ->where('product.id = :productId')
-            ->andWhere('IDENTITY(product_information.dimension) IN(:dimensionIds)')
-            ->setParameter('productId', $productId)
-            ->setParameter('dimensionId', $dimensionsIds);
-
-        try {
-            return $queryBuilder->getQuery()->getResult();
-        } catch (NoResultException $exception) {
-            return [];
-        }
-    }
-
     /**
      * @return ProductInformationInterface[]
      */
