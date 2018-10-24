@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\Handler\Mess
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Message\ModifyContentMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
@@ -92,12 +93,12 @@ class ModifyContentMessageHandlerTest extends TestCase
             ->shouldBeCalled()
             ->willReturn($localizedContent->reveal());
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentView = $this->prophesize(ContentViewInterface::class);
         $contentViewFactory->create([$localizedContent->reveal(), $draftContent->reveal()])
-            ->willReturn($content->reveal());
+            ->willReturn($contentView->reveal());
 
         $result = $handler->__invoke($message->reveal());
 
-        $this->assertEquals($content->reveal(), $result);
+        $this->assertEquals($contentView->reveal(), $result);
     }
 }

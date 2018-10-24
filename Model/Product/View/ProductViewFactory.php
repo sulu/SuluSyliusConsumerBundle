@@ -13,20 +13,29 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Exception\RoutableResourceNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface;
 
 class ProductViewFactory implements ProductViewFactoryInterface
 {
     /**
-     * @var ContentRepositoryInterface
+     * @var DimensionRepositoryInterface
      */
-    private $contentRepository;
+    private $dimensionRepository;
+
+    /**
+     * @var ProductInformationRepositoryInterface
+     */
+    private $productInformationRepository;
 
     /**
      * @var RoutableResourceRepositoryInterface
@@ -39,37 +48,66 @@ class ProductViewFactory implements ProductViewFactoryInterface
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
+        DimensionRepositoryInterface $dimensionRepository,
+        ProductInformationRepositoryInterface $productInformationRepository,
         RoutableResourceRepositoryInterface $routableResourceRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
+        $this->dimensionRepository = $dimensionRepository;
+        $this->productInformationRepository = $productInformationRepository;
         $this->routableResourceRepository = $routableResourceRepository;
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function create(ProductInformationInterface $product, array $dimensions): ProductViewInterface
+    /**
+     * @param DimensionInterface[] $dimensions
+     */
+    public function create(ProductInterface $product, array $dimensions): ProductViewInterface
     {
-        $viewProduct = new ProductView($product->getProductId(), $product->getProductCode());
-        $viewProduct->setProductInformation($product);
+        $productInformation = null;
+        $routableResource = null;
+        $locale = null;
 
-        $contentDimensions = $this->contentRepository->findByDimensions(
-            ProductInterface::RESOURCE_KEY,
-            $product->getProductId(),
-            $dimensions
-        );
+        foreach ($dimensions as $dimension) {
+            if (null === $productInformation) {
+                $productInformation = $this->productInformationRepository->findByProductId(
+                    $product->getId(),
+                    $dimension
+                );
+            }
 
-        $content = $this->contentViewFactory->create($contentDimensions);
-        if ($content) {
-            $viewProduct->setContent($content);
+            if (null === $routableResource) {
+                $routableResource = $this->routableResourceRepository->findByResource(
+                    ProductInterface::RESOURCE_KEY,
+                    $product->getId(),
+                    $dimension
+                );
+            }
+
+            if (null === $locale && $dimension->hasAttribute(DimensionInterface::ATTRIBUTE_KEY_LOCALE)) {
+                $locale = $dimension->getAttributeValue(DimensionInterface::ATTRIBUTE_KEY_LOCALE);
+            }
+        }
+        if (null === $productInformation) {
+            throw new ProductInformationNotFoundException($product->getCode());
+        }
+        if (null === $routableResource) {
+            throw new RoutableResourceNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
+        }
+        if (null === $locale) {
+            throw new \InvalidArgumentException('No locale found');
         }
 
-        $routableResource = $this->routableResourceRepository->findOrCreateByResource(
+        $content = $this->contentViewFactory->loadAndCreate(
             ProductInterface::RESOURCE_KEY,
-            $product->getProductId(),
-            $product->getDimension()
+            $product->getId(),
+            $dimensions
         );
-        $viewProduct->setRoutableResource($routableResource);
+        if (null === $content) {
+            throw new ContentNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
+        }
+
+        $viewProduct = new ProductView($locale, $product, $productInformation, $content, $routableResource);
 
         return $viewProduct;
     }

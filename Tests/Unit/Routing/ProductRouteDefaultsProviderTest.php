@@ -17,6 +17,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\HttpCacheBundle\CacheLifetime\CacheLifetimeResolverInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Controller\Product\WebsiteProductController;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
@@ -42,8 +43,11 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $cacheLifetimeResolver->reveal()
         );
 
-        $product = $this->prophesize(ProductViewInterface::class);
-        $product->getContentType()->willReturn('default');
+        $contentView = $this->prophesize(ContentViewInterface::class);
+        $contentView->getType()->willReturn('default');
+
+        $productView = $this->prophesize(ProductViewInterface::class);
+        $productView->getContent()->willReturn($contentView->reveal());
 
         $messageBus->dispatch(
             Argument::that(
@@ -51,7 +55,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willReturn($product->reveal())->shouldBeCalled();
+        )->willReturn($productView->reveal())->shouldBeCalled();
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $metadata->getController()->willReturn(WebsiteProductController::class);
@@ -66,7 +70,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $defaults = $provider->getByEntity(RoutableResourceInterface::class, 'product-1', 'en');
         $this->assertEquals(
             [
-                'object' => $product->reveal(),
+                'object' => $productView->reveal(),
                 'view' => 'templates/product',
                 '_cacheLifetime' => 3600,
                 '_controller' => WebsiteProductController::class,

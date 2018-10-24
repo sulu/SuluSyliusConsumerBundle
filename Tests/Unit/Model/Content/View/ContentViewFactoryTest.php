@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\View;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -23,7 +24,9 @@ class ContentViewFactoryTest extends TestCase
 {
     public function testCreate(): void
     {
-        $factory = new ContentViewFactory();
+        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+
+        $factory = new ContentViewFactory($contentRepository->reveal());
 
         $dimension = $this->prophesize(DimensionInterface::class);
 
@@ -45,7 +48,49 @@ class ContentViewFactoryTest extends TestCase
             return;
         }
 
-        $this->assertEquals($dimension->reveal(), $result->getDimension());
+        $this->assertEquals(ProductInterface::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertEquals('product-1', $result->getResourceId());
+        $this->assertEquals('default', $result->getType());
+        $this->assertEquals(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());
+    }
+
+    public function testLoadAndCreate(): void
+    {
+        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+
+        $factory = new ContentViewFactory($contentRepository->reveal());
+
+        $localizedDimension = $this->prophesize(DimensionInterface::class);
+        $draftDimension = $this->prophesize(DimensionInterface::class);
+
+        $contentDimension1 = $this->prophesize(ContentInterface::class);
+        $contentDimension1->getDimension()->willReturn($localizedDimension->reveal());
+        $contentDimension1->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $contentDimension1->getResourceId()->willReturn('product-1');
+        $contentDimension1->getType()->willReturn('default');
+        $contentDimension1->getData()->willReturn(['title' => 'Sulu']);
+
+        $contentDimension2 = $this->prophesize(ContentInterface::class);
+        $contentDimension2->getData()->willReturn(['article' => '<p>Sulu is awesome</p>']);
+
+        $contentRepository->findByDimensions(
+            ProductInterface::RESOURCE_KEY,
+            'product-1',
+            [$localizedDimension, $draftDimension]
+        )->willReturn([$contentDimension1, $contentDimension2]);
+
+        $result = $factory->loadAndCreate(
+            ProductInterface::RESOURCE_KEY,
+            'product-1',
+            [$localizedDimension->reveal(), $draftDimension->reveal()]
+        );
+
+        if (!$result) {
+            $this->fail('Result is null');
+
+            return;
+        }
+
         $this->assertEquals(ProductInterface::RESOURCE_KEY, $result->getResourceKey());
         $this->assertEquals('product-1', $result->getResourceId());
         $this->assertEquals('default', $result->getType());
@@ -54,7 +99,9 @@ class ContentViewFactoryTest extends TestCase
 
     public function testCreateNull(): void
     {
-        $factory = new ContentViewFactory();
+        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
+
+        $factory = new ContentViewFactory($contentRepository->reveal());
 
         $this->assertNull($factory->create([]));
     }

@@ -13,8 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Query;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
@@ -23,11 +22,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 
 class FindContentQueryHandler
 {
-    /**
-     * @var ContentRepositoryInterface
-     */
-    private $contentRepository;
-
     /**
      * @var DimensionRepositoryInterface
      */
@@ -39,16 +33,14 @@ class FindContentQueryHandler
     private $contentViewFactory;
 
     public function __construct(
-        ContentRepositoryInterface $contentRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ContentViewFactoryInterface $contentViewFactory
     ) {
-        $this->contentRepository = $contentRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function __invoke(FindContentQuery $query): ContentInterface
+    public function __invoke(FindContentQuery $query): ContentViewInterface
     {
         $dimensions = [
             $this->dimensionRepository->findOrCreateByAttributes(
@@ -62,13 +54,11 @@ class FindContentQueryHandler
             ),
         ];
 
-        $contents = $this->contentRepository->findByDimensions(
+        $content = $this->contentViewFactory->loadAndCreate(
             $query->getResourceKey(),
             $query->getResourceId(),
             $dimensions
         );
-
-        $content = $this->contentViewFactory->create($contents);
         if (!$content) {
             throw new ContentNotFoundException($query->getResourceKey(), $query->getResourceId());
         }

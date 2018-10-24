@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\Handler\Mess
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Message\PublishContentMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
@@ -98,12 +99,12 @@ class PublishContentMessageHandlerTest extends TestCase
         $contentRepository->findOrCreate(ProductInterface::RESOURCE_KEY, 'product-1', $localizedLiveDimension->reveal())
             ->willReturn($localizedLiveContent);
 
-        $content = $this->prophesize(ContentInterface::class);
+        $contentView = $this->prophesize(ContentViewInterface::class);
         $contentViewFactory->create([$liveContent->reveal(), $localizedLiveContent->reveal()])
-            ->willReturn($content->reveal());
+            ->willReturn($contentView->reveal());
 
         $result = $handler->__invoke($message->reveal());
 
-        $this->assertEquals($content->reveal(), $result);
+        $this->assertEquals($contentView->reveal(), $result);
     }
 }

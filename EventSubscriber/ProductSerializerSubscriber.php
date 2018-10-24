@@ -61,7 +61,7 @@ class ProductSerializerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $contentType = $object->getContentType();
+        $contentType = $object->getContent()->getType();
         if (!$contentType) {
             return;
         }
@@ -73,9 +73,12 @@ class ProductSerializerSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('product', $object);
-        $visitor->setData('content', $this->resolveContent($structure, $object->getContentData()));
-        $visitor->setData('view', $this->resolveView($structure, $object->getContentData()));
+        $visitor->setData('id', $object->getProduct()->getId());
+        $visitor->setData('product', $object->getProduct());
+        $visitor->setData('productInformation', $object->getProductInformation());
+        $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
+        $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
+        $visitor->setData('template', $object->getContent()->getType());
 
         // TODO creator, created, changer, changed
     }

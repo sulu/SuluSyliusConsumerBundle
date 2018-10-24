@@ -13,32 +13,54 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\View;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentView;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 
 class ContentViewFactory implements ContentViewFactoryInterface
 {
     /**
-     * @param ContentInterface[] $dimensions
+     * @var ContentRepositoryInterface
      */
-    public function create(array $dimensions): ?ContentInterface
+    private $contentRepository;
+
+    public function __construct(
+        ContentRepositoryInterface $contentRepository
+    ) {
+        $this->contentRepository = $contentRepository;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function create(array $contentDimensions): ?ContentViewInterface
     {
-        $firstDimension = reset($dimensions);
+        $firstDimension = reset($contentDimensions);
         if (!$firstDimension) {
             return null;
         }
-
         $data = [];
-        foreach ($dimensions as $dimension) {
-            $data = array_merge($data, $dimension->getData());
+        foreach ($contentDimensions as $contentDimension) {
+            $data = array_merge($data, $contentDimension->getData());
         }
 
-        return new Content(
-            $firstDimension->getDimension(),
+        return new ContentView(
             $firstDimension->getResourceKey(),
             $firstDimension->getResourceId(),
             $firstDimension->getType(),
             $data
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentViewInterface
+    {
+        /** @var ContentInterface[] $contentDimensions */
+        $contentDimensions = $this->contentRepository->findByDimensions($resourceKey, $resourceId, $dimensions);
+
+        return $this->create($contentDimensions);
     }
 }

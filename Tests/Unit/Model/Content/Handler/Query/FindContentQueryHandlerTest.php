@@ -14,9 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Content\Handler\Query;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Query\FindContentQueryHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
@@ -29,12 +27,10 @@ class FindContentQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
         $handler = new FindContentQueryHandler(
-            $contentRepository->reveal(),
             $dimensionRepository->reveal(),
             $contentViewFactory->reveal()
         );
@@ -57,34 +53,26 @@ class FindContentQueryHandlerTest extends TestCase
             ]
         )->willReturn($localizedDimension->reveal());
 
-        $draftContent = $this->prophesize(ContentInterface::class);
-        $localizedContent = $this->prophesize(ContentInterface::class);
-
-        $contentRepository->findByDimensions(
+        $contentView = $this->prophesize(ContentViewInterface::class);
+        $contentViewFactory->loadAndCreate(
             ProductInterface::RESOURCE_KEY,
             'product-1',
             [$draftDimension->reveal(), $localizedDimension->reveal()]
-        )->willReturn([$draftContent->reveal(), $localizedContent->reveal()])->shouldBeCalled();
-
-        $content = $this->prophesize(ContentInterface::class);
-        $contentViewFactory->create([$draftContent->reveal(), $localizedContent->reveal()])
-            ->willReturn($content->reveal());
+        )->willReturn($contentView->reveal());
 
         $result = $handler->__invoke($message->reveal());
 
-        $this->assertEquals($result, $content->reveal());
+        $this->assertEquals($result, $contentView->reveal());
     }
 
     public function testInvokeContentNotFound(): void
     {
         $this->expectException(ContentNotFoundException::class);
 
-        $contentRepository = $this->prophesize(ContentRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
 
         $handler = new FindContentQueryHandler(
-            $contentRepository->reveal(),
             $dimensionRepository->reveal(),
             $contentViewFactory->reveal()
         );
@@ -107,13 +95,11 @@ class FindContentQueryHandlerTest extends TestCase
             ]
         )->willReturn($localizedDimension->reveal());
 
-        $contentRepository->findByDimensions(
+        $contentViewFactory->loadAndCreate(
             ProductInterface::RESOURCE_KEY,
             'product-1',
             [$draftDimension->reveal(), $localizedDimension->reveal()]
-        )->willReturn([])->shouldBeCalled();
-
-        $contentViewFactory->create(Argument::any())->willReturn(null);
+        )->willReturn(null);
 
         $handler->__invoke($message->reveal());
     }

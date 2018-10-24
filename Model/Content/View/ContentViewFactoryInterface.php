@@ -14,11 +14,18 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\View;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 interface ContentViewFactoryInterface
 {
     /**
-     * @param ContentInterface[] $dimensions
+     * @param ContentInterface[] $contentDimensions
      */
-    public function create(array $dimensions): ?ContentInterface;
+    public function create(array $contentDimensions): ?ContentViewInterface;
+
+    /**
+     * @param DimensionInterface[] $dimensions
+     */
+    public function loadAndCreate(string $resourceKey, string $resourceId, array $dimensions): ?ContentViewInterface;
 }
