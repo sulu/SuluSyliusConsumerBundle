@@ -37,6 +37,7 @@ class ProductSerializerSubscriberTest extends TestCase
         $eventSubscriber = new ProductSerializerSubscriber($structureManager->reveal(), $contentTypeManager->reveal());
 
         $product = $this->prophesize(ProductInterface::class);
+        $product->getId()->willReturn('123-123-123');
 
         $productInformation = $this->prophesize(ProductInformationInterface::class);
 
@@ -72,6 +73,7 @@ class ProductSerializerSubscriberTest extends TestCase
 
         $structure->setLanguageCode('en')->shouldBeCalled();
         $property->setValue('Sulu is awesome')->shouldBeCalled();
+        $visitor->setData('id', '123-123-123')->shouldBeCalled();
         $visitor->setData('product', $product->reveal())->shouldBeCalled();
         $visitor->setData('productInformation', $productInformation->reveal())->shouldBeCalled();
         $visitor->setData('content', ['title' => 'Sulu is awesome'])->shouldBeCalled();
