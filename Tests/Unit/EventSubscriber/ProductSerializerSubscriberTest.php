@@ -78,6 +78,7 @@ class ProductSerializerSubscriberTest extends TestCase
         $visitor->setData('view', ['title' => []])->shouldBeCalled();
         $visitor->setData('extension', [])->shouldBeCalled();
         $visitor->setData('urls', [])->shouldBeCalled();
+        $visitor->setData('template', 'default')->shouldBeCalled();
 
         $eventSubscriber->onPostSerialize($event->reveal());
     }

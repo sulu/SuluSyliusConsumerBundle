@@ -77,6 +77,7 @@ class ProductSerializerSubscriber implements EventSubscriberInterface
         $visitor->setData('productInformation', $object->getProductInformation());
         $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
         $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
+        $visitor->setData('template', $object->getContent()->getType());
 
         // TODO creator, created, changer, changed
     }
