@@ -18,8 +18,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 
 class ProductNotFoundException extends ModelNotFoundException
 {
-    public function __construct(string $productCode, $code = 0, \Throwable $previous = null)
+    public function __construct(string $id, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(Product::class, $productCode, $code, $previous);
+        parent::__construct(Product::class, $id, $code, $previous);
     }
 }

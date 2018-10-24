@@ -59,7 +59,7 @@ class PublishProductVariantMessageHandler
 
         try {
             $this->publishInformation($productVariant, $message->getLocale());
-        } catch (ProductInformationNotFoundException $exception) {
+        } catch (ProductVariantInformationNotFoundException $exception) {
             throw new ProductVariantNotFoundException($message->getId(), 0, $exception);
         }
 

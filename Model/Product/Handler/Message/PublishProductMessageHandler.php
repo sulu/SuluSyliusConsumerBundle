@@ -19,7 +19,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductVariantMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
@@ -94,10 +93,6 @@ class PublishProductMessageHandler
                 $routePath
             )
         );
-
-        foreach ($product->getVariants() as $variant) {
-            $this->messageBus->dispatch(new PublishProductVariantMessage($variant->getId(), $message->getLocale()));
-        }
 
         return $product;
     }

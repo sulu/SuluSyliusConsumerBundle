@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\ModelNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant;
 
 class ProductVariantNotFoundException extends ModelNotFoundException
 {
-    public function __construct(string $productVariantCode, $code = 0, \Throwable $previous = null)
+    public function __construct(string $id, $code = 0, \Throwable $previous = null)
     {
-        parent::__construct(ProductVariantInterface::class, $productVariantCode, $code, $previous);
+        parent::__construct(ProductVariant::class, $id, $code, $previous);
     }
 }

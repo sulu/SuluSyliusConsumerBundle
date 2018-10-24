@@ -89,7 +89,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
             }
         }
         if (null === $productInformation) {
-            throw new ProductInformationNotFoundException($product->getCode());
+            throw new ProductInformationNotFoundException($product->getId());
         }
         if (null === $routableResource) {
             throw new RoutableResourceNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
