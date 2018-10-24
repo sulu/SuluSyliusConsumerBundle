@@ -15,11 +15,18 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class SynchronizeProductMessageHandler
 {
@@ -38,14 +45,35 @@ class SynchronizeProductMessageHandler
      */
     private $dimensionRepository;
 
+    /**
+     * @var ProductMediaReferenceRepositoryInterface
+     */
+    private $productMediaReferenceRepository;
+
+    /**
+     * @var MediaFactory
+     */
+    private $mediaFactory;
+
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
-        DimensionRepositoryInterface $dimensionRepository
+        DimensionRepositoryInterface $dimensionRepository,
+        ProductMediaReferenceRepositoryInterface $productMediaReferenceRepository,
+        MediaFactory $mediaFactory,
+        Filesystem $filesystem
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
+        $this->productMediaReferenceRepository = $productMediaReferenceRepository;
+        $this->mediaFactory = $mediaFactory;
+        $this->filesystem = $filesystem;
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
@@ -63,6 +91,7 @@ class SynchronizeProductMessageHandler
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         $this->synchronizeTranslations($message, $product);
+        $this->synchronizeImages($message, $product);
     }
 
     protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void
@@ -102,5 +131,52 @@ class SynchronizeProductMessageHandler
         $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
         $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
+    }
+
+    protected function synchronizeImages(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
+        $sorting = 1;
+        foreach ($message->getImages() as $imageValueObject) {
+            $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
+
+            if ($mediaReference) {
+                $mediaReference->setSorting($sorting);
+                $sorting++;
+
+                continue;
+            }
+
+            $addedMediaReference = $this->synchronizeImage($imageValueObject, $product);
+
+            if (!$addedMediaReference) {
+                continue;
+            }
+
+            $addedMediaReference->setSorting($sorting);
+            $sorting++;
+        }
+    }
+
+    protected function synchronizeImage(ProductImageValueObject $imageValueObject, ProductInterface $product): ?ProductMediaReference {
+        // load image
+        try {
+            $fileContents = file_get_contents('http://sylius.localhost/media/image/' . $imageValueObject->getPath());
+        } catch (\Exception $exception) {
+            // TODO: Write at least a log entry
+            return null;
+        }
+
+        // create temp file
+        $filename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sylius_import');
+        $this->filesystem->dumpFile($filename, $fileContents);
+        $file = new File($filename);
+
+        // create sulu media
+        $media = $this->mediaFactory->create($file, 'sylius', $product->getCode() . '-'. $imageValueObject->getId(), 'de');
+
+        // delete temp file
+        $this->filesystem->remove($filename);
+
+        return $this->productMediaReferenceRepository->create($product, $media, $imageValueObject->getType(), $imageValueObject->getId());
     }
 }

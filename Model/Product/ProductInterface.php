@@ -23,6 +23,10 @@ interface ProductInterface
 
     public function getCode(): string;
 
+    public function isEnabled(): bool;
+
+    public function setEnabled(bool $enabled): self;
+
     /**
      * @return ProductVariantInterface[]
      */

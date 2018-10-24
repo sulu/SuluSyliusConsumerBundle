@@ -29,6 +29,11 @@ class Product implements ProductInterface
     private $code;
 
     /**
+     * @var bool
+     */
+    private $enabled = false;
+
+    /**
      * @var ProductVariant[]|Collection
      */
     private $productVariants;
@@ -55,6 +60,18 @@ class Product implements ProductInterface
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): ProductInterface
+    {
+        $this->enabled = $enabled;
+
+        return $this;
     }
 
     public function getVariants(): array

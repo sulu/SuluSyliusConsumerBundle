@@ -15,6 +15,8 @@
 
         <field name="code" column="product_code" type="string"/>
 
+        <field name="enabled" type="boolean"/>
+
         <one-to-many field="productInformations"
                      target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
                      mapped-by="product"/>

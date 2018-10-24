@@ -109,6 +109,22 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
             ]
         );
 
+        if ($container->hasExtension('sulu_media')) {
+            $container->prependExtensionConfig(
+                'sulu_media',
+                [
+                    'system_collections' => [
+                        'sylius' => [
+                            'meta_title' => [
+                                'en' => 'Sylius Media',
+                                'de' => 'Sylius Medien',
+                            ],
+                        ],
+                    ],
+                ]
+            );
+        }
+
         $this->prependForAdmin($container);
     }
 

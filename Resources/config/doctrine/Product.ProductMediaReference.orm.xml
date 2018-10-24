@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference"
+            table="pr_product_media_references"
+            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductMediaReferenceRepository">
+        <id name="media" association-key="true"/>
+        <id name="type" column="type" type="string"/>
+
+        <field name="sorting" column="sorting" type="integer"/>
+        <field name="syliusId" column="syliusId" type="integer"/>
+
+        <many-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
+            <join-column name="media" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        </many-to-one>
+
+        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+            <join-column name="product" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>
