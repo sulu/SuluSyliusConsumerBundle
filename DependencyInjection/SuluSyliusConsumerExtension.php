@@ -13,8 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\Category;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Repository\Category\CategoryRepository;
 use Sulu\Component\Content\Compat\Structure\StructureBridge;
 use Sulu\Component\HttpKernel\SuluKernel;
 use Symfony\Component\Config\FileLocator;
@@ -104,6 +106,18 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
                         ],
+                    ],
+                ],
+            ]
+        );
+
+        $container->prependExtensionConfig(
+            'sulu_category',
+            [
+                'objects' => [
+                    'category' => [
+                        'model' => Category::class,
+                        'repository' => CategoryRepository::class,
                     ],
                 ],
             ]
