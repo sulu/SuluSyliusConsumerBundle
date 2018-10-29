@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
+use GuzzleHttp\ClientInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory;
@@ -29,6 +30,11 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class SynchronizeProductMessageHandler
 {
+    /**
+     * @var ClientInterface
+     */
+    private $client;
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -65,6 +71,7 @@ class SynchronizeProductMessageHandler
     private $syliusBaseUrl;
 
     public function __construct(
+        ClientInterface $client,
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         DimensionRepositoryInterface $dimensionRepository,
@@ -73,6 +80,7 @@ class SynchronizeProductMessageHandler
         Filesystem $filesystem,
         string $syliusBaseUrl
     ) {
+        $this->client = $client;
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
@@ -221,16 +229,13 @@ class SynchronizeProductMessageHandler
 
     private function downloadImage(string $path): File
     {
-        try {
-            $fileContents = file_get_contents($this->syliusBaseUrl . '/media/image/' . $path);
-        } catch (\Exception $exception) {
-            // TODO: Write at least a log entry
-            return null;
-        }
+        // download the image
+        $url = $this->syliusBaseUrl . '/media/image/' . $path;
+        $request = $this->client->request('GET', $url);
 
         // create temp file
         $filename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sylius_import');
-        $this->filesystem->dumpFile($filename, $fileContents);
+        $this->filesystem->dumpFile($filename, $request->getBody()->getContents());
         $file = new File($filename);
 
         return $file;
