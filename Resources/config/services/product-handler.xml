@@ -18,6 +18,7 @@
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory"/>
             <argument type="service" id="filesystem"/>
+            <argument>%sulu_sylius_consumer.sylius_base_url%</argument>
 
             <tag name="messenger.message_handler"/>
         </service>

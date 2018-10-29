@@ -38,6 +38,11 @@ class ProductMediaReference
     private $syliusId;
 
     /**
+     * @var string
+     */
+    private $syliusPath;
+
+    /**
      * @var ProductInterface
      */
     private $product;
@@ -78,6 +83,18 @@ class ProductMediaReference
     public function setSorting(int $sorting): self
     {
         $this->sorting = $sorting;
+
+        return $this;
+    }
+
+    public function getSyliusPath(): string
+    {
+        return $this->syliusPath;
+    }
+
+    public function setSyliusPath(string $syliusPath): self
+    {
+        $this->syliusPath = $syliusPath;
 
         return $this;
     }

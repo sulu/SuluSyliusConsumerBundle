@@ -101,4 +101,10 @@ class Product implements ProductInterface
 
         return $this;
     }
+
+    public function getProductInformations(): array
+    {
+        return $this->productInformations->getValues();
+    }
+
 }

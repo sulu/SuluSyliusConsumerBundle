@@ -26,7 +26,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceReposito
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class SynchronizeProductMessageHandler
 {
@@ -60,13 +59,19 @@ class SynchronizeProductMessageHandler
      */
     private $filesystem;
 
+    /**
+     * @var string
+     */
+    private $syliusBaseUrl;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ProductMediaReferenceRepositoryInterface $productMediaReferenceRepository,
         MediaFactory $mediaFactory,
-        Filesystem $filesystem
+        Filesystem $filesystem,
+        string $syliusBaseUrl
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
@@ -74,6 +79,7 @@ class SynchronizeProductMessageHandler
         $this->productMediaReferenceRepository = $productMediaReferenceRepository;
         $this->mediaFactory = $mediaFactory;
         $this->filesystem = $filesystem;
+        $this->syliusBaseUrl = $syliusBaseUrl;
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
@@ -138,29 +144,85 @@ class SynchronizeProductMessageHandler
         $sorting = 1;
         foreach ($message->getImages() as $imageValueObject) {
             $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
-
-            if ($mediaReference) {
-                $mediaReference->setSorting($sorting);
-                $sorting++;
-
-                continue;
+            if (!$mediaReference) {
+                $mediaReference = $this->createMediaReference($imageValueObject, $product);
+            } else {
+                if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
+                    $this->updateMediaReference($imageValueObject, $product, $mediaReference);
+                }
             }
 
-            $addedMediaReference = $this->synchronizeImage($imageValueObject, $product);
-
-            if (!$addedMediaReference) {
-                continue;
-            }
-
-            $addedMediaReference->setSorting($sorting);
+            $mediaReference->setSorting($sorting);
             $sorting++;
+
+            $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
         }
     }
 
-    protected function synchronizeImage(ProductImageValueObject $imageValueObject, ProductInterface $product): ?ProductMediaReference {
-        // load image
+    protected function createMediaReference(
+        ProductImageValueObject $imageValueObject,
+        ProductInterface $product
+    ): ?ProductMediaReference {
+        // download file from Sylius application
+        $file = $this->downloadImage($imageValueObject->getPath());
+
+        // create sulu media
+        $media = $this->mediaFactory->create($file, 'sylius', $this->getImageTitles($product));
+
+        // delete temp file
+        $this->filesystem->remove($file->getPath());
+
+        // create product media reference
+        $mediaReference = $this->productMediaReferenceRepository->create(
+            $product,
+            $media,
+            $imageValueObject->getType(),
+            $imageValueObject->getId()
+        );
+
+        // save path
+        $mediaReference->setSyliusPath($imageValueObject->getPath());
+
+        return $mediaReference;
+    }
+
+    protected function updateMediaReference(
+        ProductImageValueObject $imageValueObject,
+        ProductInterface $product,
+        ProductMediaReference $mediaReference
+    ): ?ProductMediaReference {
+        // download file from Sylius application
+        $file = $this->downloadImage($imageValueObject->getPath());
+
+        // update sulu media
+        $this->mediaFactory->update($mediaReference->getMedia(), $file, $this->getImageTitles($product));
+
+        // delete temp file
+        $this->filesystem->remove($file->getPath());
+
+        // save new path
+        $mediaReference->setSyliusPath($imageValueObject->getPath());
+
+        return $mediaReference;
+    }
+
+    protected function getImageTitles(ProductInterface $product): array
+    {
+        $titles = [];
+        foreach ($product->getProductInformations() as $productInformation) {
+            if ($productInformation->getDimension()->hasAttribute(DimensionInterface::ATTRIBUTE_KEY_LOCALE)) {
+                $locale = $productInformation->getDimension()->getAttributeValue(DimensionInterface::ATTRIBUTE_KEY_LOCALE);
+                $titles[$locale] = $productInformation->getName();
+            }
+        }
+
+        return $titles;
+    }
+
+    private function downloadImage(string $path): File
+    {
         try {
-            $fileContents = file_get_contents('http://sylius.localhost/media/image/' . $imageValueObject->getPath());
+            $fileContents = file_get_contents($this->syliusBaseUrl . '/media/image/' . $path);
         } catch (\Exception $exception) {
             // TODO: Write at least a log entry
             return null;
@@ -171,12 +233,6 @@ class SynchronizeProductMessageHandler
         $this->filesystem->dumpFile($filename, $fileContents);
         $file = new File($filename);
 
-        // create sulu media
-        $media = $this->mediaFactory->create($file, 'sylius', $product->getCode() . '-'. $imageValueObject->getId(), 'de');
-
-        // delete temp file
-        $this->filesystem->remove($filename);
-
-        return $this->productMediaReferenceRepository->create($product, $media, $imageValueObject->getType(), $imageValueObject->getId());
+        return $file;
     }
 }

@@ -10,6 +10,7 @@
 
         <field name="sorting" column="sorting" type="integer"/>
         <field name="syliusId" column="syliusId" type="integer"/>
+        <field name="syliusPath" column="syliusPath" type="string"/>
 
         <many-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
             <join-column name="media" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>

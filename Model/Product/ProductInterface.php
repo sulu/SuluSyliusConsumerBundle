@@ -28,6 +28,11 @@ interface ProductInterface
     public function setEnabled(bool $enabled): self;
 
     /**
+     * @return ProductInformationInterface[]
+     */
+    public function getProductInformations(): array;
+
+    /**
      * @return ProductVariantInterface[]
      */
     public function getVariants(): array;

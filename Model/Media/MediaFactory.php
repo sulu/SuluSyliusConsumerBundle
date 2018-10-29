@@ -71,8 +71,7 @@ class MediaFactory
     public function create(
         SymfonyFile $uploadedFile,
         string $collectionKey,
-        string $title,
-        string $locale
+        array $titles
     ): MediaInterface {
         /** @var Collection $collection */
         $collection = $this->entityManager->getReference(
@@ -92,7 +91,7 @@ class MediaFactory
         $media->setType($mediaType);
         $media->setCollection($collection);
 
-        $this->update($media, $uploadedFile, $title, $locale);
+        $this->update($media, $uploadedFile, $titles);
 
         $this->entityManager->persist($file);
         $this->entityManager->persist($media);
@@ -103,8 +102,7 @@ class MediaFactory
     public function update(
         MediaInterface $media,
         SymfonyFile $uploadedFile,
-        string $title,
-        string $locale
+        array $titles
     ): MediaInterface {
         $fileName = $uploadedFile->getFilename();
 
@@ -125,18 +123,54 @@ class MediaFactory
         $fileVersion->setMimeType($this->getMimeType($uploadedFile));
         $fileVersion->setFile($file);
         $file->addFileVersion($fileVersion);
+
+        foreach ($titles as $locale => $title) {
+            $this->createFileVersionMeta($fileVersion, $title, $locale);
+        }
+
+        $this->entityManager->persist($fileVersion);
+
+        return $media;
+    }
+
+    public function updateTitles(MediaInterface $media, array $titles): void
+    {
+        $processedLocales = [];
+        $latestFileVersion = $media->getFiles()[0]->getLatestFileVersion();
+        foreach ($media->getFiles()[0]->getLatestFileVersion()->getMeta() as $meta) {
+            if (array_key_exists($meta->getLocale(), $titles)) {
+                $meta->setTitle($titles[$meta->getLocale()]);
+            } else {
+                $this->entityManager->remove($latestFileVersion);
+            }
+            $processedLocales[] = $meta->getLocale();
+        }
+
+        foreach ($titles as $locale => $title) {
+            if (!in_array($locale, $processedLocales)) {
+                $this->createFileVersionMeta($latestFileVersion, $title, $locale);
+            }
+        }
+    }
+
+    protected function createFileVersionMeta(
+        FileVersion $fileVersion,
+        string $title,
+        string $locale
+    ): void {
         $fileVersionMeta = new FileVersionMeta();
         $fileVersionMeta->setTitle($title);
         $fileVersionMeta->setDescription('');
         $fileVersionMeta->setLocale($locale);
         $fileVersionMeta->setFileVersion($fileVersion);
+
         $fileVersion->addMeta($fileVersionMeta);
-        $fileVersion->setDefaultMeta($fileVersionMeta);
+
+        if (count($fileVersion->getMeta()) === 1) {
+            $fileVersion->setDefaultMeta($fileVersionMeta);
+        }
 
         $this->entityManager->persist($fileVersionMeta);
-        $this->entityManager->persist($fileVersion);
-
-        return $media;
     }
 
     private function getMimeType(SymfonyFile $file): string
