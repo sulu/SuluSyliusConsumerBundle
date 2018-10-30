@@ -105,9 +105,8 @@ class MediaFactory
         array $titles
     ): MediaInterface {
         $fileName = $uploadedFile->getFilename();
-
         if ($uploadedFile instanceof UploadedFile) {
-            $fileName = $uploadedFile->getClientOriginalName();
+            $fileName = $uploadedFile->getClientOriginalName() ?: $fileName;
         }
 
         $storageOptions = $this->mediaStorage->save($uploadedFile->getPathname(), $fileName, 1);
@@ -146,6 +145,10 @@ class MediaFactory
             $processedLocales[] = $meta->getLocale();
         }
 
+        /**
+         * @var string $locale
+         * @var string $title
+         */
         foreach ($titles as $locale => $title) {
             if (!in_array($locale, $processedLocales)) {
                 $this->createFileVersionMeta($latestFileVersion, $title, $locale);

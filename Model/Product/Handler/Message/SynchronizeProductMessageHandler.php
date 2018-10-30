@@ -152,22 +152,25 @@ class SynchronizeProductMessageHandler
         $sorting = 1;
         foreach ($message->getImages() as $imageValueObject) {
             $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
-            if (!$mediaReference) {
-                $mediaReference = $this->createMediaReference($imageValueObject, $product);
-            } else if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
-                $this->updateMediaReference($imageValueObject, $product, $mediaReference);
+            if ($mediaReference) {
+                if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
+                    $this->updateMediaReference($imageValueObject, $product, $mediaReference, $sorting);
+                } else {
+                    $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
+                }
             } else {
-                $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
+                // create new media reference
+                $this->createMediaReference($imageValueObject, $product, $sorting);
             }
 
-            $mediaReference->setSorting($sorting);
             $sorting++;
         }
     }
 
     protected function createMediaReference(
         ProductImageValueObject $imageValueObject,
-        ProductInterface $product
+        ProductInterface $product,
+        int $sorting
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
@@ -188,6 +191,7 @@ class SynchronizeProductMessageHandler
 
         // save path
         $mediaReference->setSyliusPath($imageValueObject->getPath());
+        $mediaReference->setSorting($sorting);
 
         return $mediaReference;
     }
@@ -195,7 +199,8 @@ class SynchronizeProductMessageHandler
     protected function updateMediaReference(
         ProductImageValueObject $imageValueObject,
         ProductInterface $product,
-        ProductMediaReference $mediaReference
+        ProductMediaReference $mediaReference,
+        int $sorting
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
@@ -208,6 +213,7 @@ class SynchronizeProductMessageHandler
 
         // save new path
         $mediaReference->setSyliusPath($imageValueObject->getPath());
+        $mediaReference->setSorting($sorting);
 
         return $mediaReference;
     }
