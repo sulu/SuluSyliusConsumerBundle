@@ -123,6 +123,10 @@ class MediaFactory
         $fileVersion->setFile($file);
         $file->addFileVersion($fileVersion);
 
+        /**
+         * @var string $locale
+         * @var string $title
+         */
         foreach ($titles as $locale => $title) {
             $this->createFileVersionMeta($fileVersion, $title, $locale);
         }
@@ -146,7 +150,7 @@ class MediaFactory
         }
 
         /**
-         * @var string
+         * @var string $locale
          * @var string $title
          */
         foreach ($titles as $locale => $title) {
