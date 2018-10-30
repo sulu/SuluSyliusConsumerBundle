@@ -146,7 +146,7 @@ class MediaFactory
         }
 
         /**
-         * @var string $locale
+         * @var string
          * @var string $title
          */
         foreach ($titles as $locale => $title) {
@@ -169,7 +169,7 @@ class MediaFactory
 
         $fileVersion->addMeta($fileVersionMeta);
 
-        if (count($fileVersion->getMeta()) === 1) {
+        if (1 === count($fileVersion->getMeta())) {
             $fileVersion->setDefaultMeta($fileVersionMeta);
         }
 

@@ -145,7 +145,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem->remove(__DIR__ . '/images/test.png')->shouldBeCalled();
 
         $media = $this->prophesize(MediaInterface::class);
-        $mediaFactory->create(Argument::type(File::class), 'sylius', ["de" => "Product One"])
+        $mediaFactory->create(Argument::type(File::class), 'sylius', ['de' => 'Product One'])
             ->willReturn($media->reveal());
 
         $productMediaReference = $this->prophesize(ProductMediaReference::class);
@@ -262,7 +262,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem->remove(__DIR__ . '/images/test.png')->shouldBeCalled();
 
         $media = $this->prophesize(MediaInterface::class);
-        $mediaFactory->update($media->reveal(), Argument::type(File::class), ["de" => "Product One"])
+        $mediaFactory->update($media->reveal(), Argument::type(File::class), ['de' => 'Product One'])
             ->willReturn($media->reveal());
 
         $productMediaReference = $this->prophesize(ProductMediaReference::class);

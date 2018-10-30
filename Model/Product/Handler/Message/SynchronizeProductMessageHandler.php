@@ -17,12 +17,12 @@ use GuzzleHttp\ClientInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -163,7 +163,7 @@ class SynchronizeProductMessageHandler
                 $this->createMediaReference($imageValueObject, $product, $sorting);
             }
 
-            $sorting++;
+            ++$sorting;
         }
     }
 

@@ -15,8 +15,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface;
 
 class ProductMediaReferenceRepository extends EntityRepository implements ProductMediaReferenceRepositoryInterface
