@@ -123,11 +123,11 @@ class MediaFactory
         $fileVersion->setFile($file);
         $file->addFileVersion($fileVersion);
 
-        /**
-         * @var string $locale
-         * @var string $title
-         */
         foreach ($titles as $locale => $title) {
+            if (!is_string($locale)) {
+                throw new \RuntimeException('$locale needs to be string');
+            }
+
             $this->createFileVersionMeta($fileVersion, $title, $locale);
         }
 
@@ -149,11 +149,11 @@ class MediaFactory
             $processedLocales[] = $meta->getLocale();
         }
 
-        /**
-         * @var string $locale
-         * @var string $title
-         */
         foreach ($titles as $locale => $title) {
+            if (!is_string($locale)) {
+                throw new \RuntimeException('$locale needs to be string');
+            }
+
             if (!in_array($locale, $processedLocales)) {
                 $this->createFileVersionMeta($latestFileVersion, $title, $locale);
             }
