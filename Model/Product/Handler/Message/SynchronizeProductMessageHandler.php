@@ -154,16 +154,14 @@ class SynchronizeProductMessageHandler
             $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
             if (!$mediaReference) {
                 $mediaReference = $this->createMediaReference($imageValueObject, $product);
+            } else if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
+                $this->updateMediaReference($imageValueObject, $product, $mediaReference);
             } else {
-                if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
-                    $this->updateMediaReference($imageValueObject, $product, $mediaReference);
-                }
+                $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
             }
 
             $mediaReference->setSorting($sorting);
             $sorting++;
-
-            $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
         }
     }
 
@@ -178,7 +176,7 @@ class SynchronizeProductMessageHandler
         $media = $this->mediaFactory->create($file, 'sylius', $this->getImageTitles($product));
 
         // delete temp file
-        $this->filesystem->remove($file->getPath());
+        $this->filesystem->remove($file->getPathname());
 
         // create product media reference
         $mediaReference = $this->productMediaReferenceRepository->create(
@@ -206,7 +204,7 @@ class SynchronizeProductMessageHandler
         $this->mediaFactory->update($mediaReference->getMedia(), $file, $this->getImageTitles($product));
 
         // delete temp file
-        $this->filesystem->remove($file->getPath());
+        $this->filesystem->remove($file->getPathname());
 
         // save new path
         $mediaReference->setSyliusPath($imageValueObject->getPath());
@@ -234,7 +232,7 @@ class SynchronizeProductMessageHandler
         $request = $this->client->request('GET', $url);
 
         // create temp file
-        $filename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sylius_import');
+        $filename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sii');
         $this->filesystem->dumpFile($filename, $request->getBody()->getContents());
         $file = new File($filename);
 

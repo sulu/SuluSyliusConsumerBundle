@@ -32,6 +32,10 @@ interface ProductInterface
      */
     public function getProductInformations(): array;
 
+    public function addProductInformation(ProductInformationInterface $productInformation): self;
+
+    public function removeProductInformation(ProductInformationInterface $productInformation): self;
+
     /**
      * @return ProductVariantInterface[]
      */

@@ -8,8 +8,8 @@
         <id name="media" association-key="true"/>
         <id name="type" column="type" type="string"/>
 
+        <field name="syliusId" unique="true" column="syliusId" type="integer"/>
         <field name="sorting" column="sorting" type="integer"/>
-        <field name="syliusId" column="syliusId" type="integer"/>
         <field name="syliusPath" column="syliusPath" type="string"/>
 
         <many-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">

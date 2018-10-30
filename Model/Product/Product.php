@@ -107,4 +107,17 @@ class Product implements ProductInterface
         return $this->productInformations->getValues();
     }
 
+    public function addProductInformation(ProductInformationInterface $productInformation): ProductInterface
+    {
+        $this->productInformations->add($productInformation);
+
+        return $this;
+    }
+
+    public function removeProductInformation(ProductInformationInterface $productInformation): ProductInterface
+    {
+        $this->productInformations->removeElement($productInformation);
+
+        return $this;
+    }
 }
