@@ -21,7 +21,7 @@ use Psr\Http\Message\StreamInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;

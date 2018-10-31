@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 use GuzzleHttp\ClientInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
@@ -151,20 +151,31 @@ class SynchronizeProductMessageHandler
     {
         $sorting = 1;
         foreach ($message->getImages() as $imageValueObject) {
-            $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
-            if ($mediaReference) {
-                if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
-                    $this->updateMediaReference($imageValueObject, $product, $mediaReference, $sorting);
-                } else {
-                    $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
-                }
-            } else {
-                // create new media reference
-                $this->createMediaReference($imageValueObject, $product, $sorting);
-            }
-
+            $this->synchronizeImage($imageValueObject, $product, $sorting);
             ++$sorting;
         }
+    }
+
+    protected function synchronizeImage(
+        ProductImageValueObject $imageValueObject,
+        ProductInterface $product,
+        int $sorting
+    ): void {
+        $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
+
+        if (!$mediaReference) {
+            $this->createMediaReference($imageValueObject, $product, $sorting);
+
+            return;
+        }
+
+        if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
+            $this->updateMediaReference($imageValueObject, $product, $mediaReference, $sorting);
+
+            return;
+        }
+
+        $this->mediaFactory->updateTitles($mediaReference->getMedia(), $this->getImageTitles($product));
     }
 
     protected function createMediaReference(

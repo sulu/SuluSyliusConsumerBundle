@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Media;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\MediaBundle\Entity\Collection;
@@ -27,7 +27,7 @@ use Sulu\Component\Media\SystemCollections\SystemCollectionManagerInterface;
 use Symfony\Component\HttpFoundation\File\File as SymfonyFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class MediaFactory
+class MediaFactory implements MediaFactoryInterface
 {
     /**
      * @var StorageInterface

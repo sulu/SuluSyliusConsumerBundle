@@ -39,13 +39,12 @@
             <tag name="sulu_route.defaults_provider"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Media\MediaFactory">
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory">
             <argument type="service" id="sulu_media.storage"/>
             <argument type="service" id="sulu.repository.media"/>
             <argument type="service" id="sulu_media.type_manager"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="sulu_media.system_collections.manager"/>
         </service>
-
     </services>
 </container>
