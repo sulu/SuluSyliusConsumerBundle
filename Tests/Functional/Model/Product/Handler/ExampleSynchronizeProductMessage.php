@@ -9104,18 +9104,7 @@ class ExampleSynchronizeProductMessage
         }
     ],
     "averageRating": 0.0,
-    "images": [
-        {
-            "id": 105,
-            "type": "main",
-            "path": "1c/e1/faae0526152d28b9a35deaee8380.jpeg"
-        },
-        {
-            "id": 106,
-            "type": "thumbnail",
-            "path": "c9/57/e8a2d7f92c6e44f5c15561fcb68d.jpeg"
-        }
-    ],
+    "images": [],
     "_links": {
         "self": {
             "href": "/api/v1/products/0602fd01-1e26-313f-9544-420369277dd6"

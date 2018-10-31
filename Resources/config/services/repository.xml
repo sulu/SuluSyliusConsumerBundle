@@ -23,6 +23,11 @@
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformation</argument>
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference</argument>
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Content\Content</argument>

@@ -47,4 +47,17 @@ class SynchronizeProductMessage
 
         return $translations;
     }
+
+    /**
+     * @return ProductImageValueObject[]
+     */
+    public function getImages(): array
+    {
+        $images = [];
+        foreach ($this->getArrayValue('images') as $imagePayload) {
+            $images[] = new ProductImageValueObject($imagePayload);
+        }
+
+        return $images;
+    }
 }
