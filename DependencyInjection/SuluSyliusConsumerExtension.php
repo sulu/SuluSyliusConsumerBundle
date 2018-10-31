@@ -132,7 +132,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
         );
 
         if (!$container->hasExtension('sulu_media')) {
-            throw new \RuntimeException('Missing SuluCategoryBundle.');
+            throw new \RuntimeException('Missing SuluMediaBundle.');
         }
 
         $container->prependExtensionConfig(
