@@ -27,6 +27,7 @@ class ProductInformationRepository extends EntityRepository implements ProductIn
         $className = $this->getClassName();
         $productInformation = new $className($product, $dimension);
         $this->getEntityManager()->persist($productInformation);
+        $product->addProductInformation($productInformation);
 
         return $productInformation;
     }

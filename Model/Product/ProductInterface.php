@@ -23,6 +23,19 @@ interface ProductInterface
 
     public function getCode(): string;
 
+    public function isEnabled(): bool;
+
+    public function setEnabled(bool $enabled): self;
+
+    /**
+     * @return ProductInformationInterface[]
+     */
+    public function getProductInformations(): array;
+
+    public function addProductInformation(ProductInformationInterface $productInformation): self;
+
+    public function removeProductInformation(ProductInformationInterface $productInformation): self;
+
     /**
      * @return ProductVariantInterface[]
      */

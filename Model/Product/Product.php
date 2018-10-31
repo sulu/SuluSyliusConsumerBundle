@@ -29,6 +29,11 @@ class Product implements ProductInterface
     private $code;
 
     /**
+     * @var bool
+     */
+    private $enabled = false;
+
+    /**
      * @var ProductVariant[]|Collection
      */
     private $productVariants;
@@ -57,6 +62,18 @@ class Product implements ProductInterface
         return $this->code;
     }
 
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): ProductInterface
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
     public function getVariants(): array
     {
         return $this->productVariants->getValues();
@@ -81,6 +98,25 @@ class Product implements ProductInterface
     public function removeVariant(ProductVariantInterface $productVariant): ProductInterface
     {
         $this->productVariants->remove($productVariant->getCode());
+
+        return $this;
+    }
+
+    public function getProductInformations(): array
+    {
+        return $this->productInformations->getValues();
+    }
+
+    public function addProductInformation(ProductInformationInterface $productInformation): ProductInterface
+    {
+        $this->productInformations->add($productInformation);
+
+        return $this;
+    }
+
+    public function removeProductInformation(ProductInformationInterface $productInformation): ProductInterface
+    {
+        $this->productInformations->removeElement($productInformation);
 
         return $this;
     }

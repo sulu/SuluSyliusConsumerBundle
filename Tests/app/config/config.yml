@@ -48,3 +48,6 @@ services:
         factory: "doctrine.orm.messenger.middleware_factory.transaction:createMiddleware"
         abstract: true
         arguments: ["default"]
+
+sulu_sylius_consumer:
+    sylius_base_url: 'http://sylius.localhost'

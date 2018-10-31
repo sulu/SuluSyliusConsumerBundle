@@ -27,6 +27,10 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
 {
     public function load(array $configs, ContainerBuilder $container)
     {
+        $configuration = new Configuration();
+        $config = $this->processConfiguration($configuration, $configs);
+        $container->setParameter('sulu_sylius_consumer.sylius_base_url', $config['sylius_base_url']);
+
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
 
         $loader->load('services.xml');
@@ -108,6 +112,22 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                 ],
             ]
         );
+
+        if ($container->hasExtension('sulu_media')) {
+            $container->prependExtensionConfig(
+                'sulu_media',
+                [
+                    'system_collections' => [
+                        'sylius' => [
+                            'meta_title' => [
+                                'en' => 'Sylius Media',
+                                'de' => 'Sylius Medien',
+                            ],
+                        ],
+                    ],
+                ]
+            );
+        }
 
         $this->prependForAdmin($container);
     }

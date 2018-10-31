@@ -8,6 +8,7 @@ parameters:
     paths:
         - .
     excludes_analyse:
+        - %currentWorkingDirectory%/DependencyInjection/Configuration.php
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/Tests/app/AppKernel.php
         - %currentWorkingDirectory%/Tests/app/cache/*
