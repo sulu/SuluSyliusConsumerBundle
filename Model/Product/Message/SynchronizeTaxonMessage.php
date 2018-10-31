@@ -70,6 +70,16 @@ class SynchronizeTaxonMessage
         return $children;
     }
 
+    public function getParent(): ?SynchronizeTaxonMessage
+    {
+        $parent = $this->getArrayValueWithDefault('parent');
+        if (!$parent) {
+            return null;
+        }
+
+        return new SynchronizeTaxonMessage($parent['id'], $parent);
+    }
+
     /**
      * @return TaxonTranslationValueObject[]
      */

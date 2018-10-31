@@ -49,7 +49,22 @@ class SynchronizeTaxonMessageHandler
 
     public function __invoke(SynchronizeTaxonMessage $message): void
     {
-        $this->synchronizeCategory($message);
+        $parent = null;
+        if ($message->getLevel() !== 0) {
+            $parentValueObject = $message->getParent();
+
+            if (!$parentValueObject) {
+                throw new \RuntimeException('Required "parent" not provided');
+            }
+
+            $parent = $this->categoryRepository->findBySyliusId($parentValueObject->getId());
+
+            if (!$parent) {
+                throw new \RuntimeException('Category with "syliusId" "' . $parentValueObject->getId() . '" not found.');
+            }
+        }
+
+        $this->synchronizeCategory($message, $parent);
     }
 
     protected function synchronizeCategory(SynchronizeTaxonMessage $message, CategoryInterface $parent = null): void
@@ -68,9 +83,6 @@ class SynchronizeTaxonMessageHandler
         }
 
         $category->setKey($message->getCode());
-        $category->setLft($message->getLeft());
-        $category->setRgt($message->getRight());
-        $category->setDepth($message->getLevel());
         $category->setDefaultLocale('de');
 
         foreach ($message->getTranslations() as $translationValueObject) {
