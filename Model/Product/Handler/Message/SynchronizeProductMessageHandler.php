@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use GuzzleHttp\ClientInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
@@ -56,6 +57,11 @@ class SynchronizeProductMessageHandler
     private $productMediaReferenceRepository;
 
     /**
+     * @var CategoryRepositoryInterface
+     */
+    private $categoryRepository;
+
+    /**
      * @var MediaFactory
      */
     private $mediaFactory;
@@ -76,6 +82,7 @@ class SynchronizeProductMessageHandler
         ProductInformationRepositoryInterface $productInformationRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ProductMediaReferenceRepositoryInterface $productMediaReferenceRepository,
+        CategoryRepositoryInterface $categoryRepository,
         MediaFactory $mediaFactory,
         Filesystem $filesystem,
         string $syliusBaseUrl
@@ -85,6 +92,7 @@ class SynchronizeProductMessageHandler
         $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->productMediaReferenceRepository = $productMediaReferenceRepository;
+        $this->categoryRepository = $categoryRepository;
         $this->mediaFactory = $mediaFactory;
         $this->filesystem = $filesystem;
         $this->syliusBaseUrl = $syliusBaseUrl;
@@ -105,6 +113,7 @@ class SynchronizeProductMessageHandler
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         $this->synchronizeTranslations($message, $product);
+        $this->synchronizeProductTaxons($message, $product);
         $this->synchronizeImages($message, $product);
     }
 
@@ -145,6 +154,24 @@ class SynchronizeProductMessageHandler
         $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
         $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
+    }
+
+    protected function synchronizeProductTaxons(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
+        $mainCategory = null;
+        if ($message->getMainTaxonId()) {
+            $mainCategory = $this->categoryRepository->findBySyliusId($message->getMainTaxonId());
+        }
+        $product->setMainCategory($mainCategory);
+
+        $categories = [];
+        foreach ($message->getProductTaxons() as $productTaxonValueObject) {
+            $category = $this->categoryRepository->findBySyliusId($productTaxonValueObject->getTaxonId());
+            if ($category) {
+                $categories[] = $category;
+            }
+        }
+        $product->setProductCategories($categories);
     }
 
     protected function synchronizeImages(SynchronizeProductMessage $message, ProductInterface $product): void

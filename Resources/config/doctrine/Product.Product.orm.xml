@@ -31,5 +31,23 @@
                 <cascade-remove/>
             </cascade>
         </one-to-many>
+
+        <one-to-one field="mainCategory" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
+            <join-column name="idMainCategories" referenced-column-name="id" on-delete="CASCADE"/>
+        </one-to-one>
+
+        <many-to-many field="productCategories" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
+            <join-table name="pr_product_categories">
+                <join-columns>
+                    <join-column name="idProducts" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
+                </join-columns>
+                <inverse-join-columns>
+                    <join-column name="idCategories" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
+                </inverse-join-columns>
+            </join-table>
+            <order-by>
+                <order-by-field name="id" direction="ASC"/>
+            </order-by>
+        </many-to-many>
     </entity>
 </doctrine-mapping>

@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
+
 interface ProductInterface
 {
     const RESOURCE_KEY = 'products';
@@ -46,4 +48,18 @@ interface ProductInterface
     public function addVariant(ProductVariantInterface $productVariant): self;
 
     public function removeVariant(ProductVariantInterface $productVariant): self;
+
+    public function getMainCategory(): ?CategoryInterface;
+
+    public function setMainCategory(?CategoryInterface $mainCategory): self;
+
+    /**
+     * @return CategoryInterface[]
+     */
+    public function getProductCategories(): array;
+
+    /**
+     * @param CategoryInterface[] $productCategories
+     */
+    public function setProductCategories(array $productCategories): self;
 }

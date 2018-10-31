@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
 
 class Product implements ProductInterface
 {
@@ -34,6 +35,16 @@ class Product implements ProductInterface
     private $enabled = false;
 
     /**
+     * @var CategoryInterface|null
+     */
+    private $mainCategory;
+
+    /**
+     * @var CategoryInterface[]|Collection
+     */
+    private $productCategories;
+
+    /**
      * @var ProductVariant[]|Collection
      */
     private $productVariants;
@@ -48,6 +59,7 @@ class Product implements ProductInterface
         $this->id = $id;
         $this->code = $code;
 
+        $this->productCategories = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
         $this->productInformations = new ArrayCollection();
     }
@@ -117,6 +129,40 @@ class Product implements ProductInterface
     public function removeProductInformation(ProductInformationInterface $productInformation): ProductInterface
     {
         $this->productInformations->removeElement($productInformation);
+
+        return $this;
+    }
+
+    public function getMainCategory(): ?CategoryInterface
+    {
+        return $this->mainCategory;
+    }
+
+    public function setMainCategory(?CategoryInterface $mainCategory): ProductInterface
+    {
+        $this->mainCategory = $mainCategory;
+
+        return $this;
+    }
+
+    /**
+     * @return CategoryInterface[]
+     */
+    public function getProductCategories(): array
+    {
+        return $this->productCategories->getValues();
+    }
+
+    /**
+     * @param CategoryInterface[] $productCategories
+     */
+    public function setProductCategories(array $productCategories): ProductInterface
+    {
+        $this->productCategories->clear();
+
+        foreach ($productCategories as $productCategory) {
+            $this->productCategories->add($productCategory);
+        }
 
         return $this;
     }
