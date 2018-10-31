@@ -159,8 +159,9 @@ class SynchronizeProductMessageHandler
     protected function synchronizeProductTaxons(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         $mainCategory = null;
-        if ($message->getMainTaxonId()) {
-            $mainCategory = $this->categoryRepository->findBySyliusId($message->getMainTaxonId());
+        $mainTaxonid = $message->getMainTaxonId();
+        if ($mainTaxonid) {
+            $mainCategory = $this->categoryRepository->findBySyliusId($mainTaxonid);
         }
         $product->setMainCategory($mainCategory);
 
