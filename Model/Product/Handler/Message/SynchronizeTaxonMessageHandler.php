@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslationInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
@@ -50,7 +49,7 @@ class SynchronizeTaxonMessageHandler
     public function __invoke(SynchronizeTaxonMessage $message): void
     {
         $parent = null;
-        if ($message->getLevel() !== 0) {
+        if (0 !== $message->getLevel()) {
             $parentValueObject = $message->getParent();
 
             if (!$parentValueObject) {
@@ -86,7 +85,7 @@ class SynchronizeTaxonMessageHandler
         $category->setDefaultLocale('de');
 
         foreach ($message->getTranslations() as $translationValueObject) {
-            /** @var CategoryTranslationInterface $categoryTranslation */
+            /** @var ?CategoryTranslationInterface $categoryTranslation */
             $categoryTranslation = $category->findTranslationByLocale($translationValueObject->getLocale());
             if (!$categoryTranslation) {
                 $categoryTranslation = $this->categoryTranslationRepository->createNew();

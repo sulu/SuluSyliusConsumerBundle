@@ -23,6 +23,7 @@ trait CategoryTrait
     {
         /** @var CategoryRepositoryInterface $repository */
         $repository = $this->getContainer()->get('sulu.repository.category');
+
         return $repository->findBySyliusId($syliusId);
     }
 
