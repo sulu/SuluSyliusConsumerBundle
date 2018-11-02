@@ -3,6 +3,5 @@
     <class name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView" exclusion-policy="ALL">
         <property name="id" expose="true" />
         <property name="locale" expose="true" />
-        <property name="productData" serialized-name="product" expose="true" />
     </class>
 </serializer>
