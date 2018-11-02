@@ -5,10 +5,13 @@
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface"
                  class="Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactory">
+            <argument type="service" id="jms_serializer.serializer"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface"/>
+            <argument type="service" id="sulu_media.media_manager"/>
+            <argument type="service" id="sulu_category.category_manager"/>
         </service>
 
         <service id="sulu_sylius_consumer.guzzle_client" class="GuzzleHttp\Client"/>

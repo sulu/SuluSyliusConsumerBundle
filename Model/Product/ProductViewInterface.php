@@ -18,11 +18,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInte
 
 interface ProductViewInterface
 {
+    public function getId(): string;
+
     public function getLocale(): string;
 
-    public function getProduct(): ProductInterface;
-
-    public function getProductInformation(): ProductInformationInterface;
+    public function getProductData(): array;
 
     public function getContent(): ContentViewInterface;
 

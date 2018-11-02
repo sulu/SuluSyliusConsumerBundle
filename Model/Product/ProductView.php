@@ -21,17 +21,17 @@ class ProductView implements ProductViewInterface
     /**
      * @var string
      */
+    private $id;
+
+    /**
+     * @var string
+     */
     private $locale;
 
     /**
-     * @var ProductInterface
+     * @var array
      */
-    private $product;
-
-    /**
-     * @var ProductInformationInterface
-     */
-    private $productInformation;
+    private $productData;
 
     /**
      * @var ContentViewInterface
@@ -44,17 +44,22 @@ class ProductView implements ProductViewInterface
     private $routableResource;
 
     public function __construct(
+        string $id,
         string $locale,
-        ProductInterface $product,
-        ProductInformationInterface $productInformation,
+        array $productData,
         ContentViewInterface $content,
         RoutableResourceInterface $routableResource
     ) {
+        $this->id = $id;
         $this->locale = $locale;
-        $this->product = $product;
-        $this->productInformation = $productInformation;
+        $this->productData = $productData;
         $this->content = $content;
         $this->routableResource = $routableResource;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getLocale(): string
@@ -62,14 +67,9 @@ class ProductView implements ProductViewInterface
         return $this->locale;
     }
 
-    public function getProduct(): ProductInterface
+    public function getProductData(): array
     {
-        return $this->product;
-    }
-
-    public function getProductInformation(): ProductInformationInterface
-    {
-        return $this->productInformation;
+        return $this->productData;
     }
 
     public function getContent(): ContentViewInterface

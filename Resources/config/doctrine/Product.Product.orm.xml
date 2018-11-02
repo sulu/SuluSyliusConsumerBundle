@@ -32,6 +32,11 @@
             </cascade>
         </one-to-many>
 
+        <one-to-many field="mediaReferences"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference"
+                     mapped-by="product"
+        />
+
         <one-to-one field="mainCategory" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
             <join-column name="idMainCategories" referenced-column-name="id" on-delete="CASCADE"/>
         </one-to-one>

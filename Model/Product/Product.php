@@ -45,6 +45,11 @@ class Product implements ProductInterface
     private $productCategories;
 
     /**
+     * @var ProductMediaReference[]|Collection
+     */
+    private $mediaReferences;
+
+    /**
      * @var ProductVariant[]|Collection
      */
     private $productVariants;
@@ -60,6 +65,7 @@ class Product implements ProductInterface
         $this->code = $code;
 
         $this->productCategories = new ArrayCollection();
+        $this->mediaReferences = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
         $this->productInformations = new ArrayCollection();
     }
@@ -181,5 +187,13 @@ class Product implements ProductInterface
         $this->productCategories->remove($syliusId);
 
         return $this;
+    }
+
+    /**
+     * @return ProductMediaReference[]
+     */
+    public function getMediaReferences(): array
+    {
+        return $this->mediaReferences->getValues();
     }
 }
