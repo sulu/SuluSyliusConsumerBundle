@@ -73,8 +73,6 @@ class ProductSerializerSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('id', $object->getId());
-        $visitor->setData('product', $object->getProductData());
         $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
         $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
         $visitor->setData('template', $object->getContent()->getType());
