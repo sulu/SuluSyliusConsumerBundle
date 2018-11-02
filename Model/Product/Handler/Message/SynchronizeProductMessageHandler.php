@@ -115,6 +115,7 @@ class SynchronizeProductMessageHandler
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         $this->synchronizeTranslations($message, $product);
+        $this->synchronizeMainTaxon($message, $product);
         $this->synchronizeProductTaxons($message, $product);
         $this->synchronizeImages($message, $product);
     }
