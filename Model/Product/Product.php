@@ -153,16 +153,32 @@ class Product implements ProductInterface
         return $this->productCategories->getValues();
     }
 
-    /**
-     * @param CategoryInterface[] $productCategories
-     */
-    public function setProductCategories(array $productCategories): ProductInterface
+    public function findProductCategoryBySyliusId(int $syliusId): ?CategoryInterface
     {
-        $this->productCategories->clear();
-
-        foreach ($productCategories as $productCategory) {
-            $this->productCategories->add($productCategory);
+        if (!$this->productCategories->containsKey($syliusId)) {
+            return null;
         }
+
+        return $this->productCategories->get($syliusId);
+    }
+
+    public function addProductCategory(CategoryInterface $productCategory): ProductInterface
+    {
+        $this->productCategories->set($productCategory->getSyliusId(), $productCategory);
+
+        return $this;
+    }
+
+    public function removeProductCategory(CategoryInterface $productCategory): ProductInterface
+    {
+        $this->productCategories->remove($productCategory->getSyliusId());
+
+        return $this;
+    }
+
+    public function removeProductCategoryBySyliusId(int $syliusId): ProductInterface
+    {
+        $this->productCategories->remove($syliusId);
 
         return $this;
     }

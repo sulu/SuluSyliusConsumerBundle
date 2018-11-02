@@ -93,6 +93,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
+        $product->getProductCategories()->willReturn([]);
 
         $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
         $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
@@ -179,7 +180,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $categoryRepository->findBySyliusId(56)->willReturn($category2->reveal());
 
         $product->setMainCategory($mainCategory->reveal())->shouldBeCalled();
-        $product->setProductCategories([$category1->reveal(), $category2->reveal()])->shouldBeCalled();
+        $product->addProductCategory($category1->reveal())->shouldBeCalled();
+        $product->addProductCategory($category2->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }
@@ -228,10 +230,14 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             'http://sylius.localhost'
         );
 
+        $category1 = $this->prophesize(CategoryInterface::class);
+        $category1->getSyliusId()->willReturn(99);
+
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
+        $product->getProductCategories()->willReturn([$category1->reveal()]);
         $product->setMainCategory(null)->shouldBeCalled();
-        $product->setProductCategories([])->shouldBeCalled();
+        $product->removeProductCategoryBySyliusId(99)->shouldBeCalled();
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimensionDraft = $this->prophesize(DimensionInterface::class);

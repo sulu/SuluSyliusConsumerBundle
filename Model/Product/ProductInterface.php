@@ -58,8 +58,11 @@ interface ProductInterface
      */
     public function getProductCategories(): array;
 
-    /**
-     * @param CategoryInterface[] $productCategories
-     */
-    public function setProductCategories(array $productCategories): self;
+    public function findProductCategoryBySyliusId(int $id): ?CategoryInterface;
+
+    public function addProductCategory(CategoryInterface $productCategory): ProductInterface;
+
+    public function removeProductCategory(CategoryInterface $productCategory): ProductInterface;
+
+    public function removeProductCategoryBySyliusId(int $id): ProductInterface;
 }

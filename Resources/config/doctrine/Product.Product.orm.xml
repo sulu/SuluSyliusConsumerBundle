@@ -36,7 +36,7 @@
             <join-column name="idMainCategories" referenced-column-name="id" on-delete="CASCADE"/>
         </one-to-one>
 
-        <many-to-many field="productCategories" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
+        <many-to-many field="productCategories" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface" index-by="syliusId">
             <join-table name="pr_product_categories">
                 <join-columns>
                     <join-column name="idProducts" referenced-column-name="id" on-delete="CASCADE" nullable="false"/>
