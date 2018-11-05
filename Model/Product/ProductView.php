@@ -13,11 +13,18 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
+use Sulu\Bundle\CategoryBundle\Api\Category;
+use Sulu\Bundle\MediaBundle\Api\Media;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
 class ProductView implements ProductViewInterface
 {
+    /**
+     * @var string
+     */
+    private $id;
+
     /**
      * @var string
      */
@@ -34,6 +41,21 @@ class ProductView implements ProductViewInterface
     private $productInformation;
 
     /**
+     * @var null|Category
+     */
+    private $mainCategory;
+
+    /**
+     * @var Category[]
+     */
+    private $categories;
+
+    /**
+     * @var Media[][]
+     */
+    private $media;
+
+    /**
      * @var ContentViewInterface
      */
     private $content;
@@ -44,17 +66,30 @@ class ProductView implements ProductViewInterface
     private $routableResource;
 
     public function __construct(
+        string $id,
         string $locale,
         ProductInterface $product,
         ProductInformationInterface $productInformation,
+        ?Category $mainCategory,
+        array $categories,
+        array $media,
         ContentViewInterface $content,
         RoutableResourceInterface $routableResource
     ) {
+        $this->id = $id;
         $this->locale = $locale;
         $this->product = $product;
         $this->productInformation = $productInformation;
+        $this->mainCategory = $mainCategory;
+        $this->categories = $categories;
+        $this->media = $media;
         $this->content = $content;
         $this->routableResource = $routableResource;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function getLocale(): string
@@ -70,6 +105,21 @@ class ProductView implements ProductViewInterface
     public function getProductInformation(): ProductInformationInterface
     {
         return $this->productInformation;
+    }
+
+    public function getMainCategory(): ?Category
+    {
+        return $this->mainCategory;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    public function getMedia(): array
+    {
+        return $this->media;
     }
 
     public function getContent(): ContentViewInterface

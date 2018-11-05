@@ -13,6 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
+use Sulu\Bundle\CategoryBundle\Api\Category;
+use Sulu\Bundle\CategoryBundle\Category\CategoryManagerInterface;
+use Sulu\Bundle\MediaBundle\Api\Media;
+use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
@@ -47,16 +51,30 @@ class ProductViewFactory implements ProductViewFactoryInterface
      */
     private $contentViewFactory;
 
+    /**
+     * @var MediaManagerInterface
+     */
+    private $mediaManager;
+
+    /**
+     * @var CategoryManagerInterface
+     */
+    private $categoryManager;
+
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         RoutableResourceRepositoryInterface $routableResourceRepository,
-        ContentViewFactoryInterface $contentViewFactory
+        ContentViewFactoryInterface $contentViewFactory,
+        MediaManagerInterface $mediaManager,
+        CategoryManagerInterface $categoryManager
     ) {
         $this->dimensionRepository = $dimensionRepository;
         $this->productInformationRepository = $productInformationRepository;
         $this->routableResourceRepository = $routableResourceRepository;
         $this->contentViewFactory = $contentViewFactory;
+        $this->mediaManager = $mediaManager;
+        $this->categoryManager = $categoryManager;
     }
 
     /**
@@ -107,8 +125,58 @@ class ProductViewFactory implements ProductViewFactoryInterface
             throw new ContentNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
         }
 
-        $viewProduct = new ProductView($locale, $product, $productInformation, $content, $routableResource);
+        $viewProduct = new ProductView(
+            $product->getId(),
+            $locale,
+            $product,
+            $productInformation,
+            $this->getMainCategory($product, $locale),
+            $this->getCategories($product, $locale),
+            $this->getMedia($product, $locale),
+            $content,
+            $routableResource
+        );
 
         return $viewProduct;
+    }
+
+    protected function getMainCategory(ProductInterface $product, string $locale): ?Category
+    {
+        $mainCategory = $product->getMainCategory();
+        if (!$mainCategory) {
+            return null;
+        }
+
+        /** @var Category $mainCategoryApi */
+        $mainCategoryApi = $this->categoryManager->getApiObject($mainCategory, $locale);
+
+        return $mainCategoryApi;
+    }
+
+    protected function getCategories(ProductInterface $product, string $locale): array
+    {
+        /** @var Category[] $categories */
+        $categories = $this->categoryManager->getApiObjects($product->getProductCategories(), $locale);
+
+        return $categories;
+    }
+
+    /**
+     * @return Media[][]
+     */
+    protected function getMedia(ProductInterface $product, string $locale): array
+    {
+        $media = [];
+        foreach ($product->getMediaReferences() as $mediaReference) {
+            $mediaApi = new Media($mediaReference->getMedia(), $locale);
+
+            if (!array_key_exists($mediaReference->getType(), $media)) {
+                $media[$mediaReference->getType()] = [];
+            }
+
+            $media[$mediaReference->getType()][] = $this->mediaManager->addFormatsAndUrl($mediaApi);
+        }
+
+        return $media;
     }
 }

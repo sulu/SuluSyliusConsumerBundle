@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\EventSubscriber;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -23,7 +24,7 @@ use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
 use Sulu\Component\Serializer\ArraySerializationVisitor;
 
-class ProductSerializerSubscriber implements EventSubscriberInterface
+class ProductViewSerializerSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
@@ -73,14 +74,26 @@ class ProductSerializerSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('id', $object->getProduct()->getId());
-        $visitor->setData('product', $object->getProduct());
-        $visitor->setData('productInformation', $object->getProductInformation());
+        $visitor->setData('product', $this->getProductData($object, $event->getContext()));
         $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
         $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
         $visitor->setData('template', $object->getContent()->getType());
 
         // TODO creator, created, changer, changed
+    }
+
+    protected function getProductData(ProductViewInterface $productView, Context $context): array
+    {
+        $productData = array_merge(
+            $context->accept($productView->getProduct()),
+            $context->accept($productView->getProductInformation())
+        );
+
+        $productData['mainCategory'] = $productView->getMainCategory();
+        $productData['categories'] = $productView->getCategories();
+        $productData['media'] = $productView->getMedia();
+
+        return $productData;
     }
 
     private function resolveView(StructureInterface $structure, array $data): array
