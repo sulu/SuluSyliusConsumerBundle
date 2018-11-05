@@ -19,11 +19,14 @@ use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTaxonValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
@@ -53,16 +56,26 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productImageValueObject->getPath()->willReturn('ab/12/test1.png');
         $productImageValueObject->getType()->willReturn('test_type');
 
+        $productTaxonValueObject1 = $this->prophesize(ProductTaxonValueObject::class);
+        $productTaxonValueObject1->getTaxonId()->willReturn(34);
+        $productTaxonValueObject2 = $this->prophesize(ProductTaxonValueObject::class);
+        $productTaxonValueObject2->getTaxonId()->willReturn(56);
+
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
         $message->getImages()->willReturn([$productImageValueObject->reveal()]);
+        $message->getMainTaxonId()->willReturn(4);
+        $message->getProductTaxons()->willReturn(
+            [$productTaxonValueObject1->reveal(), $productTaxonValueObject2->reveal()]
+        );
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productMediaReferenceRepository = $this->prophesize(ProductMediaReferenceRepository::class);
+        $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $mediaFactory = $this->prophesize(MediaFactory::class);
         $filesystem = $this->prophesize(Filesystem::class);
 
@@ -72,6 +85,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $productInformationRepository->reveal(),
             $dimensionRepository->reveal(),
             $productMediaReferenceRepository->reveal(),
+            $categoryRepository->reveal(),
             $mediaFactory->reveal(),
             $filesystem->reveal(),
             'http://sylius.localhost'
@@ -79,6 +93,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
+        $product->getProductCategories()->willReturn([]);
 
         $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
         $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
@@ -155,6 +170,19 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productMediaReferenceRepository->create($product->reveal(), $media->reveal(), 'test_type', 27)
             ->willReturn($productMediaReference->reveal());
 
+        $mainCategory = $this->prophesize(CategoryInterface::class);
+        $categoryRepository->findBySyliusId(4)->willReturn($mainCategory->reveal());
+
+        $category1 = $this->prophesize(CategoryInterface::class);
+        $categoryRepository->findBySyliusId(34)->willReturn($category1->reveal());
+
+        $category2 = $this->prophesize(CategoryInterface::class);
+        $categoryRepository->findBySyliusId(56)->willReturn($category2->reveal());
+
+        $product->setMainCategory($mainCategory->reveal())->shouldBeCalled();
+        $product->addProductCategory($category1->reveal())->shouldBeCalled();
+        $product->addProductCategory($category2->reveal())->shouldBeCalled();
+
         $handler->__invoke($message->reveal());
     }
 
@@ -178,12 +206,15 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
         $message->getImages()->willReturn([$productImageValueObject->reveal()]);
+        $message->getMainTaxonId()->willReturn(null);
+        $message->getProductTaxons()->willReturn([]);
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productMediaReferenceRepository = $this->prophesize(ProductMediaReferenceRepository::class);
+        $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $mediaFactory = $this->prophesize(MediaFactory::class);
         $filesystem = $this->prophesize(Filesystem::class);
 
@@ -193,13 +224,20 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $productInformationRepository->reveal(),
             $dimensionRepository->reveal(),
             $productMediaReferenceRepository->reveal(),
+            $categoryRepository->reveal(),
             $mediaFactory->reveal(),
             $filesystem->reveal(),
             'http://sylius.localhost'
         );
 
+        $category1 = $this->prophesize(CategoryInterface::class);
+        $category1->getSyliusId()->willReturn(99);
+
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
+        $product->getProductCategories()->willReturn([$category1->reveal()]);
+        $product->setMainCategory(null)->shouldBeCalled();
+        $product->removeProductCategoryBySyliusId(99)->shouldBeCalled();
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimensionDraft = $this->prophesize(DimensionInterface::class);

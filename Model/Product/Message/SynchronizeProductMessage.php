@@ -60,4 +60,27 @@ class SynchronizeProductMessage
 
         return $images;
     }
+
+    public function getMainTaxonId(): ?int
+    {
+        $mainTaxon = $this->getArrayValueWithDefault('mainTaxon');
+        if (!$mainTaxon) {
+            return null;
+        }
+
+        return $mainTaxon['id'];
+    }
+
+    /**
+     * @return ProductTaxonValueObject[]
+     */
+    public function getProductTaxons(): array
+    {
+        $taxons = [];
+        foreach ($this->getArrayValueWithDefault('productTaxons') as $productTaxonPayload) {
+            $taxons[] = new ProductTaxonValueObject($productTaxonPayload);
+        }
+
+        return $taxons;
+    }
 }

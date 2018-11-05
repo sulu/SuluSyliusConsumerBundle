@@ -14,10 +14,13 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use GuzzleHttp\ClientInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTaxonValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
@@ -56,6 +59,11 @@ class SynchronizeProductMessageHandler
     private $productMediaReferenceRepository;
 
     /**
+     * @var CategoryRepositoryInterface
+     */
+    private $categoryRepository;
+
+    /**
      * @var MediaFactory
      */
     private $mediaFactory;
@@ -76,6 +84,7 @@ class SynchronizeProductMessageHandler
         ProductInformationRepositoryInterface $productInformationRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ProductMediaReferenceRepositoryInterface $productMediaReferenceRepository,
+        CategoryRepositoryInterface $categoryRepository,
         MediaFactory $mediaFactory,
         Filesystem $filesystem,
         string $syliusBaseUrl
@@ -85,6 +94,7 @@ class SynchronizeProductMessageHandler
         $this->productInformationRepository = $productInformationRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->productMediaReferenceRepository = $productMediaReferenceRepository;
+        $this->categoryRepository = $categoryRepository;
         $this->mediaFactory = $mediaFactory;
         $this->filesystem = $filesystem;
         $this->syliusBaseUrl = $syliusBaseUrl;
@@ -105,6 +115,8 @@ class SynchronizeProductMessageHandler
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         $this->synchronizeTranslations($message, $product);
+        $this->synchronizeMainTaxon($message, $product);
+        $this->synchronizeProductTaxons($message, $product);
         $this->synchronizeImages($message, $product);
     }
 
@@ -145,6 +157,50 @@ class SynchronizeProductMessageHandler
         $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
         $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
+    }
+
+    protected function synchronizeMainTaxon(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
+        $mainCategory = null;
+        $mainTaxonId = $message->getmainTaxonId();
+        if ($mainTaxonId) {
+            $mainCategory = $this->categoryRepository->findBySyliusId($mainTaxonId);
+        }
+        $product->setMainCategory($mainCategory);
+    }
+
+    protected function synchronizeProductTaxons(SynchronizeProductMessage $message, ProductInterface $product): void
+    {
+        $currentTaxonIds = array_map(function (CategoryInterface $productCategory) {
+            return $productCategory->getSyliusId();
+        }, $product->getProductCategories());
+        $processedTaxonIds = [];
+
+        // check for new added
+        foreach ($message->getProductTaxons() as $productTaxonValueObject) {
+            if (!in_array($productTaxonValueObject->getTaxonId(), $currentTaxonIds)) {
+                $this->synchronizeProductTaxon($productTaxonValueObject, $product);
+            }
+            $processedTaxonIds[] = $productTaxonValueObject->getTaxonId();
+        }
+
+        // check for removed
+        foreach (array_diff($currentTaxonIds, $processedTaxonIds) as $taxonId) {
+            $product->removeProductCategoryBySyliusId($taxonId);
+        }
+    }
+
+    protected function synchronizeProductTaxon(
+        ProductTaxonValueObject $productTaxonValueObject,
+        ProductInterface $product
+    ): void {
+        $category = $this->categoryRepository->findBySyliusId($productTaxonValueObject->getTaxonId());
+        if (!$category) {
+            // TODO: Write at least log entry
+            return;
+        }
+
+        $product->addProductCategory($category);
     }
 
     protected function synchronizeImages(SynchronizeProductMessage $message, ProductInterface $product): void
