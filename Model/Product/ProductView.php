@@ -51,7 +51,7 @@ class ProductView implements ProductViewInterface
     private $categories;
 
     /**
-     * @var Media[]
+     * @var Media[][]
      */
     private $media;
 

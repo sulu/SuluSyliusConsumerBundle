@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\View;
 
-use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\CategoryBundle\Api\Category;
 use Sulu\Bundle\CategoryBundle\Category\CategoryManagerInterface;
 use Sulu\Bundle\MediaBundle\Api\Media;
@@ -23,8 +22,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterf
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
@@ -145,14 +142,15 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
     protected function getMainCategory(ProductInterface $product, string $locale): ?Category
     {
-        if (!$product->getMainCategory()) {
+        $mainCategory = $product->getMainCategory();
+        if (!$mainCategory) {
             return null;
         }
 
-        /** @var Category $mainCategory */
-        $mainCategory = $this->categoryManager->getApiObject($product->getMainCategory(), $locale);
+        /** @var Category $mainCategoryApi */
+        $mainCategoryApi = $this->categoryManager->getApiObject($mainCategory, $locale);
 
-        return $mainCategory;
+        return $mainCategoryApi;
     }
 
     protected function getCategories(ProductInterface $product, string $locale): array
@@ -164,7 +162,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
     }
 
     /**
-     * @return Media[]
+     * @return Media[][]
      */
     protected function getMedia(ProductInterface $product, string $locale): array
     {

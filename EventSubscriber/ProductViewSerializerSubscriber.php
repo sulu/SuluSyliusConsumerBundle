@@ -24,7 +24,7 @@ use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
 use Sulu\Component\Serializer\ArraySerializationVisitor;
 
-class ProductSerializerSubscriber implements EventSubscriberInterface
+class ProductViewSerializerSubscriber implements EventSubscriberInterface
 {
     public static function getSubscribedEvents()
     {
