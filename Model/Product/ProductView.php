@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
+use Sulu\Bundle\CategoryBundle\Api\Category;
+use Sulu\Bundle\MediaBundle\Api\Media;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 
@@ -29,9 +31,29 @@ class ProductView implements ProductViewInterface
     private $locale;
 
     /**
-     * @var array
+     * @var ProductInterface
      */
-    private $productData;
+    private $product;
+
+    /**
+     * @var ProductInformationInterface
+     */
+    private $productInformation;
+
+    /**
+     * @var null|Category
+     */
+    private $mainCategory;
+
+    /**
+     * @var Category[]
+     */
+    private $categories;
+
+    /**
+     * @var Media[]
+     */
+    private $media;
 
     /**
      * @var ContentViewInterface
@@ -46,13 +68,21 @@ class ProductView implements ProductViewInterface
     public function __construct(
         string $id,
         string $locale,
-        array $productData,
+        ProductInterface $product,
+        ProductInformationInterface $productInformation,
+        ?Category $mainCategory,
+        array $categories,
+        array $media,
         ContentViewInterface $content,
         RoutableResourceInterface $routableResource
     ) {
         $this->id = $id;
         $this->locale = $locale;
-        $this->productData = $productData;
+        $this->product = $product;
+        $this->productInformation = $productInformation;
+        $this->mainCategory = $mainCategory;
+        $this->categories = $categories;
+        $this->media = $media;
         $this->content = $content;
         $this->routableResource = $routableResource;
     }
@@ -67,9 +97,29 @@ class ProductView implements ProductViewInterface
         return $this->locale;
     }
 
-    public function getProductData(): array
+    public function getProduct(): ProductInterface
     {
-        return $this->productData;
+        return $this->product;
+    }
+
+    public function getProductInformation(): ProductInformationInterface
+    {
+        return $this->productInformation;
+    }
+
+    public function getMainCategory(): ?Category
+    {
+        return $this->mainCategory;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    public function getMedia(): array
+    {
+        return $this->media;
     }
 
     public function getContent(): ContentViewInterface

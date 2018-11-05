@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\EventSubscriber;
 
+use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
@@ -73,12 +74,26 @@ class ProductSerializerSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('product', $object->getProductData());
+        $visitor->setData('product', $this->getProductData($object, $event->getContext()));
         $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
         $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
         $visitor->setData('template', $object->getContent()->getType());
 
         // TODO creator, created, changer, changed
+    }
+
+    protected function getProductData(ProductViewInterface $productView, Context $context): array
+    {
+        $productData = array_merge(
+            $context->accept($productView->getProduct()),
+            $context->accept($productView->getProductInformation())
+        );
+
+        $productData['mainCategory'] = $productView->getMainCategory();
+        $productData['categories'] = $productView->getCategories();
+        $productData['media'] = $productView->getMedia();
+
+        return $productData;
     }
 
     private function resolveView(StructureInterface $structure, array $data): array

@@ -35,11 +35,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceRepo
 class ProductViewFactory implements ProductViewFactoryInterface
 {
     /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
      * @var DimensionRepositoryInterface
      */
     private $dimensionRepository;
@@ -70,7 +65,6 @@ class ProductViewFactory implements ProductViewFactoryInterface
     private $categoryManager;
 
     public function __construct(
-        SerializerInterface $serializer,
         DimensionRepositoryInterface $dimensionRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         RoutableResourceRepositoryInterface $routableResourceRepository,
@@ -78,7 +72,6 @@ class ProductViewFactory implements ProductViewFactoryInterface
         MediaManagerInterface $mediaManager,
         CategoryManagerInterface $categoryManager
     ) {
-        $this->serializer = $serializer;
         $this->dimensionRepository = $dimensionRepository;
         $this->productInformationRepository = $productInformationRepository;
         $this->routableResourceRepository = $routableResourceRepository;
@@ -138,29 +131,16 @@ class ProductViewFactory implements ProductViewFactoryInterface
         $viewProduct = new ProductView(
             $product->getId(),
             $locale,
-            $this->getProductData($product, $productInformation, $locale),
+            $product,
+            $productInformation,
+            $this->getMainCategory($product, $locale),
+            $this->getCategories($product, $locale),
+            $this->getMedia($product, $locale),
             $content,
             $routableResource
         );
 
         return $viewProduct;
-    }
-
-    protected function getProductData(
-        ProductInterface $product,
-        ProductInformationInterface $productInformation,
-        string $locale)
-    : array {
-        $productData = array_merge(
-            $this->serializer->serialize($product, 'array'),
-            $this->serializer->serialize($productInformation, 'array')
-        );
-
-        $productData['mainCategory'] = $this->getMainCategory($product, $locale);
-        $productData['categories'] = $this->categoryManager->getApiObjects($product->getProductCategories(), $locale);
-        $productData['media'] = $this->getMedia($product, $locale);
-
-        return $productData;
     }
 
     protected function getMainCategory(ProductInterface $product, string $locale): ?Category
@@ -173,6 +153,14 @@ class ProductViewFactory implements ProductViewFactoryInterface
         $mainCategory = $this->categoryManager->getApiObject($product->getMainCategory(), $locale);
 
         return $mainCategory;
+    }
+
+    protected function getCategories(ProductInterface $product, string $locale): array
+    {
+        /** @var Category[] $categories */
+        $categories = $this->categoryManager->getApiObjects($product->getProductCategories(), $locale);
+
+        return $categories;
     }
 
     /**
