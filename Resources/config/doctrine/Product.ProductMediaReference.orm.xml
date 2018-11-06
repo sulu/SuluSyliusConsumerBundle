@@ -16,7 +16,7 @@
             <join-column name="media" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
         </many-to-one>
 
-        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product">
+        <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product" inversed-by="mediaReferences">
             <cascade>
                 <cascade-persist/>
             </cascade>
