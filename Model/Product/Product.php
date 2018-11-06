@@ -55,6 +55,11 @@ class Product implements ProductInterface
     private $productVariants;
 
     /**
+     * @var array
+     */
+    private $customData;
+
+    /**
      * @var ProductInformation[]|Collection
      */
     private $productInformations;
@@ -64,6 +69,7 @@ class Product implements ProductInterface
         $this->id = $id;
         $this->code = $code;
 
+        $this->customData = [];
         $this->productCategories = new ArrayCollection();
         $this->mediaReferences = new ArrayCollection();
         $this->productVariants = new ArrayCollection();
@@ -195,5 +201,17 @@ class Product implements ProductInterface
     public function getMediaReferences(): array
     {
         return $this->mediaReferences->getValues();
+    }
+
+    public function getCustomData(): array
+    {
+        return $this->customData;
+    }
+
+    public function setCustomData(array $customData): ProductInterface
+    {
+        $this->customData = $customData;
+
+        return $this;
     }
 }

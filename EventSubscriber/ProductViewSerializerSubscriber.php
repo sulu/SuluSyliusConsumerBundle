@@ -84,7 +84,7 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
 
     protected function getProductData(ProductViewInterface $productView, Context $context): array
     {
-        $productData = array_merge(
+        $productData = array_merge_recursive(
             $context->accept($productView->getProduct()),
             $context->accept($productView->getProductInformation())
         );

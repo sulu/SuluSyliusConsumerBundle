@@ -50,4 +50,8 @@ interface ProductInformationInterface
     public function setShortDescription(string $shortDescription): self;
 
     public function mapPublishProperties(self $draft): void;
+
+    public function getCustomData(): array;
+
+    public function setCustomData(array $customData): self;
 }

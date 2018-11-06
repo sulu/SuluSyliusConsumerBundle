@@ -71,4 +71,9 @@ class SynchronizeProductVariantMessage
             $this->getArrayValue('optionValues')
         );
     }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }

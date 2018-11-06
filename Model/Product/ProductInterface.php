@@ -70,4 +70,8 @@ interface ProductInterface
      * @return ProductMediaReference[]
      */
     public function getMediaReferences(): array;
+
+    public function getCustomData(): array;
+
+    public function setCustomData(array $customData): self;
 }

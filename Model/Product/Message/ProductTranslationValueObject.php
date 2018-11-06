@@ -58,4 +58,9 @@ class ProductTranslationValueObject
     {
         return $this->getStringValueWithDefault('shortDescription', '');
     }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }

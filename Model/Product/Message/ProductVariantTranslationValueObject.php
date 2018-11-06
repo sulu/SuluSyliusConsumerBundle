@@ -33,4 +33,9 @@ class ProductVariantTranslationValueObject
     {
         return $this->getStringValueWithDefault('name', '');
     }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }
