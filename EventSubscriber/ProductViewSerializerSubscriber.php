@@ -84,16 +84,27 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
 
     protected function getProductData(ProductViewInterface $productView, Context $context): array
     {
-        $productData = array_merge_recursive(
+        $productData = $context->accept($productView->getProduct());
+        $productInformationData = $context->accept($productView->getProductInformation());
+
+        $data = array_merge(
             $context->accept($productView->getProduct()),
             $context->accept($productView->getProductInformation())
         );
 
-        $productData['mainCategory'] = $productView->getMainCategory();
-        $productData['categories'] = $productView->getCategories();
-        $productData['media'] = $productView->getMedia();
+        $data['mainCategory'] = $productView->getMainCategory();
+        $data['categories'] = $productView->getCategories();
+        $data['media'] = $productView->getMedia();
 
-        return $productData;
+        if (!array_key_exists('customData', $productData)) {
+            $productData['customData'] = [];
+        }
+        if (!array_key_exists('customData', $productInformationData)) {
+            $productInformationData['customData'] = [];
+        }
+        $data['customData'] = array_merge_recursive($productData['customData'], $productInformationData['customData']);
+
+        return $data;
     }
 
     private function resolveView(StructureInterface $structure, array $data): array
