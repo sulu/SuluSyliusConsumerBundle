@@ -114,6 +114,7 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
+        $product->setAdditionalData($message->getAdditionalData());
         $this->synchronizeTranslations($message, $product);
         $this->synchronizeMainTaxon($message, $product);
         $this->synchronizeProductTaxons($message, $product);
@@ -157,6 +158,7 @@ class SynchronizeProductMessageHandler
         $productInformation->setMetaKeywords($translationValueObject->getMetaKeywords());
         $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
+        $productInformation->setAdditionalData($translationValueObject->getAdditionalData());
     }
 
     protected function synchronizeMainTaxon(SynchronizeProductMessage $message, ProductInterface $product): void

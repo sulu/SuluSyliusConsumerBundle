@@ -17,6 +17,8 @@
 
         <field name="enabled" type="boolean"/>
 
+        <field name="additionalData" column="additionalData" type="json"/>
+
         <one-to-many field="productInformations"
                      target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation"
                      mapped-by="product"/>

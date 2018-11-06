@@ -24,4 +24,8 @@ interface ProductVariantInformationInterface
     public function getName(): string;
 
     public function setName(string $name): self;
+
+    public function getAdditionalData(): array;
+
+    public function setAdditionalData(array $additionalData): self;
 }

@@ -55,6 +55,11 @@ class Product implements ProductInterface
     private $productVariants;
 
     /**
+     * @var array
+     */
+    private $additionalData = [];
+
+    /**
      * @var ProductInformation[]|Collection
      */
     private $productInformations;
@@ -195,5 +200,17 @@ class Product implements ProductInterface
     public function getMediaReferences(): array
     {
         return $this->mediaReferences->getValues();
+    }
+
+    public function getAdditionalData(): array
+    {
+        return $this->additionalData;
+    }
+
+    public function setAdditionalData(array $additionalData): ProductInterface
+    {
+        $this->additionalData = $additionalData;
+
+        return $this;
     }
 }

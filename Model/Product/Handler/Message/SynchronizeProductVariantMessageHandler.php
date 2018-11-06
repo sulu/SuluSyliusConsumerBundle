@@ -77,6 +77,7 @@ class SynchronizeProductVariantMessageHandler
         SynchronizeProductVariantMessage $message,
         ProductVariantInterface $productVariant
     ): void {
+        $productVariant->setAdditionalData($productVariant->getAdditionalData());
         $this->synchronizeTranslations($message, $productVariant);
     }
 
@@ -120,5 +121,6 @@ class SynchronizeProductVariantMessageHandler
         }
 
         $productVariantInformation->setName($translationValueObject->getName());
+        $productVariantInformation->setAdditionalData($translationValueObject->getAdditionalData());
     }
 }

@@ -53,6 +53,11 @@ class ProductInformation implements ProductInformationInterface
     private $shortDescription = '';
 
     /**
+     * @var array
+     */
+    private $additionalData;
+
+    /**
      * @var ProductInterface
      */
     private $product;
@@ -61,6 +66,8 @@ class ProductInformation implements ProductInformationInterface
     {
         $this->dimension = $dimension;
         $this->product = $product;
+
+        $this->additionalData = [];
     }
 
     public function getProductId(): string
@@ -163,5 +170,17 @@ class ProductInformation implements ProductInformationInterface
                 $this->$setter($draft->$getter());
             }
         }
+    }
+
+    public function getAdditionalData(): array
+    {
+        return $this->additionalData;
+    }
+
+    public function setAdditionalData(array $additionalData): ProductInformationInterface
+    {
+        $this->additionalData = $additionalData;
+
+        return $this;
     }
 }

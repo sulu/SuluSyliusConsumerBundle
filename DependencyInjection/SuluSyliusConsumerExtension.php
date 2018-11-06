@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
+use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\Category;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -27,14 +28,18 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 class SuluSyliusConsumerExtension extends Extension implements PrependExtensionInterface
 {
+    use PersistenceExtensionTrait;
+
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
+
+        $this->configurePersistence($config['objects'], $container);
+
         $container->setParameter('sulu_sylius_consumer.sylius_base_url', $config['sylius_base_url']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-
         $loader->load('services.xml');
     }
 

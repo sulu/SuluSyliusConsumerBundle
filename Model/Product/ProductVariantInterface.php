@@ -22,4 +22,8 @@ interface ProductVariantInterface
     public function getProduct(): ProductInterface;
 
     public function getCode(): string;
+
+    public function getAdditionalData(): array;
+
+    public function setAdditionalData(array $additionalData): self;
 }
