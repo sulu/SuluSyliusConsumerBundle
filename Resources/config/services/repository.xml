@@ -13,6 +13,11 @@
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</argument>
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface">
+            <factory service="doctrine.orm.entity_manager" method="getRepository"/>
+            <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue</argument>
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface">
             <factory service="doctrine.orm.entity_manager" method="getRepository"/>
             <argument type="string">Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant</argument>

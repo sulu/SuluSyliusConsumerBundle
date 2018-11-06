@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\OptionValueValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductVariantTranslationValueObject;
 
 class SynchronizeProductVariantMessage
 {

@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductTranslationValueObject
+class ProductVariantTranslationValueObject
 {
     use PayloadTrait;
 
@@ -32,31 +32,6 @@ class ProductTranslationValueObject
     public function getName(): string
     {
         return $this->getStringValueWithDefault('name', '');
-    }
-
-    public function getSlug(): string
-    {
-        return $this->getStringValueWithDefault('slug', '');
-    }
-
-    public function getDescription(): string
-    {
-        return $this->getStringValueWithDefault('description', '');
-    }
-
-    public function getMetaKeywords(): string
-    {
-        return $this->getStringValueWithDefault('metaKeywords', '');
-    }
-
-    public function getMetaDescription(): string
-    {
-        return $this->getStringValueWithDefault('metaDescription', '');
-    }
-
-    public function getShortDescription(): string
-    {
-        return $this->getStringValueWithDefault('shortDescription', '');
     }
 
     public function getCustomData(): array

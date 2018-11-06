@@ -19,10 +19,13 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTaxonValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTranslationValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
@@ -47,6 +50,11 @@ class SynchronizeProductMessageHandler
      * @var ProductInformationRepositoryInterface
      */
     private $productInformationRepository;
+
+    /**
+     * @var ProductInformationAttributeValueRepositoryInterface
+     */
+    private $productInformationAttributeValueRepository;
 
     /**
      * @var DimensionRepositoryInterface
@@ -82,6 +90,7 @@ class SynchronizeProductMessageHandler
         ClientInterface $client,
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
+        ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         DimensionRepositoryInterface $dimensionRepository,
         ProductMediaReferenceRepositoryInterface $productMediaReferenceRepository,
         CategoryRepositoryInterface $categoryRepository,
@@ -92,6 +101,7 @@ class SynchronizeProductMessageHandler
         $this->client = $client;
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
+        $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->productMediaReferenceRepository = $productMediaReferenceRepository;
         $this->categoryRepository = $categoryRepository;
@@ -137,13 +147,29 @@ class SynchronizeProductMessageHandler
                 ]
             );
 
-            $this->synchronizeTranslation($translationValueObject, $product, $dimensionDraft);
-            $this->synchronizeTranslation($translationValueObject, $product, $dimensionLive);
+            $attributeValueValueObjects = $message->getAttributeValues($translationValueObject->getLocale());
+
+            $this->synchronizeTranslation(
+                $translationValueObject,
+                $attributeValueValueObjects,
+                $product,
+                $dimensionDraft
+            );
+            $this->synchronizeTranslation(
+                $translationValueObject,
+                $attributeValueValueObjects,
+                $product,
+                $dimensionLive
+            );
         }
     }
 
+    /**
+     * @param ProductAttributeValueValueObject[] $attributeValueValueObjects
+     */
     protected function synchronizeTranslation(
         ProductTranslationValueObject $translationValueObject,
+        array $attributeValueValueObjects,
         ProductInterface $product,
         DimensionInterface $dimension
     ): void {
@@ -159,6 +185,28 @@ class SynchronizeProductMessageHandler
         $productInformation->setMetaDescription($translationValueObject->getMetaDescription());
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
         $productInformation->setCustomData($translationValueObject->getCustomData());
+
+        foreach ($attributeValueValueObjects as $attributeValueValueObject) {
+            $this->synchronizeAttributeValue($attributeValueValueObject, $productInformation);
+        }
+    }
+
+    protected function synchronizeAttributeValue(
+        ProductAttributeValueValueObject $attributeValueValueObject,
+        ProductInformationInterface $productInformation
+    ): void {
+        $code = $attributeValueValueObject->getCode();
+
+        $attributeValue = $productInformation->findAttributeValueByCode($code);
+        if (!$attributeValue) {
+            $attributeValue = $this->productInformationAttributeValueRepository->create(
+                $productInformation,
+                $code,
+                $attributeValueValueObject->getType()
+            );
+        }
+
+        $attributeValue->setValue($attributeValueValueObject->getAttributeValue());
     }
 
     protected function synchronizeMainTaxon(SynchronizeProductMessage $message, ProductInterface $product): void
