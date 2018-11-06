@@ -39,9 +39,9 @@
                      mapped-by="product"
         />
 
-        <one-to-one field="mainCategory" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
+        <many-to-one field="mainCategory" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface">
             <join-column name="idMainCategories" referenced-column-name="id" on-delete="CASCADE"/>
-        </one-to-one>
+        </many-to-one>
 
         <many-to-many field="productCategories" target-entity="Sulu\Bundle\CategoryBundle\Entity\CategoryInterface" index-by="syliusId">
             <join-table name="pr_product_categories">
