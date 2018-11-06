@@ -35,14 +35,14 @@ class ProductVariantInformation implements ProductVariantInformationInterface
     /**
      * @var array
      */
-    private $additionalData;
+    private $customData;
 
     public function __construct(ProductVariantInterface $productVariant, DimensionInterface $dimension)
     {
         $this->productVariant = $productVariant;
         $this->dimension = $dimension;
 
-        $this->additionalData = [];
+        $this->customData = [];
     }
 
     public function getProductVariant(): ProductVariantInterface
@@ -62,14 +62,14 @@ class ProductVariantInformation implements ProductVariantInformationInterface
         return $this;
     }
 
-    public function getAdditionalData(): array
+    public function getCustomData(): array
     {
-        return $this->additionalData;
+        return $this->customData;
     }
 
-    public function setAdditionalData(array $additionalData): ProductVariantInformationInterface
+    public function setCustomData(array $customData): ProductVariantInformationInterface
     {
-        $this->additionalData = $additionalData;
+        $this->customData = $customData;
 
         return $this;
     }

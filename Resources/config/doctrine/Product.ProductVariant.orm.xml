@@ -15,7 +15,7 @@
 
         <field name="code" column="variant_code" type="string"/>
 
-        <field name="additionalData" column="additionalData" type="json"/>
+        <field name="customData" column="customData" type="json"/>
 
         <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product" inversed-by="productVariants"/>
 

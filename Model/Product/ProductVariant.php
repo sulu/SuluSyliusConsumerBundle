@@ -31,7 +31,7 @@ class ProductVariant implements ProductVariantInterface
     /**
      * @var array
      */
-    private $additionalData;
+    private $customData;
 
     /**
      * @var ProductInterface
@@ -49,7 +49,7 @@ class ProductVariant implements ProductVariantInterface
         $this->code = $code;
         $this->product = $product;
 
-        $this->additionalData = [];
+        $this->customData = [];
         $this->productVariantInformations = new ArrayCollection();
     }
 
@@ -68,14 +68,14 @@ class ProductVariant implements ProductVariantInterface
         return $this->product;
     }
 
-    public function getAdditionalData(): array
+    public function getCustomData(): array
     {
-        return $this->additionalData;
+        return $this->customData;
     }
 
-    public function setAdditionalData(array $additionalData): ProductVariantInterface
+    public function setCustomData(array $customData): ProductVariantInterface
     {
-        $this->additionalData = $additionalData;
+        $this->customData = $customData;
 
         return $this;
     }

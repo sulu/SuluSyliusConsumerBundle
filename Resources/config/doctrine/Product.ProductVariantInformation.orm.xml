@@ -14,7 +14,7 @@
 
         <field name="name" type="string" nullable="false"/>
 
-        <field name="additionalData" column="additionalData" type="json"/>
+        <field name="customData" column="customData" type="json"/>
 
         <many-to-one field="productVariant" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariant" inversed-by="productVariantInformations"/>
 

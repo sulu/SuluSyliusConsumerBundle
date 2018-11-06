@@ -71,7 +71,7 @@ interface ProductInterface
      */
     public function getMediaReferences(): array;
 
-    public function getAdditionalData(): array;
+    public function getCustomData(): array;
 
-    public function setAdditionalData(array $additionalData): self;
+    public function setCustomData(array $customData): self;
 }

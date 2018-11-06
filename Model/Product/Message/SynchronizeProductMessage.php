@@ -84,8 +84,8 @@ class SynchronizeProductMessage
         return $taxons;
     }
 
-    public function getAdditionalData(): array
+    public function getCustomData(): array
     {
-        return $this->getArrayValueWithDefault('additionalData');
+        return $this->getArrayValueWithDefault('customData');
     }
 }
