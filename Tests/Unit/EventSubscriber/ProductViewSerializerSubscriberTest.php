@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\EventSubscriber;
 use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Api\Category;
 use Sulu\Bundle\MediaBundle\Api\Media;
 use Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ProductViewSerializerSubscriber;
@@ -91,15 +92,23 @@ class ProductViewSerializerSubscriberTest extends TestCase
 
         $structure->setLanguageCode('en')->shouldBeCalled();
         $property->setValue('Sulu is awesome')->shouldBeCalled();
+
+        $expectedProductData = [
+            'product_data' => '123',
+            'product_information_data' => '456',
+            'mainCategory' => $mainCategory->reveal(),
+            'categories' => [$category1->reveal(), $category2->reveal()],
+            'media' => [$media1->reveal(), $media2->reveal()],
+            'customData' => [],
+        ];
+
         $visitor->setData(
             'product',
-            [
-                'product_data' => '123',
-                'product_information_data' => '456',
-                'mainCategory' => $mainCategory->reveal(),
-                'categories' => [$category1->reveal(), $category2->reveal()],
-                'media' => [$media1->reveal(), $media2->reveal()],
-            ]
+            Argument::that(function($productData) use($expectedProductData) {
+                $this->assertEquals($expectedProductData, $productData);
+
+                return true;
+            })
         )->shouldBeCalled();
         $visitor->setData('content', ['title' => 'Sulu is awesome'])->shouldBeCalled();
         $visitor->setData('view', ['title' => []])->shouldBeCalled();

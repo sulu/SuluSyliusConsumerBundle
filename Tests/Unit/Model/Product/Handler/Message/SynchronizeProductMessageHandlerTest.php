@@ -25,10 +25,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTaxonValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTranslationValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -71,10 +72,12 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             [$productTaxonValueObject1->reveal(), $productTaxonValueObject2->reveal()]
         );
         $message->getCustomData()->willReturn(['product_custom_data' => '123']);
+        $message->getAttributeValues('de')->willReturn([]);
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productMediaReferenceRepository = $this->prophesize(ProductMediaReferenceRepository::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
@@ -85,6 +88,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $client->reveal(),
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
+            $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $productMediaReferenceRepository->reveal(),
             $categoryRepository->reveal(),
@@ -216,10 +220,12 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getMainTaxonId()->willReturn(null);
         $message->getProductTaxons()->willReturn([]);
         $message->getCustomData()->willReturn([]);
+        $message->getAttributeValues('de')->willReturn([]);
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productMediaReferenceRepository = $this->prophesize(ProductMediaReferenceRepository::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
@@ -230,6 +236,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $client->reveal(),
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
+            $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $productMediaReferenceRepository->reveal(),
             $categoryRepository->reveal(),
