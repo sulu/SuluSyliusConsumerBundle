@@ -50,6 +50,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productTranslationValueObject->getShortDescription()->willReturn('Nice, but short!');
         $productTranslationValueObject->getMetaKeywords()->willReturn('123, 123, 123');
         $productTranslationValueObject->getMetaDescription()->willReturn('Meta description..');
+        $productTranslationValueObject->getCustomData()->willReturn(['product_translation_custom_data' => '123']);
 
         $productImageValueObject = $this->prophesize(ProductImageValueObject::class);
         $productImageValueObject->getId()->willReturn(27);
@@ -69,6 +70,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getProductTaxons()->willReturn(
             [$productTaxonValueObject1->reveal(), $productTaxonValueObject2->reveal()]
         );
+        $message->getCustomData()->willReturn(['product_custom_data' => '123']);
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -129,6 +131,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationDraft->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setCustomData(['product_translation_custom_data' => '123'])->shouldBeCalled();
         $productInformationRepository->create($product->reveal(), $dimensionDraft->reveal())
             ->shouldBeCalled()
             ->willReturn($productInformationDraft->reveal());
@@ -143,6 +146,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationLive->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setCustomData(['product_translation_custom_data' => '123'])->shouldBeCalled();
         $productInformationRepository->create($product->reveal(), $dimensionLive->reveal())
             ->shouldBeCalled()
             ->willReturn($productInformationLive->reveal());
@@ -183,6 +187,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->addProductCategory($category1->reveal())->shouldBeCalled();
         $product->addProductCategory($category2->reveal())->shouldBeCalled();
 
+        $product->setCustomData(['product_custom_data' => '123'])->shouldBeCalled();
+
         $handler->__invoke($message->reveal());
     }
 
@@ -196,6 +202,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productTranslationValueObject->getShortDescription()->willReturn('Nice, but short!');
         $productTranslationValueObject->getMetaKeywords()->willReturn('123, 123, 123');
         $productTranslationValueObject->getMetaDescription()->willReturn('Meta description..');
+        $productTranslationValueObject->getCustomData()->willReturn([]);
 
         $productImageValueObject = $this->prophesize(ProductImageValueObject::class);
         $productImageValueObject->getId()->willReturn(27);
@@ -208,6 +215,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getImages()->willReturn([$productImageValueObject->reveal()]);
         $message->getMainTaxonId()->willReturn(null);
         $message->getProductTaxons()->willReturn([]);
+        $message->getCustomData()->willReturn([]);
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -270,6 +278,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationDraft->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->setCustomData([])->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationRepository->findByProductId('123-123-123', $dimensionDraft->reveal())
             ->willReturn($productInformationDraft->reveal());
 
@@ -282,6 +291,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationLive->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->setCustomData([])->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationRepository->findByProductId('123-123-123', $dimensionLive->reveal())
             ->willReturn($productInformationLive->reveal());
 
@@ -309,6 +319,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productMediaReference->getSyliusPath()->willReturn('/old-path');
         $productMediaReference->getMedia()->willReturn($media->reveal());
         $productMediaReferenceRepository->findBySyliusId(27)->willReturn($productMediaReference->reveal());
+
+        $product->setCustomData([])->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }
