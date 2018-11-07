@@ -104,7 +104,7 @@ class ProductViewSerializerSubscriberTest extends TestCase
 
         $visitor->setData(
             'product',
-            Argument::that(function($productData) use($expectedProductData) {
+            Argument::that(function ($productData) use ($expectedProductData) {
                 $this->assertEquals($expectedProductData, $productData);
 
                 return true;
