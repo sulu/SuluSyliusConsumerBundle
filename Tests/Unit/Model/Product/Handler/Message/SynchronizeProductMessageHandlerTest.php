@@ -239,7 +239,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_2', 'text')
             ->willReturn($attributeValue2Live->reveal());
 
-        $messageBus->dispatch(Argument::that(function($argument) {
+        $messageBus->dispatch(Argument::that(function ($argument) {
             $this->assertInstanceOf(PublishProductMessage::class, $argument);
             $this->assertNotNull($argument->getId());
             $this->assertEquals('de', $argument->getLocale());
