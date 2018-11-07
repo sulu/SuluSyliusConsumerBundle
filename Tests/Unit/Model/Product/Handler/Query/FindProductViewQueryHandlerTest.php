@@ -17,14 +17,14 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindPublishedProductQueryHandler;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindProductViewQueryHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
-class FindPublishedProductQueryHandlerTest extends TestCase
+class FindProductViewQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
@@ -32,13 +32,13 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
-        $handler = new FindPublishedProductQueryHandler(
+        $handler = new FindProductViewQueryHandler(
             $dimensionRepository->reveal(),
             $productRepository->reveal(),
             $productViewFactory->reveal()
         );
 
-        $message = $this->prophesize(FindPublishedProductQuery::class);
+        $message = $this->prophesize(FindProductViewQuery::class);
         $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
@@ -77,13 +77,13 @@ class FindPublishedProductQueryHandlerTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productViewFactory = $this->prophesize(ProductViewFactoryInterface::class);
 
-        $handler = new FindPublishedProductQueryHandler(
+        $handler = new FindProductViewQueryHandler(
             $dimensionRepository->reveal(),
             $productRepository->reveal(),
             $productViewFactory->reveal()
         );
 
-        $message = $this->prophesize(FindPublishedProductQuery::class);
+        $message = $this->prophesize(FindProductViewQuery::class);
         $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 

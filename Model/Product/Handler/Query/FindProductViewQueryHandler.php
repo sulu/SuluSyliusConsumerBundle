@@ -18,10 +18,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
-class FindPublishedProductQueryHandler
+class FindProductViewQueryHandler
 {
     /**
      * @var DimensionRepositoryInterface
@@ -48,7 +48,7 @@ class FindPublishedProductQueryHandler
         $this->productViewFactory = $productViewFactory;
     }
 
-    public function __invoke(FindPublishedProductQuery $query): ProductViewInterface
+    public function __invoke(FindProductViewQuery $query): ProductViewInterface
     {
         $product = $this->productRepository->findById($query->getId());
         if (!$product) {

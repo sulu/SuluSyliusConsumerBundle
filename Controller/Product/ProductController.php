@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 use FOS\RestBundle\Controller\ControllerTrait;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use FOS\RestBundle\View\ViewHandlerInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -53,7 +53,7 @@ class ProductController implements ClassResourceInterface
 
     public function getAction(Request $request, string $id): Response
     {
-        $product = $this->messageBus->dispatch(new FindDraftProductQuery($id, $request->query->get('locale')));
+        $product = $this->messageBus->dispatch(new FindProductQuery($id, $request->query->get('locale')));
 
         return $this->handleView($this->view($product));
     }

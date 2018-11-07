@@ -18,9 +18,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
 
-class FindDraftProductQueryHandler
+class FindProductQueryHandler
 {
     /**
      * @var ProductInformationRepositoryInterface
@@ -40,7 +40,7 @@ class FindDraftProductQueryHandler
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(FindDraftProductQuery $query): ProductInformationInterface
+    public function __invoke(FindProductQuery $query): ProductInformationInterface
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [

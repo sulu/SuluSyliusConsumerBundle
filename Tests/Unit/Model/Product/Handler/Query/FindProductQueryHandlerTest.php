@@ -17,21 +17,21 @@ use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindDraftProductQueryHandler;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\FindProductQueryHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindDraftProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
 
-class FindDraftProductQueryHandlerTest extends TestCase
+class FindProductQueryHandlerTest extends TestCase
 {
     public function testInvoke(): void
     {
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindDraftProductQueryHandler($productInformationRepository->reveal(), $dimensionRepository->reveal());
+        $handler = new FindProductQueryHandler($productInformationRepository->reveal(), $dimensionRepository->reveal());
 
-        $message = $this->prophesize(FindDraftProductQuery::class);
+        $message = $this->prophesize(FindProductQuery::class);
         $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 
@@ -59,7 +59,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
 
-        $handler = new FindDraftProductQueryHandler($productInformationRepository->reveal(), $dimensionRepository->reveal());
+        $handler = new FindProductQueryHandler($productInformationRepository->reveal(), $dimensionRepository->reveal());
 
         $dimension = $this->prophesize(DimensionInterface::class);
         $dimensionRepository->findOrCreateByAttributes(
@@ -69,7 +69,7 @@ class FindDraftProductQueryHandlerTest extends TestCase
             ]
         )->willReturn($dimension->reveal());
 
-        $message = $this->prophesize(FindDraftProductQuery::class);
+        $message = $this->prophesize(FindProductQuery::class);
         $message->getId()->willReturn('123-123-123');
         $message->getLocale()->willReturn('en');
 

@@ -21,7 +21,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider;
@@ -51,7 +51,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function (FindPublishedProductQuery $query) {
+                function (FindProductViewQuery $query) {
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
@@ -95,7 +95,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function (FindPublishedProductQuery $query) {
+                function (FindProductViewQuery $query) {
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
@@ -118,7 +118,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function (FindPublishedProductQuery $query) {
+                function (FindProductViewQuery $query) {
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )

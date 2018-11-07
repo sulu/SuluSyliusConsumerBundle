@@ -18,7 +18,7 @@ use Sulu\Bundle\RouteBundle\Routing\Defaults\RouteDefaultsProviderInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindPublishedProductQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\StructureMetadata;
@@ -90,7 +90,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
     private function loadProduct(string $id, string $locale): ProductViewInterface
     {
         /** @var ProductViewInterface $product */
-        $product = $this->messagBus->dispatch(new FindPublishedProductQuery($id, $locale));
+        $product = $this->messagBus->dispatch(new FindProductViewQuery($id, $locale));
 
         return $product;
     }
