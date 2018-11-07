@@ -307,7 +307,6 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->getProductCategories()->willReturn([$category1->reveal()]);
         $product->setMainCategory(null)->shouldBeCalled();
         $product->removeProductCategoryBySyliusId(99)->shouldBeCalled();
-        $product->getMediaReferences()->willReturn([]);
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimensionDraft = $this->prophesize(DimensionInterface::class);
@@ -377,6 +376,11 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $media = $this->prophesize(MediaInterface::class);
         $mediaFactory->update($media->reveal(), Argument::type(File::class), ['de' => 'Product One'])
             ->willReturn($media->reveal());
+
+        $oldProductMediaReference = $this->prophesize(ProductMediaReference::class);
+        $oldProductMediaReference->getSyliusId()->willReturn(99);
+        $product->getMediaReferences()->willReturn([$oldProductMediaReference->reveal()]);
+        $product->removeMediaReference($oldProductMediaReference->reveal())->shouldBeCalled();
 
         $productMediaReference = $this->prophesize(ProductMediaReference::class);
         $productMediaReference->setSyliusPath('ab/12/test1.png')->willReturn($productMediaReference->reveal());

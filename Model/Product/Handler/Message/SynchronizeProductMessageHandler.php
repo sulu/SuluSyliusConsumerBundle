@@ -274,9 +274,7 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeImages(SynchronizeProductMessage $message, ProductInterface $product): void
     {
-        $currentImageIds = array_map(function (ProductMediaReference $productMediaReference) {
-            return $productMediaReference->getSyliusId();
-        }, $product->getMediaReferences());
+        $currentMediaReferences = $product->getMediaReferences();
 
         $processedImageIds = [];
         $sorting = 1;
@@ -287,9 +285,8 @@ class SynchronizeProductMessageHandler
         }
 
         // check for removed
-        foreach (array_diff($currentImageIds, $processedImageIds) as $imageId) {
-            $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageId);
-            if (!$mediaReference) {
+        foreach ($currentMediaReferences as $mediaReference) {
+            if (in_array($mediaReference->getSyliusId(), $processedImageIds)) {
                 continue;
             }
 
