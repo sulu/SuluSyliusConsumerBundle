@@ -23,5 +23,16 @@
         <many-to-one field="product" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product" inversed-by="productInformations"/>
 
         <many-to-one field="dimension" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension"/>
+
+        <one-to-many field="attributeValues"
+                     target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue"
+                     mapped-by="productInformation"
+                     orphan-removal="true"
+                     index-by="code">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
     </entity>
 </doctrine-mapping>
