@@ -19,6 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
@@ -33,6 +34,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceReposito
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductMessageHandler
 {
@@ -40,6 +42,11 @@ class SynchronizeProductMessageHandler
      * @var ClientInterface
      */
     private $client;
+
+    /**
+     * @var MessageBusInterface
+     */
+    private $messageBus;
 
     /**
      * @var ProductRepositoryInterface
@@ -86,8 +93,19 @@ class SynchronizeProductMessageHandler
      */
     private $syliusBaseUrl;
 
+    /**
+     * @var bool
+     */
+    private $autoPublish;
+
+    /**
+     * @var array
+     */
+    private $processedLocales = [];
+
     public function __construct(
         ClientInterface $client,
+        MessageBusInterface $messageBus,
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
@@ -96,9 +114,11 @@ class SynchronizeProductMessageHandler
         CategoryRepositoryInterface $categoryRepository,
         MediaFactory $mediaFactory,
         Filesystem $filesystem,
-        string $syliusBaseUrl
+        string $syliusBaseUrl,
+        bool $autoPublish
     ) {
         $this->client = $client;
+        $this->messageBus = $messageBus;
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
         $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
@@ -108,18 +128,33 @@ class SynchronizeProductMessageHandler
         $this->mediaFactory = $mediaFactory;
         $this->filesystem = $filesystem;
         $this->syliusBaseUrl = $syliusBaseUrl;
+        $this->autoPublish = $autoPublish;
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
     {
+        $this->processedLocales = [];
+
         $product = $this->productRepository->findByCode($message->getCode());
         if (!$product) {
             $product = $this->productRepository->create($message->getCode());
         }
 
         $this->synchronizeProduct($message, $product);
+        $this->publishProduct($product);
 
         return $product;
+    }
+
+    protected function publishProduct(ProductInterface $product): void
+    {
+        if (!$this->autoPublish) {
+            return;
+        }
+
+        foreach ($this->processedLocales as $locale) {
+            $this->messageBus->dispatch(new PublishProductMessage($product->getId(), $locale));
+        }
     }
 
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
@@ -134,16 +169,18 @@ class SynchronizeProductMessageHandler
     protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         foreach ($message->getTranslations() as $translationValueObject) {
+            $locale = $translationValueObject->getLocale();
+
             $dimensionDraft = $this->dimensionRepository->findOrCreateByAttributes(
                 [
                     DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
                 ]
             );
             $dimensionLive = $this->dimensionRepository->findOrCreateByAttributes(
                 [
                     DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
+                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
                 ]
             );
 
@@ -161,6 +198,8 @@ class SynchronizeProductMessageHandler
                 $product,
                 $dimensionLive
             );
+
+            $this->processedLocales[] = $translationValueObject->getLocale();
         }
     }
 

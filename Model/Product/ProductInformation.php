@@ -167,7 +167,7 @@ class ProductInformation implements ProductInformationInterface
 
     public function mapPublishProperties(ProductInformationInterface $draft): void
     {
-        $setters = array_filter(get_class_methods(ProductInformation::class), function ($method) {
+        $setters = array_filter(get_class_methods(get_class_methods($this)), function ($method) {
             return 0 === strpos($method, 'set');
         });
 
@@ -198,6 +198,18 @@ class ProductInformation implements ProductInformationInterface
     public function getAttributeValues(): array
     {
         return $this->attributeValues->getValues();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setAttributeValues(array $attributeValues): ProductInformationInterface
+    {
+        foreach ($attributeValues as $attributeValue) {
+            $this->addAttributeValue($attributeValue);
+        }
+
+        return $this;
     }
 
     public function addAttributeValue(ProductInformationAttributeValueInterface $attributeValue): ProductInformationInterface
