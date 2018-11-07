@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductTaxonValueObject
+class ProductAttributeValueValueObject
 {
     use PayloadTrait;
 
@@ -29,8 +29,23 @@ class ProductTaxonValueObject
         return $this->getIntValue('id');
     }
 
-    public function getTaxonId(): int
+    public function getCode(): string
     {
-        return $this->getArrayValue('taxon')['id'];
+        return $this->getStringValue('code');
+    }
+
+    public function getType(): string
+    {
+        return $this->getStringValue('type');
+    }
+
+    public function getAttributeValue()
+    {
+        return $this->getValue('value');
+    }
+
+    public function getLocaleCode(): string
+    {
+        return $this->getStringValue('localeCode');
     }
 }

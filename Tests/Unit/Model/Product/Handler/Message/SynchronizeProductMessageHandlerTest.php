@@ -25,10 +25,13 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductImageValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTaxonValueObject;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTranslationValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -62,6 +65,15 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productTaxonValueObject2 = $this->prophesize(ProductTaxonValueObject::class);
         $productTaxonValueObject2->getTaxonId()->willReturn(56);
 
+        $attributeValueValueObject1 = $this->prophesize(ProductAttributeValueValueObject::class);
+        $attributeValueValueObject1->getCode()->willReturn('av_1');
+        $attributeValueValueObject1->getType()->willReturn('text');
+        $attributeValueValueObject1->getAttributeValue()->willReturn('value1');
+        $attributeValueValueObject2 = $this->prophesize(ProductAttributeValueValueObject::class);
+        $attributeValueValueObject2->getCode()->willReturn('av_2');
+        $attributeValueValueObject2->getType()->willReturn('text');
+        $attributeValueValueObject2->getAttributeValue()->willReturn('value2');
+
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
@@ -71,10 +83,14 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             [$productTaxonValueObject1->reveal(), $productTaxonValueObject2->reveal()]
         );
         $message->getCustomData()->willReturn(['product_custom_data' => '123']);
+        $message->getAttributeValues('de')->willReturn(
+            [$attributeValueValueObject1->reveal(), $attributeValueValueObject2->reveal()]
+        );
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productMediaReferenceRepository = $this->prophesize(ProductMediaReferenceRepository::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
@@ -85,6 +101,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $client->reveal(),
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
+            $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $productMediaReferenceRepository->reveal(),
             $categoryRepository->reveal(),
@@ -132,6 +149,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationDraft->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setCustomData(['product_translation_custom_data' => '123'])->shouldBeCalled();
+        $productInformationDraft->getAttributeValueCodes()->willReturn([]);
         $productInformationRepository->create($product->reveal(), $dimensionDraft->reveal())
             ->shouldBeCalled()
             ->willReturn($productInformationDraft->reveal());
@@ -147,6 +165,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setCustomData(['product_translation_custom_data' => '123'])->shouldBeCalled();
+        $productInformationLive->getAttributeValueCodes()->willReturn([]);
         $productInformationRepository->create($product->reveal(), $dimensionLive->reveal())
             ->shouldBeCalled()
             ->willReturn($productInformationLive->reveal());
@@ -189,6 +208,32 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $product->setCustomData(['product_custom_data' => '123'])->shouldBeCalled();
 
+        $productInformationDraft->findAttributeValueByCode('av_1')->willReturn(null);
+        $productInformationDraft->findAttributeValueByCode('av_2')->willReturn(null);
+
+        $productInformationLive->findAttributeValueByCode('av_1')->willReturn(null);
+        $productInformationLive->findAttributeValueByCode('av_2')->willReturn(null);
+
+        $attributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue1->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1->reveal());
+        $productInformationAttributeValueRepository->create($productInformationDraft->reveal(), 'av_1', 'text')
+            ->willReturn($attributeValue1->reveal());
+
+        $attributeValue1Live = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue1Live->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1Live->reveal());
+        $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_1', 'text')
+            ->willReturn($attributeValue1Live->reveal());
+
+        $attributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue2->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2->reveal());
+        $productInformationAttributeValueRepository->create($productInformationDraft->reveal(), 'av_2', 'text')
+            ->willReturn($attributeValue2->reveal());
+
+        $attributeValue2Live = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue2Live->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2Live->reveal());
+        $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_2', 'text')
+            ->willReturn($attributeValue2Live->reveal());
+
         $handler->__invoke($message->reveal());
     }
 
@@ -209,6 +254,15 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productImageValueObject->getPath()->willReturn('ab/12/test1.png');
         $productImageValueObject->getType()->willReturn('test_type');
 
+        $attributeValueValueObject1 = $this->prophesize(ProductAttributeValueValueObject::class);
+        $attributeValueValueObject1->getCode()->willReturn('av_1');
+        $attributeValueValueObject1->getType()->willReturn('text');
+        $attributeValueValueObject1->getAttributeValue()->willReturn('value1');
+        $attributeValueValueObject2 = $this->prophesize(ProductAttributeValueValueObject::class);
+        $attributeValueValueObject2->getCode()->willReturn('av_2');
+        $attributeValueValueObject2->getType()->willReturn('text');
+        $attributeValueValueObject2->getAttributeValue()->willReturn('value2');
+
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
@@ -216,10 +270,14 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getMainTaxonId()->willReturn(null);
         $message->getProductTaxons()->willReturn([]);
         $message->getCustomData()->willReturn([]);
+        $message->getAttributeValues('de')->willReturn(
+            [$attributeValueValueObject1->reveal(), $attributeValueValueObject2->reveal()]
+        );
 
         $client = $this->prophesize(ClientInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $productMediaReferenceRepository = $this->prophesize(ProductMediaReferenceRepository::class);
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
@@ -230,6 +288,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $client->reveal(),
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
+            $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $productMediaReferenceRepository->reveal(),
             $categoryRepository->reveal(),
@@ -279,6 +338,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationDraft->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationDraft->reveal());
         $productInformationDraft->setCustomData([])->shouldBeCalled()->willReturn($productInformationDraft->reveal());
+        $productInformationDraft->getAttributeValueCodes()->willReturn(['av_1', 'av_to_delete']);
         $productInformationRepository->findByProductId('123-123-123', $dimensionDraft->reveal())
             ->willReturn($productInformationDraft->reveal());
 
@@ -292,6 +352,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
         $productInformationLive->setCustomData([])->shouldBeCalled()->willReturn($productInformationLive->reveal());
+        $productInformationLive->getAttributeValueCodes()->willReturn(['av_1', 'av_to_delete']);
         $productInformationRepository->findByProductId('123-123-123', $dimensionLive->reveal())
             ->willReturn($productInformationLive->reveal());
 
@@ -321,6 +382,30 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productMediaReferenceRepository->findBySyliusId(27)->willReturn($productMediaReference->reveal());
 
         $product->setCustomData([])->shouldBeCalled();
+
+        $attributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue1->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1->reveal());
+
+        $attributeValue1Live = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue1Live->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1Live->reveal());
+
+        $productInformationDraft->findAttributeValueByCode('av_1')->willReturn($attributeValue1->reveal());
+        $productInformationDraft->findAttributeValueByCode('av_2')->willReturn(null);
+        $productInformationDraft->removeAttributeValueByCode('av_to_delete')->shouldBeCalled();
+
+        $productInformationLive->findAttributeValueByCode('av_1')->willReturn($attributeValue1Live->reveal());
+        $productInformationLive->findAttributeValueByCode('av_2')->willReturn(null);
+        $productInformationLive->removeAttributeValueByCode('av_to_delete')->shouldBeCalled();
+
+        $attributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue2->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2->reveal());
+        $productInformationAttributeValueRepository->create($productInformationDraft->reveal(), 'av_2', 'text')
+            ->willReturn($attributeValue2->reveal());
+
+        $attributeValue2Live = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue2Live->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2Live->reveal());
+        $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_2', 'text')
+            ->willReturn($attributeValue2Live->reveal());
 
         $handler->__invoke($message->reveal());
     }

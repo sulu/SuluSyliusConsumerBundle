@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class OptionValueValueObject
+class ProductImageValueObject
 {
     use PayloadTrait;
 
@@ -24,13 +24,18 @@ class OptionValueValueObject
         $this->initializePayload($payload);
     }
 
-    public function getCode(): string
+    public function getId(): int
     {
-        return $this->getStringValue('code');
+        return $this->getIntValue('id');
     }
 
-    public function getOptionValue()
+    public function getType(): string
     {
-        return $this->getValue('value');
+        return $this->getStringValue('type');
+    }
+
+    public function getPath(): string
+    {
+        return $this->getStringValue('path');
     }
 }

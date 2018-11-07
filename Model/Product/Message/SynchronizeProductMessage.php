@@ -14,6 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTranslationValueObject;
 
 class SynchronizeProductMessage
 {
@@ -82,6 +86,25 @@ class SynchronizeProductMessage
         }
 
         return $taxons;
+    }
+
+    /**
+     * @return ProductAttributeValueValueObject[]
+     */
+    public function getAttributeValues(string $locale): array
+    {
+        $attributeValues = [];
+        foreach ($this->getArrayValueWithDefault('attributes') as $attributePayload) {
+            $attributeValue = new ProductAttributeValueValueObject($attributePayload);
+
+            if ($locale !== $attributeValue->getLocaleCode()) {
+                continue;
+            }
+
+            $attributeValues[] = $attributeValue;
+        }
+
+        return $attributeValues;
     }
 
     public function getCustomData(): array

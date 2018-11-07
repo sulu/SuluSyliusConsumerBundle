@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 class ProductInformation implements ProductInformationInterface
@@ -58,6 +60,11 @@ class ProductInformation implements ProductInformationInterface
     private $customData;
 
     /**
+     * @var ProductInformationAttributeValueInterface[]|Collection
+     */
+    private $attributeValues;
+
+    /**
      * @var ProductInterface
      */
     private $product;
@@ -68,6 +75,7 @@ class ProductInformation implements ProductInformationInterface
         $this->product = $product;
 
         $this->customData = [];
+        $this->attributeValues = new ArrayCollection();
     }
 
     public function getProductId(): string
@@ -182,5 +190,51 @@ class ProductInformation implements ProductInformationInterface
         $this->customData = $customData;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttributeValues(): array
+    {
+        return $this->attributeValues->getValues();
+    }
+
+    public function addAttributeValue(ProductInformationAttributeValueInterface $attributeValue): ProductInformationInterface
+    {
+        $this->attributeValues->set($attributeValue->getCode(), $attributeValue);
+
+        return $this;
+    }
+
+    public function removeAttributeValue(ProductInformationAttributeValueInterface $attributeValue): ProductInformationInterface
+    {
+        $this->attributeValues->remove($attributeValue->getCode());
+
+        return $this;
+    }
+
+    public function removeAttributeValueByCode(string $code): ProductInformationInterface
+    {
+        $this->attributeValues->remove($code);
+
+        return $this;
+    }
+
+    public function findAttributeValueByCode(string $code): ?ProductInformationAttributeValueInterface
+    {
+        if (!$this->attributeValues->containsKey($code)) {
+            return null;
+        }
+
+        return $this->attributeValues->get($code);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttributeValueCodes(): array
+    {
+        return $this->attributeValues->getKeys();
     }
 }

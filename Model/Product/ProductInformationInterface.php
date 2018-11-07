@@ -54,4 +54,22 @@ interface ProductInformationInterface
     public function getCustomData(): array;
 
     public function setCustomData(array $customData): self;
+
+    /**
+     * @return ProductInformationAttributeValueInterface[]
+     */
+    public function getAttributeValues(): array;
+
+    /**
+     * @return string[]
+     */
+    public function getAttributeValueCodes(): array;
+
+    public function addAttributeValue(ProductInformationAttributeValueInterface $attributeValue): self;
+
+    public function findAttributeValueByCode(string $code): ?ProductInformationAttributeValueInterface;
+
+    public function removeAttributeValue(ProductInformationAttributeValueInterface $attributeValue): self;
+
+    public function removeAttributeValueByCode(string $code): self;
 }

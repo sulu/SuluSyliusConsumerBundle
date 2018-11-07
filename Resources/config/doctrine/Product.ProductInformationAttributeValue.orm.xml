@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue"
+            table="pr_product_information_attribute_values"
+            repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductInformationAttributeValueRepository">
+        <id name="id" type="integer" column="id">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <unique-constraints>
+            <unique-constraint columns="productId,dimensionId,attributeCode"/>
+        </unique-constraints>
+
+        <field name="code" column="attributeCode" type="string"/>
+        <field name="type" type="string"/>
+
+        <field name="textValue" column="textValue" type="string" nullable="true" />
+        <field name="textAreaValue" column="textAreaValue" type="text" nullable="true" />
+        <field name="booleanValue" column="booleanValue" type="boolean" nullable="true" />
+        <field name="integerValue" column="integerValue" type="integer" nullable="true" />
+        <field name="floatValue" column="floatValue" type="float" nullable="true" />
+        <field name="dateTimeValue" column="dateTimeValue" type="datetime" nullable="true" />
+        <field name="dateValue" column="dateValue" type="date" nullable="true" />
+
+        <many-to-one field="productInformation" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation" inversed-by="attributeValues">
+            <cascade>
+                <cascade-persist/>
+            </cascade>
+
+            <join-columns>
+                <join-column name="productId" referenced-column-name="product_id" nullable="false" on-delete="CASCADE"/>
+                <join-column name="dimensionId" referenced-column-name="dimension_id" nullable="false" on-delete="CASCADE"/>
+            </join-columns>
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

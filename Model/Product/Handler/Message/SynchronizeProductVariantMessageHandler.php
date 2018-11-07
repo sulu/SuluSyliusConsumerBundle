@@ -15,8 +15,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ProductVariantTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductVariantMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductVariantTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
