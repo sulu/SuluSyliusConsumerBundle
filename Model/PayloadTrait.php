@@ -32,6 +32,13 @@ trait PayloadTrait
         return $this->payload;
     }
 
+    protected function getValue(string $name)
+    {
+        Assert::keyExists($this->payload, $name);
+
+        return $this->payload[$name];
+    }
+
     protected function getValueWithDefault(string $name, $default = null)
     {
         if (!array_key_exists($name, $this->payload)) {
@@ -136,12 +143,5 @@ trait PayloadTrait
         Assert::isArray($value);
 
         return $value;
-    }
-
-    private function getValue(string $name)
-    {
-        Assert::keyExists($this->payload, $name);
-
-        return $this->payload[$name];
     }
 }
