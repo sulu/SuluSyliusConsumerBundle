@@ -167,7 +167,7 @@ class ProductInformation implements ProductInformationInterface
 
     public function mapPublishProperties(ProductInformationInterface $draft): void
     {
-        $setters = array_filter(get_class_methods(get_class_methods($this)), function ($method) {
+        $setters = array_filter(get_class_methods($this), function ($method) {
             return 0 === strpos($method, 'set');
         });
 
