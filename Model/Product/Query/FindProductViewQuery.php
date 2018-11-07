@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query;
 
-class FindDraftProductQuery
+class FindProductViewQuery
 {
     /**
      * @var string
