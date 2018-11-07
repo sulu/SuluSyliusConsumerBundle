@@ -186,8 +186,26 @@ class SynchronizeProductMessageHandler
         $productInformation->setShortDescription($translationValueObject->getShortDescription());
         $productInformation->setCustomData($translationValueObject->getCustomData());
 
+        $this->synchronizeAttributeValues($attributeValueValueObjects, $productInformation);
+    }
+
+    /**
+     * @param ProductAttributeValueValueObject[] $attributeValueValueObjects
+     */
+    protected function synchronizeAttributeValues(
+        array $attributeValueValueObjects,
+        ProductInformationInterface $productInformation
+    ): void {
+        // process existing and new
+        $processedAttributeValueCodes = [];
         foreach ($attributeValueValueObjects as $attributeValueValueObject) {
             $this->synchronizeAttributeValue($attributeValueValueObject, $productInformation);
+            $processedAttributeValueCodes[] = $attributeValueValueObject->getCode();
+        }
+
+        // check for removed
+        foreach (array_diff($productInformation->getAttributeValueCodes(), $processedAttributeValueCodes) as $attributeValueCode) {
+            $productInformation->removeAttributeValueByCode($attributeValueCode);
         }
     }
 
@@ -199,6 +217,7 @@ class SynchronizeProductMessageHandler
 
         $attributeValue = $productInformation->findAttributeValueByCode($code);
         if (!$attributeValue) {
+            // create new one
             $attributeValue = $this->productInformationAttributeValueRepository->create(
                 $productInformation,
                 $code,

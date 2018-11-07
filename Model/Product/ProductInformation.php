@@ -193,7 +193,7 @@ class ProductInformation implements ProductInformationInterface
     }
 
     /**
-     * @return ProductInformationAttributeValueInterface[]
+     * {@inheritdoc}
      */
     public function getAttributeValues(): array
     {
@@ -214,6 +214,13 @@ class ProductInformation implements ProductInformationInterface
         return $this;
     }
 
+    public function removeAttributeValueByCode(string $code): ProductInformationInterface
+    {
+        $this->attributeValues->remove($code);
+
+        return $this;
+    }
+
     public function findAttributeValueByCode(string $code): ?ProductInformationAttributeValueInterface
     {
         if (!$this->attributeValues->containsKey($code)) {
@@ -221,5 +228,13 @@ class ProductInformation implements ProductInformationInterface
         }
 
         return $this->attributeValues->get($code);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAttributeValueCodes(): array
+    {
+        return $this->attributeValues->getKeys();
     }
 }
