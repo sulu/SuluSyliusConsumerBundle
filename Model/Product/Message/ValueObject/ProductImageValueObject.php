@@ -31,7 +31,7 @@ class ProductImageValueObject
 
     public function getType(): string
     {
-        return $this->getStringValue('type');
+        return $this->getStringValueWithDefault('type');
     }
 
     public function getPath(): string

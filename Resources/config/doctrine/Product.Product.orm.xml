@@ -36,6 +36,7 @@
 
         <one-to-many field="mediaReferences"
                      target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference"
+                     orphan-removal="true"
                      mapped-by="product"
         />
 

@@ -274,10 +274,26 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeImages(SynchronizeProductMessage $message, ProductInterface $product): void
     {
+        $currentImageIds = array_map(function (ProductMediaReference $productMediaReference) {
+            return $productMediaReference->getSyliusId();
+        }, $product->getMediaReferences());
+
+        $processedImageIds = [];
         $sorting = 1;
         foreach ($message->getImages() as $imageValueObject) {
             $this->synchronizeImage($imageValueObject, $product, $sorting);
             ++$sorting;
+            $processedImageIds[] = $imageValueObject->getId();
+        }
+
+        // check for removed
+        foreach (array_diff($currentImageIds, $processedImageIds) as $imageId) {
+            $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageId);
+            if (!$mediaReference) {
+                continue;
+            }
+
+            $product->removeMediaReference($mediaReference);
         }
     }
 
@@ -374,7 +390,16 @@ class SynchronizeProductMessageHandler
         $request = $this->client->request('GET', $url);
 
         // create temp file
-        $filename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sii');
+        $tempFilename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sii');
+
+        // create correct filename with extension
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $filename = str_replace('sii', 'sylius-', $tempFilename) . '.' . $extension;
+
+        // rename the temp file to the correct one
+        $this->filesystem->rename($tempFilename, $filename);
+
+        // save file to the system
         $this->filesystem->dumpFile($filename, $request->getBody()->getContents());
         $file = new File($filename);
 

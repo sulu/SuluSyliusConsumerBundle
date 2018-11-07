@@ -113,6 +113,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
         $product->getProductCategories()->willReturn([]);
+        $product->getMediaReferences()->willReturn([]);
 
         $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
         $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
@@ -178,7 +179,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $reponse1->getBody()->willReturn($stream1->reveal());
         $client->request('GET', 'http://sylius.localhost/media/image/ab/12/test1.png')->willReturn($reponse1->reveal());
 
-        $filesystem->tempnam(Argument::any(), 'sii')->willReturn(__DIR__ . '/images/test.png');
+        $filesystem->tempnam(Argument::any(), 'sii')->willReturn(__DIR__ . '/images/test');
+        $filesystem->rename(__DIR__ . '/images/test', __DIR__ . '/images/test.png')->shouldBeCalled();
         $filesystem->dumpFile(__DIR__ . '/images/test.png', 'image-content-1')->willReturn();
         $filesystem->remove(__DIR__ . '/images/test.png')->shouldBeCalled();
 
@@ -305,6 +307,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->getProductCategories()->willReturn([$category1->reveal()]);
         $product->setMainCategory(null)->shouldBeCalled();
         $product->removeProductCategoryBySyliusId(99)->shouldBeCalled();
+        $product->getMediaReferences()->willReturn([]);
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimensionDraft = $this->prophesize(DimensionInterface::class);
@@ -366,7 +369,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $reponse1->getBody()->willReturn($stream1->reveal());
         $client->request('GET', 'http://sylius.localhost/media/image/ab/12/test1.png')->willReturn($reponse1->reveal());
 
-        $filesystem->tempnam(Argument::any(), 'sii')->willReturn(__DIR__ . '/images/test.png');
+        $filesystem->tempnam(Argument::any(), 'sii')->willReturn(__DIR__ . '/images/test');
+        $filesystem->rename(__DIR__ . '/images/test', __DIR__ . '/images/test.png')->shouldBeCalled();
         $filesystem->dumpFile(__DIR__ . '/images/test.png', 'image-content-1')->willReturn();
         $filesystem->remove(__DIR__ . '/images/test.png')->shouldBeCalled();
 
