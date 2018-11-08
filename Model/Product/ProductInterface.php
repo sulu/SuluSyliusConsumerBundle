@@ -71,6 +71,8 @@ interface ProductInterface
      */
     public function getMediaReferences(): array;
 
+    public function removeMediaReference(ProductMediaReference $mediaReference): ProductInterface;
+
     public function getCustomData(): array;
 
     public function setCustomData(array $customData): self;

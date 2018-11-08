@@ -203,6 +203,13 @@ class Product implements ProductInterface
         return $this->mediaReferences->getValues();
     }
 
+    public function removeMediaReference(ProductMediaReference $mediaReference): ProductInterface
+    {
+        $this->mediaReferences->removeElement($mediaReference);
+
+        return $this;
+    }
+
     public function getCustomData(): array
     {
         return $this->customData;
