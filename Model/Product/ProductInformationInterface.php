@@ -49,7 +49,7 @@ interface ProductInformationInterface
 
     public function setShortDescription(string $shortDescription): self;
 
-    public function mapPublishProperties(ProductInformationInterface $draft): void;
+    public function mapPublishProperties(self $draft): void;
 
     public function getCustomData(): array;
 

@@ -98,11 +98,6 @@ class SynchronizeProductMessageHandler
      */
     private $autoPublish;
 
-    /**
-     * @var array
-     */
-    private $processedLocales = [];
-
     public function __construct(
         ClientInterface $client,
         MessageBusInterface $messageBus,
@@ -133,27 +128,27 @@ class SynchronizeProductMessageHandler
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
     {
-        $this->processedLocales = [];
-
         $product = $this->productRepository->findByCode($message->getCode());
         if (!$product) {
             $product = $this->productRepository->create($message->getCode());
         }
 
         $this->synchronizeProduct($message, $product);
-        $this->publishProduct($product);
+        $this->publishProduct($message, $product);
 
         return $product;
     }
 
-    protected function publishProduct(ProductInterface $product): void
+    protected function publishProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
         if (!$this->autoPublish) {
             return;
         }
 
-        foreach ($this->processedLocales as $locale) {
-            $this->messageBus->dispatch(new PublishProductMessage($product->getId(), $locale));
+        foreach ($message->getTranslations() as $translationValueObject) {
+            $this->messageBus->dispatch(
+                new PublishProductMessage($product->getId(), $translationValueObject->getLocale())
+            );
         }
     }
 
@@ -198,8 +193,6 @@ class SynchronizeProductMessageHandler
                 $product,
                 $dimensionLive
             );
-
-            $this->processedLocales[] = $translationValueObject->getLocale();
         }
     }
 
