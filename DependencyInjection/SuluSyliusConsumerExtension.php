@@ -38,6 +38,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
         $this->configurePersistence($config['objects'], $container);
 
         $container->setParameter('sulu_sylius_consumer.sylius_base_url', $config['sylius_base_url']);
+        $container->setParameter('sulu_sylius_consumer.auto_publish', $config['auto_publish']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');

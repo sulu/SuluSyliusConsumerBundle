@@ -35,6 +35,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder->root('sulu_sylius_consumer')
             ->children()
                 ->scalarNode('sylius_base_url')->isRequired()->end()
+                ->booleanNode('auto_publish')->defaultFalse()->end()
                 ->arrayNode('objects')
                     ->addDefaultsIfNotSet()
                     ->children()

@@ -25,6 +25,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
@@ -40,6 +41,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductMediaReferenceRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductMessageHandlerTest extends TestCase
 {
@@ -88,6 +90,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $client = $this->prophesize(ClientInterface::class);
+        $messageBus = $this->prophesize(MessageBusInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
@@ -99,6 +102,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $handler = new SynchronizeProductMessageHandler(
             $client->reveal(),
+            $messageBus->reveal(),
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
             $productInformationAttributeValueRepository->reveal(),
@@ -107,7 +111,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $categoryRepository->reveal(),
             $mediaFactory->reveal(),
             $filesystem->reveal(),
-            'http://sylius.localhost'
+            'http://sylius.localhost',
+            true
         );
 
         $product = $this->prophesize(ProductInterface::class);
@@ -236,6 +241,14 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_2', 'text')
             ->willReturn($attributeValue2Live->reveal());
 
+        $messageBus->dispatch(Argument::that(function ($argument) {
+            $this->assertInstanceOf(PublishProductMessage::class, $argument);
+            $this->assertNotNull($argument->getId());
+            $this->assertEquals('de', $argument->getLocale());
+
+            return true;
+        }))->shouldBeCalled();
+
         $handler->__invoke($message->reveal());
     }
 
@@ -277,6 +290,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
 
         $client = $this->prophesize(ClientInterface::class);
+        $messageBus = $this->prophesize(MessageBusInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
@@ -288,6 +302,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $handler = new SynchronizeProductMessageHandler(
             $client->reveal(),
+            $messageBus->reveal(),
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
             $productInformationAttributeValueRepository->reveal(),
@@ -296,7 +311,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $categoryRepository->reveal(),
             $mediaFactory->reveal(),
             $filesystem->reveal(),
-            'http://sylius.localhost'
+            'http://sylius.localhost',
+            false
         );
 
         $category1 = $this->prophesize(CategoryInterface::class);
