@@ -15,7 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 class Product implements ProductInterface
 {
@@ -136,6 +138,18 @@ class Product implements ProductInterface
         $this->productInformations->add($productInformation);
 
         return $this;
+    }
+
+    public function findProductInformationByDimension(DimensionInterface $dimension): ?ProductInformationInterface
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('dimension', $dimension));
+        $result = $this->productInformations->matching($criteria);
+
+        if (0 === $result->count()) {
+            return null;
+        }
+
+        return $result->first();
     }
 
     public function removeProductInformation(ProductInformationInterface $productInformation): ProductInterface

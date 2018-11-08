@@ -116,14 +116,11 @@ class ProductViewFactory implements ProductViewFactoryInterface
             throw new \InvalidArgumentException('No locale found');
         }
 
-        $content = $this->contentViewFactory->loadAndCreate(
+        $contentView = $this->contentViewFactory->loadAndCreate(
             ProductInterface::RESOURCE_KEY,
             $product->getId(),
             $dimensions
         );
-        if (null === $content) {
-            throw new ContentNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
-        }
 
         $viewProduct = new ProductView(
             $product->getId(),
@@ -133,7 +130,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
             $this->getMainCategory($product, $locale),
             $this->getCategories($product, $locale),
             $this->getMedia($product, $locale),
-            $content,
+            $contentView,
             $routableResource
         );
 

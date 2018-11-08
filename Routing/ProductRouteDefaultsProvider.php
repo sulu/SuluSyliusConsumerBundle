@@ -57,6 +57,15 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
             $object = $this->loadProduct($id, $locale);
         }
 
+        if (!$object->getContent()) {
+            return [
+                'object' => $object,
+                'view' => 'templates/products/default',
+                '_cacheLifetime' => 604800,
+                '_controller' => 'SuluSyliusConsumerBundle:Product/WebsiteProduct:index',
+            ];
+        }
+
         /** @var StructureMetadata $metadata */
         $metadata = $this->structureMetadataFactory->getStructureMetadata(
             ProductInterface::RESOURCE_KEY,

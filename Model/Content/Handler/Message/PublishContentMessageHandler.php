@@ -49,14 +49,18 @@ class PublishContentMessageHandler
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function __invoke(PublishContentMessage $message): ContentViewInterface
+    public function __invoke(PublishContentMessage $message): ?ContentViewInterface
     {
-        $contents = [
-            $this->publishDimension($message->getResourceKey(), $message->getResourceId()),
-            $this->publishDimension($message->getResourceKey(), $message->getResourceId(), $message->getLocale()),
-        ];
+        $contents = array_filter([
+            $this->publishDimension($message->getResourceKey(), $message->getResourceId(), $message->getMandatory()),
+            $this->publishDimension($message->getResourceKey(), $message->getResourceId(), $message->getMandatory(), $message->getLocale()),
+        ]);
 
-        $contentView = $this->contentViewFactory->create(array_filter($contents));
+        if (!$contents) {
+            return null;
+        }
+
+        $contentView = $this->contentViewFactory->create($contents);
         if (!$contentView) {
             throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
@@ -67,18 +71,18 @@ class PublishContentMessageHandler
     protected function publishDimension(
         string $resourceKey,
         string $resourceId,
+        bool $mandatory,
         ?string $locale = null
     ): ?ContentInterface {
         $draftAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_DRAFT, $locale);
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes($draftAttributes);
-
-        $liveAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
-        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
-
-        $liveContent = $this->contentRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
         $draftContent = $this->contentRepository->findByResource($resourceKey, $resourceId, $draftDimension);
 
         if (!$draftContent) {
+            if (!$mandatory) {
+                return null;
+            }
+
             throw new ContentNotFoundException($resourceKey, $resourceId);
         }
 
@@ -86,6 +90,10 @@ class PublishContentMessageHandler
         if (!$type) {
             throw new \InvalidArgumentException('Content type cannot be null');
         }
+
+        $liveAttributes = $this->getAttributes(DimensionInterface::ATTRIBUTE_VALUE_LIVE, $locale);
+        $liveDimension = $this->dimensionRepository->findOrCreateByAttributes($liveAttributes);
+        $liveContent = $this->contentRepository->findOrCreate($resourceKey, $resourceId, $liveDimension);
 
         $liveContent->setType($type);
         $liveContent->setData($draftContent->getData());

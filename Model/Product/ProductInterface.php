@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 interface ProductInterface
 {
@@ -33,6 +34,8 @@ interface ProductInterface
      * @return ProductInformationInterface[]
      */
     public function getProductInformations(): array;
+
+    public function findProductInformationByDimension(DimensionInterface $dimension): ?ProductInformationInterface;
 
     public function addProductInformation(ProductInformationInterface $productInformation): self;
 

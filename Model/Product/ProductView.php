@@ -56,7 +56,7 @@ class ProductView implements ProductViewInterface
     private $media;
 
     /**
-     * @var ContentViewInterface
+     * @var null|ContentViewInterface
      */
     private $content;
 
@@ -73,7 +73,7 @@ class ProductView implements ProductViewInterface
         ?Category $mainCategory,
         array $categories,
         array $media,
-        ContentViewInterface $content,
+        ?ContentViewInterface $content,
         RoutableResourceInterface $routableResource
     ) {
         $this->id = $id;
@@ -122,7 +122,7 @@ class ProductView implements ProductViewInterface
         return $this->media;
     }
 
-    public function getContent(): ContentViewInterface
+    public function getContent(): ?ContentViewInterface
     {
         return $this->content;
     }

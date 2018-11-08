@@ -57,29 +57,39 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
 
     public function onPostSerialize(ObjectEvent $event): void
     {
-        $object = $event->getObject();
-        if (!$object instanceof ProductViewInterface) {
+        $productView = $event->getObject();
+        if (!$productView instanceof ProductViewInterface) {
             return;
         }
 
-        $contentType = $object->getContent()->getType();
-        if (!$contentType) {
-            return;
-        }
-
-        $structure = $this->structureManager->getStructure($contentType, ProductInterface::RESOURCE_KEY);
-        $structure->setLanguageCode($object->getLocale());
+        $structure = $this->getStructure($productView);
+        $data = $productView->getContent() ? $productView->getContent()->getData() : [];
 
         /** @var ArraySerializationVisitor $visitor */
         $visitor = $event->getVisitor();
+        $visitor->setData('product', $this->getProductData($productView, $event->getContext()));
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('product', $this->getProductData($object, $event->getContext()));
-        $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
-        $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
-        $visitor->setData('template', $object->getContent()->getType());
+        $visitor->setData('content', $this->resolveContent($structure, $data));
+        $visitor->setData('view', $this->resolveView($structure, $data));
+        $visitor->setData('template', $structure ? $structure->getKey() : null);
 
         // TODO creator, created, changer, changed
+    }
+
+    private function getStructure(ProductViewInterface $productView): ?StructureInterface
+    {
+        if (!$productView->getContent()) {
+            return null;
+        }
+
+        $contentType = $productView->getContent()->getType();
+        if (!$contentType) {
+            return null;
+        }
+
+        $structure = $this->structureManager->getStructure($contentType, ProductInterface::RESOURCE_KEY);
+        $structure->setLanguageCode($productView->getLocale());
     }
 
     protected function getProductData(ProductViewInterface $productView, Context $context): array
@@ -107,8 +117,12 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $data;
     }
 
-    private function resolveView(StructureInterface $structure, array $data): array
+    private function resolveView(?StructureInterface $structure, array $data): array
     {
+        if (!$structure) {
+            return [];
+        }
+
         $view = [];
         foreach ($structure->getProperties(true) as $child) {
             if (array_key_exists($child->getName(), $data)) {
@@ -122,8 +136,12 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $view;
     }
 
-    private function resolveContent(StructureInterface $structure, array $data)
+    private function resolveContent(?StructureInterface $structure, array $data)
     {
+        if (!$structure) {
+            return [];
+        }
+
         $content = [];
         foreach ($structure->getProperties(true) as $child) {
             if (array_key_exists($child->getName(), $data)) {

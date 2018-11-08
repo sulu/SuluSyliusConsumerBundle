@@ -33,7 +33,7 @@ interface ProductViewInterface
 
     public function getMedia(): array;
 
-    public function getContent(): ContentViewInterface;
+    public function getContent(): ?ContentViewInterface;
 
     public function getRoutableResource(): RoutableResourceInterface;
 }
