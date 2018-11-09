@@ -15,6 +15,10 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
 use Ramsey\Uuid\Uuid;
+use Sulu\Bundle\CategoryBundle\Entity\Category;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -43,6 +47,36 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         $product = $this->find($id);
 
         return $product;
+    }
+
+    public function search(array $dimensions, array $categoryKeys, string $query = null): array
+    {
+        $dimensionIds = [];
+        foreach ($dimensions as $dimension) {
+            $dimensionIds[] = $dimension->getId();
+        }
+
+        $queryBuilder = $this->createQueryBuilder('product')
+            ->select('product')
+            ->join(ProductInformation::class, 'productInformation')
+            ->where('IDENTITY(productInformation.dimension) IN(:dimensionIds)')
+            ->setParameter('dimensionIds', $dimensionIds);
+
+        if ($categoryKeys) {
+            $queryBuilder
+                ->join('product.mainCategory', 'mainCategory')
+                ->join(Category::class, 'category')
+                ->andWhere('mainCategory.key IN(:categoryKeys) OR category.key IN(:categoryKeys)')
+                ->setParameter('categoryKeys', $categoryKeys);
+        }
+
+        if ($query) {
+            $queryBuilder
+                ->andWhere('product.code LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+
+        return $queryBuilder->getQuery()->getResult();
     }
 
     public function remove(ProductInterface $product): void
