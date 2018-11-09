@@ -17,6 +17,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Component\Content\Compat\StructureInterface;
@@ -57,29 +58,38 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
 
     public function onPostSerialize(ObjectEvent $event): void
     {
-        $object = $event->getObject();
-        if (!$object instanceof ProductViewInterface) {
+        $productView = $event->getObject();
+        if (!$productView instanceof ProductViewInterface) {
             return;
         }
 
-        $contentType = $object->getContent()->getType();
-        if (!$contentType) {
-            return;
-        }
-
-        $structure = $this->structureManager->getStructure($contentType, ProductInterface::RESOURCE_KEY);
-        $structure->setLanguageCode($object->getLocale());
+        $content = $productView->getContent();
+        $structure = $content ? $this->getStructure($productView, $content) : null;
+        $data = $content ? $content->getData() : [];
 
         /** @var ArraySerializationVisitor $visitor */
         $visitor = $event->getVisitor();
+        $visitor->setData('product', $this->getProductData($productView, $event->getContext()));
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('product', $this->getProductData($object, $event->getContext()));
-        $visitor->setData('content', $this->resolveContent($structure, $object->getContent()->getData()));
-        $visitor->setData('view', $this->resolveView($structure, $object->getContent()->getData()));
-        $visitor->setData('template', $object->getContent()->getType());
+        $visitor->setData('content', $structure ? $this->resolveContent($structure, $data) : null);
+        $visitor->setData('view', $structure ? $this->resolveView($structure, $data) : null);
+        $visitor->setData('template', $structure ? $structure->getKey() : null);
 
         // TODO creator, created, changer, changed
+    }
+
+    private function getStructure(ProductViewInterface $productView, ContentViewInterface $contentView): ?StructureInterface
+    {
+        $contentType = $contentView->getType();
+        if (!$contentType) {
+            return null;
+        }
+
+        $structure = $this->structureManager->getStructure($contentType, ProductInterface::RESOURCE_KEY);
+        $structure->setLanguageCode($productView->getLocale());
+
+        return $structure;
     }
 
     protected function getProductData(ProductViewInterface $productView, Context $context): array

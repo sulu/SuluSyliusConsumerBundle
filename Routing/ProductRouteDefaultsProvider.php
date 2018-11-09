@@ -41,20 +41,36 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
      */
     private $cacheLifetimeResolver;
 
+    /**
+     * @var array
+     */
+    private $routeDefaultsFallback;
+
     public function __construct(
         MessageBusInterface $messagBus,
         StructureMetadataFactoryInterface $structureMetadataFactory,
-        CacheLifetimeResolverInterface $cacheLifetimeResolver
+        CacheLifetimeResolverInterface $cacheLifetimeResolver,
+        array $routeDefaultsFallback
     ) {
         $this->messagBus = $messagBus;
         $this->structureMetadataFactory = $structureMetadataFactory;
         $this->cacheLifetimeResolver = $cacheLifetimeResolver;
+        $this->routeDefaultsFallback = $routeDefaultsFallback;
     }
 
     public function getByEntity($entityClass, $id, $locale, $object = null)
     {
         if (!$object) {
             $object = $this->loadProduct($id, $locale);
+        }
+
+        if (!$object->getContent()) {
+            return array_merge(
+                [
+                    'object' => $object,
+                ],
+                $this->routeDefaultsFallback
+            );
         }
 
         /** @var StructureMetadata $metadata */

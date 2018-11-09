@@ -101,11 +101,11 @@ class PublishProductMessageHandlerTest extends TestCase
         $liveProductInformation = $this->prophesize(ProductInformationInterface::class);
         $draftProductInformation = $this->prophesize(ProductInformationInterface::class);
 
-        $productInformationRepository->findByProductId('123-123-123', $liveDimension->reveal())
-            ->willReturn($liveProductInformation->reveal())
-            ->shouldBeCalled();
-        $productInformationRepository->findByProductId('123-123-123', $draftDimension->reveal())
+        $product->findProductInformationByDimension($draftDimension->reveal())
             ->willReturn($draftProductInformation->reveal())
+            ->shouldBeCalled();
+        $product->findProductInformationByDimension($liveDimension->reveal())
+            ->willReturn($liveProductInformation->reveal())
             ->shouldBeCalled();
 
         $liveProductInformation->mapPublishProperties($draftProductInformation->reveal())->shouldBeCalled();
@@ -182,8 +182,10 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $draftProductInformation->getName()->willReturn('Product One');
 
-        $productInformationRepository->findByProductId('123-123-123', $liveDimension->reveal())->willReturn(null)->shouldBeCalled();
-        $productInformationRepository->findByProductId('123-123-123', $draftDimension->reveal())
+        $product->findProductInformationByDimension($liveDimension->reveal())
+            ->willReturn(null)
+            ->shouldBeCalled();
+        $product->findProductInformationByDimension($draftDimension->reveal())
             ->willReturn($draftProductInformation->reveal())
             ->shouldBeCalled();
 

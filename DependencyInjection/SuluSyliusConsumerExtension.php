@@ -39,9 +39,22 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
 
         $container->setParameter('sulu_sylius_consumer.sylius_base_url', $config['sylius_base_url']);
         $container->setParameter('sulu_sylius_consumer.auto_publish', $config['auto_publish']);
+        $container->setParameter(
+            'sulu_sylius_consumer.route_defaults_fallback',
+            $this->getRouteDefaultsFallback($config['route_defaults_fallback'])
+        );
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+    }
+
+    private function getRouteDefaultsFallback(array $config): array
+    {
+        return [
+            'view' => $config['view'],
+            '_controller' => $config['controller'],
+            '_cacheLifetime' => $config['cache_lifetime'],
+        ];
     }
 
     public function prepend(ContainerBuilder $container)

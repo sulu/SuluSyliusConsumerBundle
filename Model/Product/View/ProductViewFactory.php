@@ -17,7 +17,6 @@ use Sulu\Bundle\CategoryBundle\Api\Category;
 use Sulu\Bundle\CategoryBundle\Category\CategoryManagerInterface;
 use Sulu\Bundle\MediaBundle\Api\Media;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -116,14 +115,11 @@ class ProductViewFactory implements ProductViewFactoryInterface
             throw new \InvalidArgumentException('No locale found');
         }
 
-        $content = $this->contentViewFactory->loadAndCreate(
+        $contentView = $this->contentViewFactory->loadAndCreate(
             ProductInterface::RESOURCE_KEY,
             $product->getId(),
             $dimensions
         );
-        if (null === $content) {
-            throw new ContentNotFoundException(ProductInterface::RESOURCE_KEY, $product->getId());
-        }
 
         $viewProduct = new ProductView(
             $product->getId(),
@@ -133,7 +129,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
             $this->getMainCategory($product, $locale),
             $this->getCategories($product, $locale),
             $this->getMedia($product, $locale),
-            $content,
+            $contentView,
             $routableResource
         );
 

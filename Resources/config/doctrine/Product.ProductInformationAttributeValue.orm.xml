@@ -23,6 +23,7 @@
         <field name="floatValue" column="floatValue" type="float" nullable="true" />
         <field name="dateTimeValue" column="dateTimeValue" type="datetime" nullable="true" />
         <field name="dateValue" column="dateValue" type="date" nullable="true" />
+        <field name="selectValue" column="selectValue" type="json" nullable="true" />
 
         <many-to-one field="productInformation" target-entity="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation" inversed-by="attributeValues">
             <cascade>

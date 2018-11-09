@@ -30,11 +30,17 @@ class PublishContentMessage
      */
     private $locale;
 
-    public function __construct(string $resourceKey, string $resourceId, string $locale)
+    /**
+     * @var bool
+     */
+    private $mandatory;
+
+    public function __construct(string $resourceKey, string $resourceId, string $locale, bool $mandatory = true)
     {
         $this->resourceKey = $resourceKey;
         $this->resourceId = $resourceId;
         $this->locale = $locale;
+        $this->mandatory = $mandatory;
     }
 
     public function getResourceKey(): string
@@ -50,5 +56,10 @@ class PublishContentMessage
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    public function getMandatory(): bool
+    {
+        return $this->mandatory;
     }
 }

@@ -82,7 +82,7 @@ class PublishProductMessageHandler
         }
 
         $this->messageBus->dispatch(
-            new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getId(), $message->getLocale())
+            new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getId(), $message->getLocale(), false)
         );
 
         // FIXME generate route by-schema
@@ -117,18 +117,12 @@ class PublishProductMessageHandler
             ]
         );
 
-        $draftProductInformation = $this->productInformationRepository->findByProductId(
-            $product->getId(),
-            $draftDimension
-        );
+        $draftProductInformation = $product->findProductInformationByDimension($draftDimension);
         if (!$draftProductInformation) {
             throw new ProductInformationNotFoundException($product->getId());
         }
 
-        $liveProductInformation = $this->productInformationRepository->findByProductId(
-            $product->getId(),
-            $liveDimension
-        );
+        $liveProductInformation = $product->findProductInformationByDimension($liveDimension);
         if (!$liveProductInformation) {
             $liveProductInformation = $this->productInformationRepository->create($product, $liveDimension);
         }

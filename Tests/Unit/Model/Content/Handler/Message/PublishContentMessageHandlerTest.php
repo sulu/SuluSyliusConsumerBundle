@@ -42,6 +42,7 @@ class PublishContentMessageHandlerTest extends TestCase
         $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
         $message->getResourceId()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
+        $message->getMandatory()->willReturn(true);
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
         $liveDimension = $this->prophesize(DimensionInterface::class);
