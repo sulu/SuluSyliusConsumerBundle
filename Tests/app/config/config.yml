@@ -51,3 +51,5 @@ services:
 
 sulu_sylius_consumer:
     sylius_base_url: 'http://sylius.localhost'
+    route_defaults_fallback:
+        view: 'templates/products/default'

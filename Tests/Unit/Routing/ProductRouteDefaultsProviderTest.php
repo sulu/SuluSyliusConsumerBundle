@@ -36,11 +36,17 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
+        $routeDefaultsFallback = [
+            'view' => 'default/product/view.html.twig',
+            '_controller' => 'Controller:action',
+            '_cacheLifetime' => 3600,
+        ];
 
         $provider = new ProductRouteDefaultsProvider(
             $messageBus->reveal(),
             $factory->reveal(),
-            $cacheLifetimeResolver->reveal()
+            $cacheLifetimeResolver->reveal(),
+            $routeDefaultsFallback
         );
 
         $contentView = $this->prophesize(ContentViewInterface::class);
@@ -84,11 +90,17 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
+        $routeDefaultsFallback = [
+            'view' => 'default/product/view.html.twig',
+            '_controller' => 'Controller:action',
+            '_cacheLifetime' => 3600,
+        ];
 
         $provider = new ProductRouteDefaultsProvider(
             $messageBus->reveal(),
             $factory->reveal(),
-            $cacheLifetimeResolver->reveal()
+            $cacheLifetimeResolver->reveal(),
+            $routeDefaultsFallback
         );
 
         $product = $this->prophesize(ProductViewInterface::class);
@@ -109,11 +121,17 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
+        $routeDefaultsFallback = [
+            'view' => 'default/product/view.html.twig',
+            '_controller' => 'Controller:action',
+            '_cacheLifetime' => 3600,
+        ];
 
         $provider = new ProductRouteDefaultsProvider(
             $messageBus->reveal(),
             $factory->reveal(),
-            $cacheLifetimeResolver->reveal()
+            $cacheLifetimeResolver->reveal(),
+            $routeDefaultsFallback
         );
 
         $messageBus->dispatch(
@@ -132,11 +150,17 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
+        $routeDefaultsFallback = [
+            'view' => 'default/product/view.html.twig',
+            '_controller' => 'Controller:action',
+            '_cacheLifetime' => 3600,
+        ];
 
         $provider = new ProductRouteDefaultsProvider(
             $messageBus->reveal(),
             $factory->reveal(),
-            $cacheLifetimeResolver->reveal()
+            $cacheLifetimeResolver->reveal(),
+            $routeDefaultsFallback
         );
 
         $this->assertTrue($provider->supports(RoutableResource::class));
@@ -147,11 +171,17 @@ class ProductRouteDefaultsProviderTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
+        $routeDefaultsFallback = [
+            'view' => 'default/product/view.html.twig',
+            '_controller' => 'Controller:action',
+            '_cacheLifetime' => 3600,
+        ];
 
         $provider = new ProductRouteDefaultsProvider(
             $messageBus->reveal(),
             $factory->reveal(),
-            $cacheLifetimeResolver->reveal()
+            $cacheLifetimeResolver->reveal(),
+            $routeDefaultsFallback
         );
 
         $this->assertFalse($provider->supports(\stdClass::class));

@@ -17,7 +17,6 @@ use Sulu\Bundle\CategoryBundle\Api\Category;
 use Sulu\Bundle\CategoryBundle\Category\CategoryManagerInterface;
 use Sulu\Bundle\MediaBundle\Api\Media;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;

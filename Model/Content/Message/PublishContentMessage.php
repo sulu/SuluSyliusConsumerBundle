@@ -31,7 +31,7 @@ class PublishContentMessage
     private $locale;
 
     /**
-     * @var string
+     * @var bool
      */
     private $mandatory;
 

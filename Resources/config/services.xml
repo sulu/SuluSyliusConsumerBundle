@@ -35,6 +35,7 @@
             <argument type="service" id="message_bus"/>
             <argument type="service" id="sulu_content.structure.factory"/>
             <argument type="service" id="sulu_http_cache.cache_lifetime.resolver"/>
+            <argument>%sulu_sylius_consumer.route_defaults_fallback%</argument>
 
             <tag name="sulu_route.defaults_provider"/>
         </service>

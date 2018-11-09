@@ -17,6 +17,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Component\Content\Compat\StructureInterface;
@@ -62,34 +63,33 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $structure = $this->getStructure($productView);
-        $data = $productView->getContent() ? $productView->getContent()->getData() : [];
+        $content = $productView->getContent();
+        $structure = $content ? $this->getStructure($productView, $content) : null;
+        $data = $content ? $content->getData() : [];
 
         /** @var ArraySerializationVisitor $visitor */
         $visitor = $event->getVisitor();
         $visitor->setData('product', $this->getProductData($productView, $event->getContext()));
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
         $visitor->setData('urls', [/* TODO localized urls */]);
-        $visitor->setData('content', $this->resolveContent($structure, $data));
-        $visitor->setData('view', $this->resolveView($structure, $data));
+        $visitor->setData('content', $structure ? $this->resolveContent($structure, $data) : null);
+        $visitor->setData('view', $structure ? $this->resolveView($structure, $data) : null);
         $visitor->setData('template', $structure ? $structure->getKey() : null);
 
         // TODO creator, created, changer, changed
     }
 
-    private function getStructure(ProductViewInterface $productView): ?StructureInterface
+    private function getStructure(ProductViewInterface $productView, ContentViewInterface $contentView): ?StructureInterface
     {
-        if (!$productView->getContent()) {
-            return null;
-        }
-
-        $contentType = $productView->getContent()->getType();
+        $contentType = $contentView->getType();
         if (!$contentType) {
             return null;
         }
 
         $structure = $this->structureManager->getStructure($contentType, ProductInterface::RESOURCE_KEY);
         $structure->setLanguageCode($productView->getLocale());
+
+        return $structure;
     }
 
     protected function getProductData(ProductViewInterface $productView, Context $context): array
@@ -117,12 +117,8 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $data;
     }
 
-    private function resolveView(?StructureInterface $structure, array $data): array
+    private function resolveView(StructureInterface $structure, array $data): array
     {
-        if (!$structure) {
-            return [];
-        }
-
         $view = [];
         foreach ($structure->getProperties(true) as $child) {
             if (array_key_exists($child->getName(), $data)) {
@@ -136,12 +132,8 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $view;
     }
 
-    private function resolveContent(?StructureInterface $structure, array $data)
+    private function resolveContent(StructureInterface $structure, array $data)
     {
-        if (!$structure) {
-            return [];
-        }
-
         $content = [];
         foreach ($structure->getProperties(true) as $child) {
             if (array_key_exists($child->getName(), $data)) {

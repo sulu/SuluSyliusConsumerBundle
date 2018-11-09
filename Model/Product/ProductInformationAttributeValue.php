@@ -66,7 +66,7 @@ class ProductInformationAttributeValue implements ProductInformationAttributeVal
     private $dateValue;
 
     /**
-     * @var null|string
+     * @var null|array
      */
     private $selectValue;
 

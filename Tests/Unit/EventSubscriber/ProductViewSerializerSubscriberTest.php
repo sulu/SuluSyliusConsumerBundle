@@ -81,6 +81,7 @@ class ProductViewSerializerSubscriberTest extends TestCase
 
         $structure = $this->prophesize(StructureInterface::class);
         $structure->getProperties(true)->willReturn([$property->reveal()]);
+        $structure->getKey()->willReturn('default');
 
         $structureManager->getStructure('default', ProductInterface::RESOURCE_KEY)->willReturn($structure->reveal());
 

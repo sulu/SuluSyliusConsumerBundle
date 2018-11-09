@@ -41,14 +41,21 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
      */
     private $cacheLifetimeResolver;
 
+    /**
+     * @var array
+     */
+    private $routeDefaultsFallback;
+
     public function __construct(
         MessageBusInterface $messagBus,
         StructureMetadataFactoryInterface $structureMetadataFactory,
-        CacheLifetimeResolverInterface $cacheLifetimeResolver
+        CacheLifetimeResolverInterface $cacheLifetimeResolver,
+        array $routeDefaultsFallback
     ) {
         $this->messagBus = $messagBus;
         $this->structureMetadataFactory = $structureMetadataFactory;
         $this->cacheLifetimeResolver = $cacheLifetimeResolver;
+        $this->routeDefaultsFallback = $routeDefaultsFallback;
     }
 
     public function getByEntity($entityClass, $id, $locale, $object = null)
@@ -58,12 +65,12 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
         }
 
         if (!$object->getContent()) {
-            return [
-                'object' => $object,
-                'view' => 'templates/products/default',
-                '_cacheLifetime' => 604800,
-                '_controller' => 'SuluSyliusConsumerBundle:Product/WebsiteProduct:index',
-            ];
+            return array_merge(
+                [
+                    'object' => $object,
+                ],
+                $this->routeDefaultsFallback
+            );
         }
 
         /** @var StructureMetadata $metadata */
