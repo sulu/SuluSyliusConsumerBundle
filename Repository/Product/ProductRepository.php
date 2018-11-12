@@ -49,8 +49,14 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         return $product;
     }
 
-    public function search(array $dimensions, array $categoryKeys, string $query = null): array
-    {
+    public function search(
+        array $dimensions,
+        int $page ,
+        int $pageSize,
+        array $categoryKeys = [],
+        array $attributesFilter = [],
+        string $query = null
+    ): array {
         $dimensionIds = [];
         foreach ($dimensions as $dimension) {
             $dimensionIds[] = $dimension->getId();
@@ -58,8 +64,9 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
 
         $queryBuilder = $this->createQueryBuilder('product')
             ->select('product')
-            ->join(ProductInformation::class, 'productInformation')
+            ->join(ProductInformation::class, 'productInformation', 'WITH', 'product.id = productInformation.product')
             ->where('IDENTITY(productInformation.dimension) IN(:dimensionIds)')
+            ->groupBy('product.id')
             ->setParameter('dimensionIds', $dimensionIds);
 
         if ($categoryKeys) {
@@ -70,11 +77,25 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
                 ->setParameter('categoryKeys', $categoryKeys);
         }
 
+        foreach ($attributesFilter as $attributeId => $attributeValue) {
+            $placeholderId = $attributeId . '_' . 'id';
+            $placeholderValue = $attributeId . '_' . 'value';
+
+            $queryBuilder
+                ->join('product.attributes', 'attributes')
+                ->andWhere('attributes.id = :' . $placeholderId . ' AND attributeValue = :' . $placeholderValue)
+                ->setParameter($placeholderId, $attributeId)
+                ->setParameter($placeholderValue, $attributeValue);
+        }
+
         if ($query) {
             $queryBuilder
                 ->andWhere('product.code LIKE :query')
                 ->setParameter('query', '%' . $query . '%');
         }
+
+        $queryBuilder->setFirstResult(($page - 1) * $pageSize);
+        $queryBuilder->setMaxResults($pageSize);
 
         return $queryBuilder->getQuery()->getResult();
     }

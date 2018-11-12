@@ -21,6 +21,16 @@ class ListProductViewsQuery
     private $locale;
 
     /**
+     * @var null|int
+     */
+    private $page;
+
+    /**
+     * @var null|int
+     */
+    private $pageSize;
+
+    /**
      * @var null|string
      */
     private $query;
@@ -30,16 +40,40 @@ class ListProductViewsQuery
      */
     private $categoryKeys;
 
-    public function __construct(string $locale, ?string $query, array $categoryKeys)
-    {
+    /**
+     * @var array
+     */
+    private $attributesFilter;
+
+    public function __construct(
+        string $locale,
+        ?int $page,
+        ?int $pageSize,
+        ?string $query,
+        array $categoryKeys = [],
+        array $attributesFilter = []
+    ) {
         $this->locale = $locale;
+        $this->page = $page;
+        $this->pageSize = $pageSize;
         $this->query = $query;
         $this->categoryKeys = $categoryKeys;
+        $this->attributesFilter = $attributesFilter;
     }
 
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    public function getPage(): ?int
+    {
+        return $this->page;
+    }
+
+    public function getPageSize(): ?int
+    {
+        return $this->pageSize;
     }
 
     public function getQuery(): ?string
@@ -50,5 +84,10 @@ class ListProductViewsQuery
     public function getCategoryKeys(): array
     {
         return $this->categoryKeys;
+    }
+
+    public function getAttributesFilter(): array
+    {
+        return $this->attributesFilter;
     }
 }

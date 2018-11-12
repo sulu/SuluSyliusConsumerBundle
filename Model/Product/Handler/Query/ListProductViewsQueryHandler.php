@@ -69,7 +69,10 @@ class ListProductViewsQueryHandler
 
         $products = $this->productRepository->search(
             [$liveDimension, $localizedLiveDimension],
+            $query->getPage() ? $query->getPage() : 1,
+            $query->getPageSize() ? $query->getPageSize() : 10,
             $query->getCategoryKeys(),
+            $query->getAttributesFilter(),
             $query->getQuery()
         );
 

@@ -21,7 +21,14 @@ interface ProductRepositoryInterface
 
     public function findById(string $id): ?ProductInterface;
 
-    public function search(array $dimensions, array $categoryKeys, string $query = null): array;
+    public function search(
+        array $dimensions,
+        int $page ,
+        int $pageSize,
+        array $categoryKeys = [],
+        array $attributesFilter = [],
+        string $query = null
+    ): array;
 
     public function remove(ProductInterface $product): void;
 }
