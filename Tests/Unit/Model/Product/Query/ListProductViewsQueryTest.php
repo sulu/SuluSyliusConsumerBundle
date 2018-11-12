@@ -41,6 +41,6 @@ class ListProductViewsQueryTest extends TestCase
         $this->assertEquals(10, $query->getPageSize());
         $this->assertEquals('abc', $query->getQuery());
         $this->assertEquals(['c1', 'c2'], $query->getCategoryKeys());
-        $this->assertEquals( ['a1' => 'av1', 'a2' => 'av2'], $query->getAttributesFilter());
+        $this->assertEquals(['a1' => 'av1', 'a2' => 'av2'], $query->getAttributesFilter());
     }
 }
