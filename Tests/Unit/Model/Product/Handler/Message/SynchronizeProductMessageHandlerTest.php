@@ -161,22 +161,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             ->willReturn($productInformationDraft->reveal());
 
         $productInformationRepository->findByProductId('123-123-123', $dimensionLive->reveal())->willReturn(null);
-        $productInformationLive = $this->prophesize(ProductInformationInterface::class);
-        $productInformationLive->getDimension()->willReturn($dimensionLive);
-        $productInformationLive->setName('Product One')->shouldBeCalled()->willReturn($productInformationLive->reveal());
-        $productInformationLive->getName()->shouldBeCalled()->willReturn('Product One');
-        $productInformationLive->setSlug('/nice-slug')->shouldBeCalled()->willReturn($productInformationLive->reveal());
-        $productInformationLive->setDescription('Very nice description! Yes!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
-        $productInformationLive->setMetaKeywords('123, 123, 123')->shouldBeCalled()->willReturn($productInformationLive->reveal());
-        $productInformationLive->setMetaDescription('Meta description..')->shouldBeCalled()->willReturn($productInformationLive->reveal());
-        $productInformationLive->setShortDescription('Nice, but short!')->shouldBeCalled()->willReturn($productInformationLive->reveal());
-        $productInformationLive->setCustomData(['product_translation_custom_data' => '123'])->shouldBeCalled();
-        $productInformationLive->getAttributeValueCodes()->willReturn([]);
-        $productInformationRepository->create($product->reveal(), $dimensionLive->reveal())
-            ->shouldBeCalled()
-            ->willReturn($productInformationLive->reveal());
 
-        $product->getProductInformations()->willReturn([$productInformationDraft->reveal(), $productInformationLive->reveal()]);
+        $product->getProductInformations()->willReturn([$productInformationDraft->reveal()]);
 
         $stream1 = $this->prophesize(StreamInterface::class);
         $stream1->getContents()->willReturn('image-content-1');
@@ -217,29 +203,15 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $productInformationDraft->findAttributeValueByCode('av_1')->willReturn(null);
         $productInformationDraft->findAttributeValueByCode('av_2')->willReturn(null);
-
-        $productInformationLive->findAttributeValueByCode('av_1')->willReturn(null);
-        $productInformationLive->findAttributeValueByCode('av_2')->willReturn(null);
-
         $attributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
         $attributeValue1->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1->reveal());
         $productInformationAttributeValueRepository->create($productInformationDraft->reveal(), 'av_1', 'text')
             ->willReturn($attributeValue1->reveal());
 
-        $attributeValue1Live = $this->prophesize(ProductInformationAttributeValue::class);
-        $attributeValue1Live->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1Live->reveal());
-        $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_1', 'text')
-            ->willReturn($attributeValue1Live->reveal());
-
         $attributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
         $attributeValue2->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2->reveal());
         $productInformationAttributeValueRepository->create($productInformationDraft->reveal(), 'av_2', 'text')
             ->willReturn($attributeValue2->reveal());
-
-        $attributeValue2Live = $this->prophesize(ProductInformationAttributeValue::class);
-        $attributeValue2Live->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2Live->reveal());
-        $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_2', 'text')
-            ->willReturn($attributeValue2Live->reveal());
 
         $messageBus->dispatch(Argument::that(function ($argument) {
             $this->assertInstanceOf(PublishProductMessage::class, $argument);
