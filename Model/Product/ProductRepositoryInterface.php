@@ -23,7 +23,7 @@ interface ProductRepositoryInterface
 
     public function search(
         array $dimensions,
-        int $page ,
+        int $page,
         int $pageSize,
         array $categoryKeys = [],
         array $attributesFilter = [],

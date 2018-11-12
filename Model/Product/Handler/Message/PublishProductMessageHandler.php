@@ -20,6 +20,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationN
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductVariantMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
@@ -40,6 +42,11 @@ class PublishProductMessageHandler
     private $productInformationRepository;
 
     /**
+     * @var ProductInformationAttributeValueRepositoryInterface
+     */
+    private $productInformationAttributeValueRepository;
+
+    /**
      * @var DimensionRepositoryInterface
      */
     private $dimensionRepository;
@@ -57,12 +64,14 @@ class PublishProductMessageHandler
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
+        ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
         SlugifierInterface $slugifier
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
+        $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
         $this->slugifier = $slugifier;
@@ -128,5 +137,33 @@ class PublishProductMessageHandler
         }
 
         $liveProductInformation->mapPublishProperties($draftProductInformation);
+        $this->publishProductInformationAttributeValues($draftProductInformation, $liveProductInformation);
+    }
+
+    private function publishProductInformationAttributeValues(
+        ProductInformationInterface $draftProductInformation,
+        ProductInformationInterface $liveProductInformation
+    ) {
+        // process existing and new
+        $processedAttributeValueCodes = [];
+        foreach ($draftProductInformation->getAttributeValues() as $draftAttributeValue) {
+            $attributeValue = $liveProductInformation->findAttributeValueByCode($draftAttributeValue->getCode());
+            if (!$attributeValue) {
+                // create new one
+                $attributeValue = $this->productInformationAttributeValueRepository->create(
+                    $liveProductInformation,
+                    $draftAttributeValue->getCode(),
+                    $draftAttributeValue->getType()
+                );
+            }
+            $attributeValue->setValue($draftAttributeValue->getValue());
+
+            $processedAttributeValueCodes[] = $draftAttributeValue->getCode();
+        }
+
+        // check for removed
+        foreach (array_diff($liveProductInformation->getAttributeValueCodes(), $processedAttributeValueCodes) as $attributeValueCode) {
+            $liveProductInformation->removeAttributeValueByCode($attributeValueCode);
+        }
     }
 }

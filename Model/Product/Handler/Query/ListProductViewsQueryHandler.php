@@ -15,18 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
-use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilder;
-use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactoryInterface;
-use Sulu\Component\Rest\ListBuilder\FieldDescriptor;
-use Sulu\Component\Rest\ListBuilder\ListRepresentation;
-use Sulu\Component\Rest\ListBuilder\Metadata\FieldDescriptorFactoryInterface;
-use Sulu\Component\Rest\RestHelperInterface;
 
 class ListProductViewsQueryHandler
 {

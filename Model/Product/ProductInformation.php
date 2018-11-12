@@ -200,18 +200,6 @@ class ProductInformation implements ProductInformationInterface
         return $this->attributeValues->getValues();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setAttributeValues(array $attributeValues): ProductInformationInterface
-    {
-        foreach ($attributeValues as $attributeValue) {
-            $this->addAttributeValue($attributeValue);
-        }
-
-        return $this;
-    }
-
     public function addAttributeValue(ProductInformationAttributeValueInterface $attributeValue): ProductInformationInterface
     {
         $this->attributeValues->set($attributeValue->getCode(), $attributeValue);

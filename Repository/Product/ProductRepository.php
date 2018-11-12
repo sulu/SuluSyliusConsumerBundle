@@ -18,7 +18,6 @@ use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -51,7 +50,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
 
     public function search(
         array $dimensions,
-        int $page ,
+        int $page,
         int $pageSize,
         array $categoryKeys = [],
         array $attributesFilter = [],
@@ -66,7 +65,6 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
             ->select('product')
             ->join(ProductInformation::class, 'productInformation', 'WITH', 'product.id = productInformation.product')
             ->where('IDENTITY(productInformation.dimension) IN(:dimensionIds)')
-            ->groupBy('product.id')
             ->setParameter('dimensionIds', $dimensionIds);
 
         if ($categoryKeys) {
@@ -82,8 +80,8 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
             $placeholderValue = $attributeId . '_' . 'value';
 
             $queryBuilder
-                ->join('product.attributes', 'attributes')
-                ->andWhere('attributes.id = :' . $placeholderId . ' AND attributeValue = :' . $placeholderValue)
+                ->join('productInformation.attributeValues', 'attributeValue')
+                ->andWhere('attributeValue.code = :' . $placeholderId . ' AND attributeValue.textValue = :' . $placeholderValue)
                 ->setParameter($placeholderId, $attributeId)
                 ->setParameter($placeholderValue, $attributeValue);
         }
