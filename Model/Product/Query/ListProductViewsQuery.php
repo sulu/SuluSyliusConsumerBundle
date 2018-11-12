@@ -47,9 +47,9 @@ class ListProductViewsQuery
 
     public function __construct(
         string $locale,
-        ?int $page,
-        ?int $pageSize,
-        ?string $query,
+        ?int $page = null,
+        ?int $pageSize = null,
+        ?string $query = null,
         array $categoryKeys = [],
         array $attributesFilter = []
     ) {

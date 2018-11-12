@@ -88,8 +88,8 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
 
         if ($query) {
             $queryBuilder
-                ->andWhere('product.code LIKE :query')
-                ->setParameter('query', '%' . $query . '%');
+                ->andWhere('LOWER(product.code) LIKE :query OR LOWER(productInformation.name) LIKE :query')
+                ->setParameter('query', '%' . strtolower($query) . '%');
         }
 
         $queryBuilder->setFirstResult(($page - 1) * $pageSize);
