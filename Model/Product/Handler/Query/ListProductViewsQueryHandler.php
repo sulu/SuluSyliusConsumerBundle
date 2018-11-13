@@ -22,6 +22,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterf
 
 class ListProductViewsQueryHandler
 {
+    const DEFAULT_PAGE_SIZE = 10;
+    const DEFAULT_QUERY_FIELDS = ['product.code', 'productInformation.name'];
+
     /**
      * @var DimensionRepositoryInterface
      */
@@ -78,10 +81,11 @@ class ListProductViewsQueryHandler
         $products = $this->productRepository->search(
             [$liveDimension, $localizedLiveDimension],
             $query->getPage() ?: 1,
-            $query->getPageSize() ?: 10,
+            $query->getPageSize() ?: self::DEFAULT_PAGE_SIZE,
             $query->getCategoryKeys(),
             $attributeFilters,
-            $query->getQuery()
+            $query->getQuery(),
+            $query->getQueryFields() ?: self::DEFAULT_QUERY_FIELDS
         );
 
         $productViews = [];

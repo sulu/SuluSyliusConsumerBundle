@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\CategoryBundle\Entity\Category;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -56,7 +55,8 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         int $pageSize,
         array $categoryKeys = [],
         array $attributeFilters = [],
-        string $query = null
+        string $query = null,
+        array $queryFields = []
     ): array {
         $dimensionIds = [];
         foreach ($dimensions as $dimension) {
@@ -78,8 +78,13 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         }
 
         if ($query) {
+            $expressions = $queryBuilder->expr()->orX();
+            foreach ($queryFields as $queryField) {
+                $expressions->add('LOWER(' . $queryField . ') LIKE :query');
+            }
+
             $queryBuilder
-                ->andWhere('LOWER(product.code) LIKE :query OR LOWER(productInformation.name) LIKE :query')
+                ->andWhere($expressions)
                 ->setParameter('query', '%' . strtolower($query) . '%');
         }
 

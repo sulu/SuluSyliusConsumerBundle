@@ -41,6 +41,11 @@ class ListProductViewsQuery
     private $categoryKeys;
 
     /**
+     * @var string[]
+     */
+    private $queryFields;
+
+    /**
      * @var array
      */
     private $attributeFilters;
@@ -50,6 +55,7 @@ class ListProductViewsQuery
         ?int $page = null,
         ?int $pageSize = null,
         ?string $query = null,
+        array $queryFields = [],
         array $categoryKeys = [],
         array $attributeFilters = []
     ) {
@@ -57,6 +63,7 @@ class ListProductViewsQuery
         $this->page = $page;
         $this->pageSize = $pageSize;
         $this->query = $query;
+        $this->queryFields = $queryFields;
         $this->categoryKeys = $categoryKeys;
         $this->attributeFilters = $attributeFilters;
     }
@@ -79,6 +86,11 @@ class ListProductViewsQuery
     public function getQuery(): ?string
     {
         return $this->query;
+    }
+
+    public function getQueryFields(): array
+    {
+        return $this->queryFields;
     }
 
     public function getCategoryKeys(): array

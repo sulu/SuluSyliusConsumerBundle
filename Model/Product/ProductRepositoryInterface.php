@@ -27,7 +27,8 @@ interface ProductRepositoryInterface
         int $pageSize,
         array $categoryKeys = [],
         array $attributeFilters = [],
-        string $query = null
+        string $query = null,
+        array $queryFields = []
     ): array;
 
     public function remove(ProductInterface $product): void;
