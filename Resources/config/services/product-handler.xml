@@ -86,6 +86,7 @@
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\ListProductViewsQueryHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>

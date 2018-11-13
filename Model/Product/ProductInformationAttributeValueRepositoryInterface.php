@@ -21,5 +21,7 @@ interface ProductInformationAttributeValueRepositoryInterface
         string $type
     ): ProductInformationAttributeValueInterface;
 
+    public function getTypeByCode(string $code): string;
+
     public function remove(ProductInformationAttributeValueInterface $productInformationAttributeValue): void;
 }

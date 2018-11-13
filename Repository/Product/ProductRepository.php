@@ -14,10 +14,12 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\CategoryBundle\Entity\Category;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -53,7 +55,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         int $page,
         int $pageSize,
         array $categoryKeys = [],
-        array $attributesFilter = [],
+        array $attributeFilters = [],
         string $query = null
     ): array {
         $dimensionIds = [];
@@ -75,27 +77,40 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
                 ->setParameter('categoryKeys', $categoryKeys);
         }
 
-        foreach ($attributesFilter as $attributeId => $attributeValue) {
-            $placeholderId = $attributeId . '_' . 'id';
-            $placeholderValue = $attributeId . '_' . 'value';
-
-            $queryBuilder
-                ->join('productInformation.attributeValues', 'attributeValue')
-                ->andWhere('attributeValue.code = :' . $placeholderId . ' AND attributeValue.textValue = :' . $placeholderValue)
-                ->setParameter($placeholderId, $attributeId)
-                ->setParameter($placeholderValue, $attributeValue);
-        }
-
         if ($query) {
             $queryBuilder
                 ->andWhere('LOWER(product.code) LIKE :query OR LOWER(productInformation.name) LIKE :query')
                 ->setParameter('query', '%' . strtolower($query) . '%');
         }
 
+        $this->addAttributesFilter($queryBuilder, $attributeFilters);
+
         $queryBuilder->setFirstResult(($page - 1) * $pageSize);
         $queryBuilder->setMaxResults($pageSize);
 
         return $queryBuilder->getQuery()->getResult();
+    }
+
+    protected function addAttributesFilter(QueryBuilder $queryBuilder, array $attributeFilters): void
+    {
+        foreach ($attributeFilters as $attributeFilter) {
+            $code = $attributeFilter['code'];
+            $value = $attributeFilter['value'];
+            $type = $attributeFilter['type'];
+            $propertyName = ProductInformationAttributeValue::getGetterByType($type);
+
+            $placeholderCode = $code . '_' . 'code';
+            $placeholderValue = $code . '_' . 'value';
+
+            $whereStatement = 'attributeValue.code = :' . $placeholderCode .
+                ' AND attributeValue.' . $propertyName . ' = :' . $placeholderValue;
+
+            $queryBuilder
+                ->join('productInformation.attributeValues', 'attributeValue')
+                ->andWhere($whereStatement)
+                ->setParameter($placeholderCode, $code)
+                ->setParameter($placeholderValue, $value);
+        }
     }
 
     public function remove(ProductInterface $product): void

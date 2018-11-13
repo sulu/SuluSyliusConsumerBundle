@@ -33,6 +33,23 @@ class ProductInformationAttributeValueRepository extends EntityRepository implem
         return $productInformationAttributeValue;
     }
 
+    public function getTypeByCode(string $code): string
+    {
+        $result = $this->createQueryBuilder('attribute_value')
+            ->select('attribute_value.type AS type')
+            ->where('attribute_value.code = :code')
+            ->setParameter('code', $code)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getArrayResult();
+
+        if (0 === count($result)) {
+            throw new \RuntimeException('No attribute value with code "' . $code . '" found');
+        }
+
+        return $result[0]['type'];
+    }
+
     public function remove(ProductInformationAttributeValueInterface $productInformationAttributeValue): void
     {
         $this->getEntityManager()->remove($productInformationAttributeValue);

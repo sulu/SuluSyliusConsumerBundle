@@ -11,7 +11,7 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Controller\Product;
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;

@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
@@ -32,6 +33,11 @@ class ListProductViewsQueryHandler
     private $productRepository;
 
     /**
+     * @var ProductInformationAttributeValueRepositoryInterface
+     */
+    private $productInformationAttributeValueRepository;
+
+    /**
      * @var ProductViewFactoryInterface
      */
     private $productViewFactory;
@@ -39,10 +45,12 @@ class ListProductViewsQueryHandler
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
         ProductRepositoryInterface $productRepository,
+        ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         ProductViewFactoryInterface $productViewFactory
     ) {
         $this->dimensionRepository = $dimensionRepository;
         $this->productRepository = $productRepository;
+        $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
         $this->productViewFactory = $productViewFactory;
     }
 
@@ -58,12 +66,21 @@ class ListProductViewsQueryHandler
             ]
         );
 
+        $attributeFilters = [];
+        foreach ($query->getAttributeFilters() as $attributeCode => $attributeValue) {
+            $attributeFilters[] = [
+                'code' => $attributeCode,
+                'value' => $attributeValue,
+                'type' => $this->productInformationAttributeValueRepository->getTypeByCode($attributeCode),
+            ];
+        }
+
         $products = $this->productRepository->search(
             [$liveDimension, $localizedLiveDimension],
             $query->getPage() ?: 1,
             $query->getPageSize() ?: 10,
             $query->getCategoryKeys(),
-            $query->getAttributesFilter(),
+            $attributeFilters,
             $query->getQuery()
         );
 

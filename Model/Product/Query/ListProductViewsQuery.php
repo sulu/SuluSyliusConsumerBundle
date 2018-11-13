@@ -43,7 +43,7 @@ class ListProductViewsQuery
     /**
      * @var array
      */
-    private $attributesFilter;
+    private $attributeFilters;
 
     public function __construct(
         string $locale,
@@ -51,14 +51,14 @@ class ListProductViewsQuery
         ?int $pageSize = null,
         ?string $query = null,
         array $categoryKeys = [],
-        array $attributesFilter = []
+        array $attributeFilters = []
     ) {
         $this->locale = $locale;
         $this->page = $page;
         $this->pageSize = $pageSize;
         $this->query = $query;
         $this->categoryKeys = $categoryKeys;
-        $this->attributesFilter = $attributesFilter;
+        $this->attributeFilters = $attributeFilters;
     }
 
     public function getLocale(): string
@@ -86,8 +86,8 @@ class ListProductViewsQuery
         return $this->categoryKeys;
     }
 
-    public function getAttributesFilter(): array
+    public function getAttributeFilters(): array
     {
-        return $this->attributesFilter;
+        return $this->attributeFilters;
     }
 }

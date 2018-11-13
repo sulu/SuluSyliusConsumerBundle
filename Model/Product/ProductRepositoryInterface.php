@@ -26,7 +26,7 @@ interface ProductRepositoryInterface
         int $page,
         int $pageSize,
         array $categoryKeys = [],
-        array $attributesFilter = [],
+        array $attributeFilters = [],
         string $query = null
     ): array;
 
