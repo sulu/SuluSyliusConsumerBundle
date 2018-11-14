@@ -102,7 +102,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
             $code = $attributeFilter['code'];
             $value = $attributeFilter['value'];
             $type = $attributeFilter['type'];
-            $propertyName = ProductInformationAttributeValue::getGetterByType($type);
+            $propertyName = ProductInformationAttributeValue::getPropertyNameByType($type);
 
             $placeholderCode = $code . '_' . 'code';
             $placeholderValue = $code . '_' . 'value';

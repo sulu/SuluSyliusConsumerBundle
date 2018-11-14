@@ -150,7 +150,6 @@ class PublishProductMessageHandler
             $attributeValue = $liveProductInformation->findAttributeValueByCode($draftAttributeValue->getCode());
             if (!$attributeValue) {
                 // create new one
-                // create new one
                 $attributeValue = $this->productInformationAttributeValueRepository->create(
                     $liveProductInformation,
                     $draftAttributeValue->getCode(),

@@ -70,11 +70,18 @@ class ListProductViewsQueryHandler
         );
 
         $attributeFilters = [];
+        $types = $this->productInformationAttributeValueRepository->getTypeByCodes(
+            array_keys($query->getAttributeFilters())
+        );
         foreach ($query->getAttributeFilters() as $attributeCode => $attributeValue) {
+            if (!in_array($attributeCode, $types)) {
+                throw new \RuntimeException('No type for attribute with code "' . $attributeCode . '" found');
+            }
+
             $attributeFilters[] = [
                 'code' => $attributeCode,
                 'value' => $attributeValue,
-                'type' => $this->productInformationAttributeValueRepository->getTypeByCode($attributeCode),
+                'type' => $types[$attributeCode],
             ];
         }
 

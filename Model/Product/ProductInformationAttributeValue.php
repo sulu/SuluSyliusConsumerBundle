@@ -82,7 +82,7 @@ class ProductInformationAttributeValue implements ProductInformationAttributeVal
         $this->type = $type;
     }
 
-    public static function getGetterByType(string $type): string
+    public static function getPropertyNameByType(string $type): string
     {
         return $type . 'Value';
     }
@@ -106,6 +106,6 @@ class ProductInformationAttributeValue implements ProductInformationAttributeVal
 
     public function getValue()
     {
-        return $this->{$this->getGetterByType($this->type)};
+        return $this->{$this->getPropertyNameByType($this->type)};
     }
 }
