@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use GuzzleHttp\ClientInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -272,22 +271,22 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeProductTaxons(SynchronizeProductMessage $message, ProductInterface $product): void
     {
-        $currentTaxonIds = array_map(function (CategoryInterface $productCategory) {
-            return $productCategory->getSyliusId();
-        }, $product->getProductCategories());
+        $currentCategories = $product->getProductCategories();
         $processedTaxonIds = [];
 
         // check for new added
         foreach ($message->getProductTaxons() as $productTaxonValueObject) {
-            if (!in_array($productTaxonValueObject->getTaxonId(), $currentTaxonIds)) {
-                $this->synchronizeProductTaxon($productTaxonValueObject, $product);
-            }
+            $this->synchronizeProductTaxon($productTaxonValueObject, $product);
             $processedTaxonIds[] = $productTaxonValueObject->getTaxonId();
         }
 
         // check for removed
-        foreach (array_diff($currentTaxonIds, $processedTaxonIds) as $taxonId) {
-            $product->removeProductCategoryBySyliusId($taxonId);
+        foreach ($currentCategories as $category) {
+            if (in_array($category->getSyliusId(), $processedTaxonIds)) {
+                continue;
+            }
+
+            $product->removeProductCategory($category);
         }
     }
 
@@ -295,6 +294,10 @@ class SynchronizeProductMessageHandler
         ProductTaxonValueObject $productTaxonValueObject,
         ProductInterface $product
     ): void {
+        if ($product->findProductCategoryBySyliusId($productTaxonValueObject->getTaxonId())) {
+            return;
+        }
+
         $category = $this->categoryRepository->findBySyliusId($productTaxonValueObject->getTaxonId());
         if (!$category) {
             // TODO: Write at least log entry
