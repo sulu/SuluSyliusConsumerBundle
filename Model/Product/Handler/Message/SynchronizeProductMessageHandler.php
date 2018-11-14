@@ -185,13 +185,15 @@ class SynchronizeProductMessageHandler
                 $translationValueObject,
                 $attributeValueValueObjects,
                 $product,
-                $dimensionDraft
+                $dimensionDraft,
+                true
             );
             $this->synchronizeTranslation(
                 $translationValueObject,
                 $attributeValueValueObjects,
                 $product,
-                $dimensionLive
+                $dimensionLive,
+                false
             );
         }
     }
@@ -203,11 +205,16 @@ class SynchronizeProductMessageHandler
         ProductTranslationValueObject $translationValueObject,
         array $attributeValueValueObjects,
         ProductInterface $product,
-        DimensionInterface $dimension
+        DimensionInterface $dimension,
+        bool $createNotExisting
     ): void {
         $productInformation = $this->productInformationRepository->findByProductId($product->getId(), $dimension);
-        if (!$productInformation) {
+        if (!$productInformation && $createNotExisting) {
             $productInformation = $this->productInformationRepository->create($product, $dimension);
+        }
+
+        if (!$productInformation) {
+            return;
         }
 
         $productInformation->setName($translationValueObject->getName());

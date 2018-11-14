@@ -56,11 +56,6 @@ interface ProductInformationInterface
     public function setCustomData(array $customData): self;
 
     /**
-     * @param ProductInformationAttributeValueInterface[] $attributeValues
-     */
-    public function setAttributeValues(array $attributeValues): self;
-
-    /**
      * @return ProductInformationAttributeValueInterface[]
      */
     public function getAttributeValues(): array;

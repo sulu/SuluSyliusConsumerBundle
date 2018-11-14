@@ -20,6 +20,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\PublishProductMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -38,14 +40,15 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $slugifier = $this->prophesize(SlugifierInterface::class);
 
         $handler = new PublishProductMessageHandler(
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
+            $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
             $slugifier->reveal()
@@ -108,7 +111,34 @@ class PublishProductMessageHandlerTest extends TestCase
             ->willReturn($liveProductInformation->reveal())
             ->shouldBeCalled();
 
+        $draftAttributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
+        $draftAttributeValue1->getCode()->willReturn('code1');
+        $draftAttributeValue1->getType()->willReturn('text');
+        $draftAttributeValue1->getValue()->willReturn('value1');
+
+        $draftAttributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
+        $draftAttributeValue2->getCode()->willReturn('code2');
+        $draftAttributeValue2->getType()->willReturn('text');
+        $draftAttributeValue2->getValue()->willReturn('value2');
+
+        $draftProductInformation->getAttributeValues()->willReturn(
+            [$draftAttributeValue1->reveal(), $draftAttributeValue2->reveal()]
+        );
+
+        $attributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue1->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1->reveal());
+        $productInformationAttributeValueRepository->create($liveProductInformation->reveal(), 'code1', 'text')
+            ->willReturn($attributeValue1->reveal());
+
+        $attributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue2->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2->reveal());
+        $productInformationAttributeValueRepository->create($liveProductInformation->reveal(), 'code2', 'text')
+            ->willReturn($attributeValue2->reveal());
+
+        $liveProductInformation->findAttributeValueByCode('code1')->willReturn(null);
+        $liveProductInformation->findAttributeValueByCode('code2')->willReturn(null);
         $liveProductInformation->mapPublishProperties($draftProductInformation->reveal())->shouldBeCalled();
+        $liveProductInformation->getAttributeValueCodes()->willReturn(['code1', 'code2']);
 
         $handler->__invoke($message->reveal());
     }
@@ -121,14 +151,15 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $slugifier = $this->prophesize(SlugifierInterface::class);
 
         $handler = new PublishProductMessageHandler(
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
+            $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
             $slugifier->reveal()
@@ -193,7 +224,32 @@ class PublishProductMessageHandlerTest extends TestCase
             ->willReturn($liveProductInformation->reveal())
             ->shouldBeCalled();
 
+        $draftAttributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
+        $draftAttributeValue1->getCode()->willReturn('code1');
+        $draftAttributeValue1->getValue()->willReturn('value1');
+
+        $draftAttributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
+        $draftAttributeValue2->getCode()->willReturn('code2');
+        $draftAttributeValue2->getType()->willReturn('text');
+        $draftAttributeValue2->getValue()->willReturn('value2');
+
+        $draftProductInformation->getAttributeValues()->willReturn(
+            [$draftAttributeValue1->reveal(), $draftAttributeValue2->reveal()]
+        );
+
+        $attributeValue1 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue1->setValue('value1')->shouldBeCalled()->willReturn($attributeValue1->reveal());
+
+        $attributeValue2 = $this->prophesize(ProductInformationAttributeValue::class);
+        $attributeValue2->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2->reveal());
+        $productInformationAttributeValueRepository->create($liveProductInformation->reveal(), 'code2', 'text')
+            ->willReturn($attributeValue2->reveal());
+
+        $liveProductInformation->findAttributeValueByCode('code1')->willReturn($attributeValue1->reveal());
+        $liveProductInformation->findAttributeValueByCode('code2')->willReturn(null);
         $liveProductInformation->mapPublishProperties($draftProductInformation->reveal())->shouldBeCalled();
+        $liveProductInformation->getAttributeValueCodes()->willReturn(['to_delete', 'code1', 'code2']);
+        $liveProductInformation->removeAttributeValueByCode('to_delete')->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }

@@ -37,6 +37,30 @@ trait ProductInformationTrait
         $productInformation = new ProductInformation($product, $dimension);
 
         $this->getEntityManager()->persist($productInformation);
+
+        $this->getEntityManager()->flush();
+
+        return $productInformation;
+    }
+
+    protected function createProductInformationLive(string $productId, string $locale): ProductInformation
+    {
+        $dimension = $this->findDimension(
+            [
+                DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
+            ]
+        );
+
+        $product = $this->getEntityManager()->find(Product::class, $productId);
+        if (!$product) {
+            throw new \RuntimeException('Product not fount');
+        }
+
+        $productInformation = new ProductInformation($product, $dimension);
+
+        $this->getEntityManager()->persist($productInformation);
+
         $this->getEntityManager()->flush();
 
         return $productInformation;
