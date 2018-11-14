@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 
-use GuzzleHttp\ClientInterface;
 use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\HttpCacheBundle\Cache\SuluHttpCache;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
