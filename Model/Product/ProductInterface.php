@@ -67,8 +67,6 @@ interface ProductInterface
 
     public function removeProductCategory(CategoryInterface $productCategory): ProductInterface;
 
-    public function removeProductCategoryBySyliusId(int $id): ProductInterface;
-
     /**
      * @return ProductMediaReference[]
      */

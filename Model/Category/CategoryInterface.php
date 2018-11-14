@@ -17,7 +17,7 @@ use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface as BaseCategoryInterface
 
 interface CategoryInterface extends BaseCategoryInterface
 {
-    public function getSyliusId(): int;
+    public function getSyliusId(): ?int;
 
-    public function setSyliusId(int $syliusId): self;
+    public function setSyliusId(?int $syliusId): self;
 }

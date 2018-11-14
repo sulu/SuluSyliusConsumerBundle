@@ -181,30 +181,26 @@ class Product implements ProductInterface
 
     public function findProductCategoryBySyliusId(int $syliusId): ?CategoryInterface
     {
-        if (!$this->productCategories->containsKey($syliusId)) {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('syliusId', $syliusId));
+        $result = $this->productCategories->matching($criteria);
+
+        if (0 === $result->count()) {
             return null;
         }
 
-        return $this->productCategories->get($syliusId);
+        return $result->first();
     }
 
     public function addProductCategory(CategoryInterface $productCategory): ProductInterface
     {
-        $this->productCategories->set($productCategory->getSyliusId(), $productCategory);
+        $this->productCategories->add($productCategory);
 
         return $this;
     }
 
     public function removeProductCategory(CategoryInterface $productCategory): ProductInterface
     {
-        $this->productCategories->remove($productCategory->getSyliusId());
-
-        return $this;
-    }
-
-    public function removeProductCategoryBySyliusId(int $syliusId): ProductInterface
-    {
-        $this->productCategories->remove($syliusId);
+        $this->productCategories->removeElement($productCategory);
 
         return $this;
     }

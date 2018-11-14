@@ -18,16 +18,16 @@ use Sulu\Bundle\CategoryBundle\Entity\Category as BaseCategory;
 class Category extends BaseCategory implements CategoryInterface
 {
     /**
-     * @var int
+     * @var null|int
      */
     private $syliusId;
 
-    public function getSyliusId(): int
+    public function getSyliusId(): ?int
     {
         return $this->syliusId;
     }
 
-    public function setSyliusId(int $syliusId): CategoryInterface
+    public function setSyliusId(?int $syliusId): CategoryInterface
     {
         $this->syliusId = $syliusId;
 

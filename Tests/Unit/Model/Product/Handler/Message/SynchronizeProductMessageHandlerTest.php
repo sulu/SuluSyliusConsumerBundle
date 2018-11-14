@@ -200,6 +200,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->addProductCategory($category2->reveal())->shouldBeCalled();
 
         $product->setCustomData(['product_custom_data' => '123'])->shouldBeCalled();
+        $product->findProductCategoryBySyliusId(34)->willReturn(null);
+        $product->findProductCategoryBySyliusId(56)->willReturn(null);
 
         $productInformationDraft->findAttributeValueByCode('av_1')->willReturn(null);
         $productInformationDraft->findAttributeValueByCode('av_2')->willReturn(null);
@@ -294,7 +296,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->getId()->willReturn('123-123-123');
         $product->getProductCategories()->willReturn([$category1->reveal()]);
         $product->setMainCategory(null)->shouldBeCalled();
-        $product->removeProductCategoryBySyliusId(99)->shouldBeCalled();
+        $product->removeProductCategory($category1->reveal())->shouldBeCalled();
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();
 
         $dimensionDraft = $this->prophesize(DimensionInterface::class);
