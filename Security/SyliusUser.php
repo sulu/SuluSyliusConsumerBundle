@@ -23,12 +23,12 @@ class SyliusUser implements UserInterface
     private $id;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $username;
 
     /**
-     * @var string
+     * @var array
      */
     private $roles;
 

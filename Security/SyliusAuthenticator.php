@@ -17,11 +17,11 @@ use Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class SyliusAuthenticator extends AbstractGuardAuthenticator
 {
@@ -51,10 +51,10 @@ class SyliusAuthenticator extends AbstractGuardAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return array(
+        return [
             'email' => $request->get('email'),
             'password' => $request->get('password'),
-        );
+        ];
     }
 
     public function getUser($credentials, UserProviderInterface $userProvider)
@@ -80,25 +80,25 @@ class SyliusAuthenticator extends AbstractGuardAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
     {
-        $data = array(
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
+        $data = [
+            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
 
             // or to translate this message
             // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
-        );
+        ];
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
     /**
-     * Called when authentication is needed, but it's not sent
+     * Called when authentication is needed, but it's not sent.
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        $data = array(
+        $data = [
             // you might translate this message
-            'message' => 'Authentication Required'
-        );
+            'message' => 'Authentication Required',
+        ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
