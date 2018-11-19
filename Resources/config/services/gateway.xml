@@ -6,5 +6,10 @@
         <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGateway">
+            <argument type="service" id="sulu_sylius_consumer.gateway_client" />
+            <argument type="service" id="security.token_storage"/>
+        </service>
     </services>
 </container>

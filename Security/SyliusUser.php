@@ -74,14 +74,14 @@ class SyliusUser implements SyliusUserInterface
         return $this->username;
     }
 
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
-
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
 
     public function eraseCredentials(): void
