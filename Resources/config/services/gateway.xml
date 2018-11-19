@@ -3,53 +3,8 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="sulu_sylius_consumer.oauth.guzzle.client" class="GuzzleHttp\Client" public="false">
-            <argument type="collection">
-                <argument key="base_uri">%sulu_sylius_consumer.sylius_base_url%</argument>
-            </argument>
-        </service>
-
-        <service id="sulu_sylius_consumer.oauth.grant_type" class="Sainsburys\Guzzle\Oauth2\GrantType\PasswordCredentials" public="false">
-            <argument type="service" id="sulu_sylius_consumer.oauth.guzzle.client"/>
-            <argument>%sulu_sylius_consumer.sylius_oauth_config%</argument>
-        </service>
-
-        <service id="sulu_sylius_consumer.oauth.refresh_token" class="Sainsburys\Guzzle\Oauth2\GrantType\RefreshToken" public="false">
-            <argument type="service" id="sulu_sylius_consumer.oauth.guzzle.client"/>
-            <argument>%sulu_sylius_consumer.sylius_oauth_config%</argument>
-        </service>
-
-        <service id="sulu_sylius_consumer.oauth.middleware" class="Sainsburys\Guzzle\Oauth2\Middleware\OAuthMiddleware" public="false">
-            <argument type="service" id="sulu_sylius_consumer.oauth.guzzle.client"/>
-            <argument type="service" id="sulu_sylius_consumer.oauth.grant_type"/>
-            <argument type="service" id="sulu_sylius_consumer.oauth.refresh_token"/>
-        </service>
-
-        <service id="sulu_sylius_consumer.guzzle.handler" class="GuzzleHttp\HandlerStack" public="false">
-            <factory class="GuzzleHttp\HandlerStack" method="create"/>
-            <call method="push">
-                <argument type="service">
-                    <service class="Closure">
-                        <factory service="sulu_sylius_consumer.oauth.middleware" method="onBefore"/>
-                    </service>
-                </argument>
-            </call>
-            <call method="push">
-                <argument type="service">
-                    <service class="Closure">
-                        <factory service="sulu_sylius_consumer.oauth.middleware" method="onFailure"/>
-                        <argument>5</argument>
-                    </service>
-                </argument>
-            </call>
-        </service>
-
-        <service id="sulu_sylius_consumer.gateway" class="GuzzleHttp\Client" public="true">
-            <argument type="collection">
-                <argument key="handler" type="service" id="sulu_sylius_consumer.guzzle.handler" />
-                <argument key="base_uri">%sulu_sylius_consumer.sylius_base_url%</argument>
-                <argument key="auth">oauth2</argument>
-            </argument>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway">
+            <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
     </services>
 </container>
