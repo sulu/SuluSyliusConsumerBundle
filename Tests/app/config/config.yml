@@ -51,5 +51,10 @@ services:
 
 sulu_sylius_consumer:
     sylius_base_url: 'http://sylius.localhost'
+    sylius_oauth_config:
+        username: api
+        password: api
+        client_id: demo_client
+        client_secret: secret_demo_client
     route_defaults_fallback:
         view: 'templates/products/default'

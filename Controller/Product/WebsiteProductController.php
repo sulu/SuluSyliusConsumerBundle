@@ -62,14 +62,6 @@ class WebsiteProductController implements ContainerAwareInterface
         return $result;
     }
 
-    protected function getSerializer(): SerializerInterface
-    {
-        /** @var SerializerInterface $serializer */
-        $serializer = $this->get('jms_serializer');
-
-        return $serializer;
-    }
-
     protected function getAttributeResolver(): TemplateAttributeResolverInterface
     {
         /** @var TemplateAttributeResolverInterface $resolver */
@@ -94,5 +86,13 @@ class WebsiteProductController implements ContainerAwareInterface
         }
 
         return $response;
+    }
+
+    protected function getSerializer(): SerializerInterface
+    {
+        /** @var SerializerInterface $serializer */
+        $serializer = $this->get('jms_serializer');
+
+        return $serializer;
     }
 }
