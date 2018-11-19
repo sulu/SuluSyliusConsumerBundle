@@ -13,9 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
-use Symfony\Component\Security\Core\User\UserInterface;
-
-class SyliusUser implements UserInterface
+class SyliusUser implements SyliusUserInterface
 {
     /**
      * @var int
@@ -66,33 +64,38 @@ class SyliusUser implements UserInterface
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function getRoles()
+    public function getRoles(): array
     {
         return $this->roles;
     }
 
-    public function eraseCredentials()
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials(): void
     {
         return;
     }
 
-    public function getPassword()
+    public function getPassword(): ?string
     {
-        return '';
+        return null;
     }
 
-    public function getSalt()
+    public function getSalt(): ?string
     {
-        return '';
+        return null;
     }
 }

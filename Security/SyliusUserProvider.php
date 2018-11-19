@@ -13,18 +13,18 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
-use Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class SyliusUserProvider implements UserProviderInterface
 {
     /**
-     * @var AuthenticationGateway
+     * @var AuthenticationGatewayInterface
      */
     private $authenticationGateway;
 
-    public function __construct(AuthenticationGateway $authenticationGateway)
+    public function __construct(AuthenticationGatewayInterface $authenticationGateway)
     {
         $this->authenticationGateway = $authenticationGateway;
     }
@@ -41,6 +41,6 @@ class SyliusUserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return SyliusUser::class === $class || is_subclass_of($class, SyliusUser::class);
+        return is_subclass_of($class, SyliusUserInterface::class);
     }
 }

@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
-use Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,20 +26,15 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 class SyliusAuthenticator extends AbstractGuardAuthenticator
 {
     /**
-     * @var AuthenticationGateway
+     * @var AuthenticationGatewayInterface
      */
     private $authenticationGateway;
 
-    public function __construct(AuthenticationGateway $authenticationGateway)
+    public function __construct(AuthenticationGatewayInterface $authenticationGateway)
     {
         $this->authenticationGateway = $authenticationGateway;
     }
 
-    /**
-     * Called on every request to decide if this authenticator should be
-     * used for the request. Returning false will cause this authenticator
-     * to be skipped.
-     */
     public function supports(Request $request)
     {
         if (!$request->get('email') || !$request->get('password')) {
@@ -82,21 +77,14 @@ class SyliusAuthenticator extends AbstractGuardAuthenticator
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];
 
         return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * Called when authentication is needed, but it's not sent.
-     */
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $data = [
-            // you might translate this message
             'message' => 'Authentication Required',
         ];
 

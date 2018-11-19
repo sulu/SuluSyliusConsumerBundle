@@ -3,7 +3,7 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway">
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
     </services>

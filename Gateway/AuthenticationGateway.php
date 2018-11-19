@@ -15,8 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUser;
+use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUserInterface;
 
-class AuthenticationGateway
+class AuthenticationGateway implements AuthenticationGatewayInterface
 {
     /**
      * @var ClientInterface
@@ -28,7 +29,7 @@ class AuthenticationGateway
         $this->gatewayClient = $gatewayClient;
     }
 
-    public function getUser(string $email, string $password): ?SyliusUser
+    public function getUser(string $email, string $password): ?SyliusUserInterface
     {
         $response = $this->gatewayClient->request(
             'GET',
