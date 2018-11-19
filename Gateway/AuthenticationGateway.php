@@ -38,18 +38,18 @@ class AuthenticationGateway
             ]
         );
 
-        $data = json_encode($response->getBody()->getContents());
+        $data = json_decode($response->getBody()->getContents(), true);
         if (!$data) {
             return null;
         }
 
         return new SyliusUser(
             $data['id'],
-            $data['username'],
+            array_key_exists('username', $data) ? $data['username'] : null,
             $data['roles'],
             $data['email'],
             $data['firstName'],
-            $data['lastName'],
+            $data['lastName']
         );
     }
 }

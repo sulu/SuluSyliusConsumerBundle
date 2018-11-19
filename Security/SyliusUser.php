@@ -57,6 +57,10 @@ class SyliusUser implements UserInterface
     ) {
         $this->id = $id;
         $this->username = $username;
+        $this->roles = $roles;
+        $this->email = $email;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
     }
 
     /**
@@ -74,7 +78,7 @@ class SyliusUser implements UserInterface
 
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        return $this->roles;
     }
 
     public function eraseCredentials()

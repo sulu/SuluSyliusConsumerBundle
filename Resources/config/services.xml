@@ -10,6 +10,7 @@
         <import resource="services/product-handler.xml"/>
         <import resource="services/repository.xml"/>
         <import resource="services/routable-handler.xml"/>
+        <import resource="services/security.xml"/>
     </imports>
 
     <services>
