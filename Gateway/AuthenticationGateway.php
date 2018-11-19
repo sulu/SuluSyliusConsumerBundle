@@ -19,6 +19,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUserInterface;
 
 class AuthenticationGateway implements AuthenticationGatewayInterface
 {
+    const URI = '/api/v1/authenticate';
+
     /**
      * @var ClientInterface
      */
@@ -33,7 +35,7 @@ class AuthenticationGateway implements AuthenticationGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'GET',
-            '/api/sulu-user',
+            self::URI,
             [
                 'query' => ['email' => $email, 'password' => $password],
             ]
