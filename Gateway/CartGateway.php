@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
 
-class CartGateway
+class CartGateway implements CartGatewayInterface
 {
     const URI = '/api/v1/carts';
 

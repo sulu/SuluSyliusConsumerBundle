@@ -13,54 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGateway;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\AddItemToCartMessage;
 
 class AddItemToCartMessageHandler
 {
     /**
-     * @var CartGateway
+     * @var CartGatewayInterface
      */
     private $cartGateway;
 
-    /**
-     * @var string
-     */
-    private $defaultChannel;
-
-    public function __construct(CartGateway $cartGateway, string $defaultChannel)
+    public function __construct(CartGatewayInterface $cartGateway)
     {
         $this->cartGateway = $cartGateway;
-        $this->defaultChannel = $defaultChannel;
     }
 
     public function __invoke(AddItemToCartMessage $message): array
     {
-        $cartId = $this->getCartId($message);
-        $item = $this->cartGateway->addItem($cartId, $message->getVariantCode(), $message->getQuantity());
+        $item = $this->cartGateway->addItem($message->getCartId(), $message->getVariantCode(), $message->getQuantity());
 
         return $item;
-    }
-
-    private function getCartId(AddItemToCartMessage $message): int
-    {
-        $cartId = $message->getCartId();
-        if ($cartId) {
-            return $cartId;
-        }
-
-        $syliusUser = $message->getSyliusUser();
-        if (!$syliusUser) {
-            // TODO: Anonymous Cart
-            throw new \Exception('not implemented');
-        }
-
-        $createdCart = $this->cartGateway->create(
-            $syliusUser->getEmail(),
-            $this->defaultChannel,
-            $message->getLocale()
-        );
-
-        return $createdCart['id'];
     }
 }

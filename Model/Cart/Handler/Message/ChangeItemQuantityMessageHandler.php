@@ -13,25 +13,19 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGateway;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\ChangeItemQuantityMessage;
 
 class ChangeItemQuantityMessageHandler
 {
     /**
-     * @var CartGateway
+     * @var CartGatewayInterface
      */
     private $cartGateway;
 
-    /**
-     * @var string
-     */
-    private $defaultChannel;
-
-    public function __construct(CartGateway $cartGateway, string $defaultChannel)
+    public function __construct(CartGatewayInterface $cartGateway)
     {
         $this->cartGateway = $cartGateway;
-        $this->defaultChannel = $defaultChannel;
     }
 
     public function __invoke(ChangeItemQuantityMessage $message): array

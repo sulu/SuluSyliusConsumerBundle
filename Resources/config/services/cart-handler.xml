@@ -3,14 +3,27 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message\CreateCartMessageHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface"/>
+            <argument>%sulu_sylius_consumer.sylius_default_channel%</argument>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message\AddItemToCartMessageHandler">
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGateway"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message\ChangeItemQuantityMessageHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message\RemoveItemFromCartMessageHandler">
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGateway"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>

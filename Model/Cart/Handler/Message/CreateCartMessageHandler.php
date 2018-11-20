@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\RemoveItemFromCartMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\CreateCartMessage;
 
-class RemoveItemFromCartMessageHandler
+class CreateCartMessageHandler
 {
     /**
      * @var CartGatewayInterface
@@ -34,8 +34,20 @@ class RemoveItemFromCartMessageHandler
         $this->defaultChannel = $defaultChannel;
     }
 
-    public function __invoke(RemoveItemFromCartMessage $message): array
+    public function __invoke(CreateCartMessage $message): array
     {
-        return $this->cartGateway->deleteItem($message->getCartId(), $message->getCartItemId());
+        $syliusUser = $message->getSyliusUser();
+        if (!$syliusUser) {
+            // TODO: Anonymous Cart
+            throw new \Exception('not implemented');
+        }
+
+        $createdCart = $this->cartGateway->create(
+            $syliusUser->getEmail(),
+            $message->getChannel() ?: $this->defaultChannel,
+            $message->getLocale()
+        );
+
+        return $createdCart;
     }
 }
