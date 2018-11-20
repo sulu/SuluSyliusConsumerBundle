@@ -11,12 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\ChangeItemQuantityMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Query\FindCartMessage;
 
-class ChangeItemQuantityMessageHandler
+class FindCartMessageHandler
 {
     /**
      * @var CartGatewayInterface
@@ -28,12 +28,8 @@ class ChangeItemQuantityMessageHandler
         $this->cartGateway = $cartGateway;
     }
 
-    public function __invoke(ChangeItemQuantityMessage $message): array
+    public function __invoke(FindCartMessage $message): array
     {
-        return $this->cartGateway->modifyItem(
-            $message->getCartId(),
-            $message->getCartItemId(),
-            $message->getQuantity()
-        );
+        return $this->cartGateway->findById($message->getCartId());
     }
 }

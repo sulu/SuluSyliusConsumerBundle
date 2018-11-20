@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\ChangeItemQuantityMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message\AddItemToCartMessage;
 
-class ChangeItemQuantityMessageHandler
+class RemoveCartMessageHandler
 {
     /**
      * @var CartGatewayInterface
@@ -28,12 +28,8 @@ class ChangeItemQuantityMessageHandler
         $this->cartGateway = $cartGateway;
     }
 
-    public function __invoke(ChangeItemQuantityMessage $message): array
+    public function __invoke(AddItemToCartMessage $message): array
     {
-        return $this->cartGateway->modifyItem(
-            $message->getCartId(),
-            $message->getCartItemId(),
-            $message->getQuantity()
-        );
+        return $this->cartGateway->remove($message->getCartId());
     }
 }

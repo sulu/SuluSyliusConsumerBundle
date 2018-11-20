@@ -29,7 +29,7 @@ class CartGateway implements CartGatewayInterface
         $this->gatewayClient = $gatewayClient;
     }
 
-    public function get(int $id): array
+    public function findById(int $id): array
     {
         $response = $this->gatewayClient->request(
             'GET',
@@ -37,6 +37,28 @@ class CartGateway implements CartGatewayInterface
         );
 
         return json_decode($response->getBody()->getContents(), true);
+    }
+
+    public function findByCustomerEmail(string $customerEmail): array
+    {
+        $response = $this->gatewayClient->request(
+            'GET',
+            self::URI,
+            [
+                'query' => [
+                    'criteria[customer][type]' => 'equal',
+                    'criteria[customer][value]' => $customerEmail,
+                ],
+            ]
+        );
+
+        $data = json_decode($response->getBody()->getContents(), true);
+
+        if (!$data['_embedded']['items'] || count($data['_embedded']['items']) < 1) {
+            return [];
+        }
+
+        return $data['_embedded']['items'][0];
     }
 
     public function create(string $customer, string $channel, string $locale): array
@@ -54,7 +76,7 @@ class CartGateway implements CartGatewayInterface
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function delete(int $id): array
+    public function remove(int $id): array
     {
         $response = $this->gatewayClient->request('DELETE', self::URI . '/' . $id);
 
@@ -75,7 +97,7 @@ class CartGateway implements CartGatewayInterface
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function updateItem(int $cartId, int $cartItemId, int $quantity): array
+    public function modifyItem(int $cartId, int $cartItemId, int $quantity): array
     {
         $response = $this->gatewayClient->request(
             'PUT',
@@ -88,7 +110,7 @@ class CartGateway implements CartGatewayInterface
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function deleteItem(int $cartId, int $cartItemId): array
+    public function removeItem(int $cartId, int $cartItemId): array
     {
         $response = $this->gatewayClient->request(
             'DELETE',

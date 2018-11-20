@@ -42,12 +42,10 @@ class CreateCartMessageHandler
             throw new \Exception('not implemented');
         }
 
-        $createdCart = $this->cartGateway->create(
+        return $this->cartGateway->create(
             $syliusUser->getEmail(),
             $message->getChannel() ?: $this->defaultChannel,
             $message->getLocale()
         );
-
-        return $createdCart;
     }
 }

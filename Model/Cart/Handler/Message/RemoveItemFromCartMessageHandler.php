@@ -23,19 +23,13 @@ class RemoveItemFromCartMessageHandler
      */
     private $cartGateway;
 
-    /**
-     * @var string
-     */
-    private $defaultChannel;
-
-    public function __construct(CartGatewayInterface $cartGateway, string $defaultChannel)
+    public function __construct(CartGatewayInterface $cartGateway)
     {
         $this->cartGateway = $cartGateway;
-        $this->defaultChannel = $defaultChannel;
     }
 
     public function __invoke(RemoveItemFromCartMessage $message): array
     {
-        return $this->cartGateway->deleteItem($message->getCartId(), $message->getCartItemId());
+        return $this->cartGateway->removeItem($message->getCartId(), $message->getCartItemId());
     }
 }
