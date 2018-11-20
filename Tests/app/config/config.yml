@@ -51,6 +51,7 @@ services:
 
 sulu_sylius_consumer:
     sylius_base_url: 'http://sylius.localhost'
+    sylius_default_channel: 'default_channel'
     sylius_oauth_config:
         username: api
         password: api
