@@ -37,22 +37,27 @@ class AuthenticationGateway implements AuthenticationGatewayInterface
             'GET',
             self::URI,
             [
-                'query' => ['email' => $email, 'password' => $password],
+                'query' => [
+                    'email' => $email,
+                    'password' => $password,
+                ],
             ]
         );
 
         $data = json_decode($response->getBody()->getContents(), true);
-        if (!$data) {
+        if ($data['exception']) {
             return null;
         }
 
+        $userData = $data['user'];
+
         return new SyliusUser(
-            $data['id'],
-            array_key_exists('username', $data) ? $data['username'] : null,
-            $data['roles'],
-            $data['email'],
-            $data['firstName'],
-            $data['lastName']
+            $userData['id'],
+            array_key_exists('username', $userData) ? $userData['username'] : null,
+            $userData['roles'],
+            $userData['email'],
+            $userData['firstName'],
+            $userData['lastName']
         );
     }
 }
