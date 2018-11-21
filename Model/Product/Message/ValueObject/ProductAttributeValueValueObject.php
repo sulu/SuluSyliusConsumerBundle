@@ -41,7 +41,7 @@ class ProductAttributeValueValueObject
 
     public function getAttributeValue()
     {
-        return $this->getValue('value');
+        return $this->getValueWithDefault('value', null);
     }
 
     public function getLocaleCode(): string
