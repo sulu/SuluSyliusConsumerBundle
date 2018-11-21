@@ -20,9 +20,8 @@ class RemoveCartMessage
      */
     private $cartId;
 
-    public function __construct(
-        int $cartId
-    ) {
+    public function __construct(int $cartId)
+    {
         $this->cartId = $cartId;
     }
 

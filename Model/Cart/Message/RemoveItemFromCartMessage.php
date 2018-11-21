@@ -25,10 +25,8 @@ class RemoveItemFromCartMessage
      */
     private $cartItemId;
 
-    public function __construct(
-        int $cartId,
-        int $cartItemId
-    ) {
+    public function __construct(int $cartId, int $cartItemId)
+    {
         $this->cartId = $cartId;
         $this->cartItemId = $cartItemId;
     }
