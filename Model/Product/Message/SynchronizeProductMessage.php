@@ -67,12 +67,12 @@ class SynchronizeProductMessage
 
     public function getMainTaxonId(): ?int
     {
-        $mainTaxon = $this->getArrayValueWithDefault('mainTaxon');
-        if (!$mainTaxon) {
+        $mainTaxonId = $this->getIntValueWithDefault('mainTaxonId', 0);
+        if (0 === $mainTaxonId) {
             return null;
         }
 
-        return $mainTaxon['id'];
+        return $mainTaxonId;
     }
 
     /**
