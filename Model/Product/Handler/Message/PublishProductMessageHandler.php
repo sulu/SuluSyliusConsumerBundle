@@ -105,7 +105,13 @@ class PublishProductMessageHandler
         );
 
         foreach ($product->getVariants() as $variant) {
-            $this->messageBus->dispatch(new PublishProductVariantMessage($variant->getId(), $message->getLocale()));
+            $this->messageBus->dispatch(
+                new PublishProductVariantMessage(
+                    $variant->getId(),
+                    $message->getLocale(),
+                    false
+                )
+            );
         }
 
         return $product;

@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductVariantInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductVariantNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductVariantMessage;
@@ -58,15 +57,15 @@ class PublishProductVariantMessageHandler
         }
 
         try {
-            $this->publishInformation($productVariant, $message->getLocale());
-        } catch (ProductInformationNotFoundException $exception) {
+            $this->publishInformation($productVariant, $message->getLocale(), $message->getMandatory());
+        } catch (ProductVariantInformationNotFoundException $exception) {
             throw new ProductVariantNotFoundException($message->getId(), 0, $exception);
         }
 
         return $productVariant;
     }
 
-    private function publishInformation(ProductVariantInterface $productVariant, string $locale): void
+    private function publishInformation(ProductVariantInterface $productVariant, string $locale, bool $mandatory): void
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -86,6 +85,10 @@ class PublishProductVariantMessageHandler
             $draftDimension
         );
         if (!$draftProductVariantInformation) {
+            if (!$mandatory) {
+                return;
+            }
+
             throw new ProductVariantInformationNotFoundException($productVariant->getId());
         }
 
