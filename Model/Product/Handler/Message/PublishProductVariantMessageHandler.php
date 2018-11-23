@@ -58,7 +58,7 @@ class PublishProductVariantMessageHandler
         }
 
         try {
-            $this->publishInformation($productVariant, $message->getLocale());
+            $this->publishInformation($productVariant, $message->getLocale(), $message->getMandatory());
         } catch (ProductInformationNotFoundException $exception) {
             throw new ProductVariantNotFoundException($message->getId(), 0, $exception);
         }
@@ -66,7 +66,7 @@ class PublishProductVariantMessageHandler
         return $productVariant;
     }
 
-    private function publishInformation(ProductVariantInterface $productVariant, string $locale): void
+    private function publishInformation(ProductVariantInterface $productVariant, string $locale, bool $mandatory): void
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -86,6 +86,10 @@ class PublishProductVariantMessageHandler
             $draftDimension
         );
         if (!$draftProductVariantInformation) {
+            if (!$mandatory) {
+                return;
+            }
+
             throw new ProductVariantInformationNotFoundException($productVariant->getId());
         }
 

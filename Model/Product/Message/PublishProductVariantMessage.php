@@ -25,10 +25,16 @@ class PublishProductVariantMessage
      */
     private $locale;
 
-    public function __construct(string $id, string $locale)
+    /**
+     * @var bool
+     */
+    private $mandatory;
+
+    public function __construct(string $id, string $locale, bool $mandatory = true)
     {
         $this->id = $id;
         $this->locale = $locale;
+        $this->mandatory = $mandatory;
     }
 
     public function getId(): string
@@ -39,5 +45,10 @@ class PublishProductVariantMessage
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    public function getMandatory(): bool
+    {
+        return $this->mandatory;
     }
 }
