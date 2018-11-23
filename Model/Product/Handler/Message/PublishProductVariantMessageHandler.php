@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductVariantInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductVariantNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductVariantMessage;
