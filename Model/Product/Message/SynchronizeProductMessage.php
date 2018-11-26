@@ -39,6 +39,11 @@ class SynchronizeProductMessage
         return $this->code;
     }
 
+    public function getEnabled(): bool
+    {
+        return $this->getBoolValue('enabled');
+    }
+
     /**
      * @return ProductTranslationValueObject[]
      */
@@ -67,12 +72,7 @@ class SynchronizeProductMessage
 
     public function getMainTaxonId(): ?int
     {
-        $mainTaxonId = $this->getIntValueWithDefault('mainTaxonId', 0);
-        if (0 === $mainTaxonId) {
-            return null;
-        }
-
-        return $mainTaxonId;
+        return $this->getNullableIntValue('mainTaxonId');
     }
 
     /**

@@ -153,6 +153,7 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeProduct(SynchronizeProductMessage $message, ProductInterface $product): void
     {
+        $product->setEnabled($message->getEnabled());
         $product->setCustomData($message->getCustomData());
         $this->synchronizeTranslations($message, $product);
         $this->synchronizeMainTaxon($message, $product);

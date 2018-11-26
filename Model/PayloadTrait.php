@@ -75,12 +75,21 @@ trait PayloadTrait
         return $value;
     }
 
+    protected function getNullableStringValue(string $name): ?string
+    {
+        $value = $this->getValue($name);
+        if (null === $value) {
+            return null;
+        }
+
+        Assert::string($value);
+
+        return $value;
+    }
+
     protected function getStringValueWithDefault(string $name, string $default = ''): string
     {
         $value = $this->getValueWithDefault($name, $default);
-        if (null === $value) {
-            return $default;
-        }
 
         Assert::string($value);
 
@@ -93,6 +102,18 @@ trait PayloadTrait
 
         if (is_int($value)) {
             $value = (float) $value;
+        }
+
+        Assert::float($value);
+
+        return $value;
+    }
+
+    protected function getNullableFloatValue(string $name): ?float
+    {
+        $value = $this->getValue($name);
+        if (null === $value) {
+            return null;
         }
 
         Assert::float($value);
@@ -118,6 +139,18 @@ trait PayloadTrait
         return $value;
     }
 
+    protected function getNullableIntValue(string $name): ?int
+    {
+        $value = $this->getValue($name);
+        if (null === $value) {
+            return null;
+        }
+
+        Assert::integer($value);
+
+        return $value;
+    }
+
     protected function getIntValueWithDefault(string $name, int $default = 0): int
     {
         $value = $this->getValueWithDefault($name, $default);
@@ -130,6 +163,18 @@ trait PayloadTrait
     protected function getArrayValue(string $name): array
     {
         $value = $this->getValue($name);
+
+        Assert::isArray($value);
+
+        return $value;
+    }
+
+    protected function getNullableArrayValue(string $name): ?array
+    {
+        $value = $this->getValue($name);
+        if (null === $value) {
+            return null;
+        }
 
         Assert::isArray($value);
 

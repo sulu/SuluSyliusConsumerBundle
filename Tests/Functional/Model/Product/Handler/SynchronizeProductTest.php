@@ -51,6 +51,6 @@ class SynchronizeProductTest extends SuluTestCase
         }
 
         $this->assertEquals($product->getId(), $result->getProductId());
-        $this->assertEquals('T-Shirt "nihil"', $result->getName());
+        $this->assertEquals('SB verpackt zu je 1', $result->getName());
     }
 }
