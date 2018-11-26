@@ -78,6 +78,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
+        $message->getEnabled()->willReturn(true);
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
         $message->getImages()->willReturn([$productImageValueObject->reveal()]);
         $message->getMainTaxonId()->willReturn(4);
@@ -119,6 +120,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product->getId()->willReturn('123-123-123');
         $product->getProductCategories()->willReturn([]);
         $product->getMediaReferences()->willReturn([]);
+        $product->setEnabled(true)->shouldBeCalled();
 
         $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
         $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
@@ -254,6 +256,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(SynchronizeProductMessage::class);
         $message->getCode()->willReturn('product-1');
+        $message->getEnabled()->willReturn(true);
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
         $message->getImages()->willReturn([$productImageValueObject->reveal()]);
         $message->getMainTaxonId()->willReturn(null);
@@ -295,6 +298,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
         $product->getProductCategories()->willReturn([$category1->reveal()]);
+        $product->setEnabled(true)->shouldBeCalled();
         $product->setMainCategory(null)->shouldBeCalled();
         $product->removeProductCategory($category1->reveal())->shouldBeCalled();
         $productRepository->findByCode('product-1')->willReturn($product->reveal())->shouldBeCalled();

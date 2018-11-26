@@ -31,32 +31,62 @@ class ProductTranslationValueObject
 
     public function getName(): string
     {
-        return $this->getStringValueWithDefault('name', '');
+        $value = $this->getNullableStringValue('name');
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getSlug(): string
     {
-        return $this->getStringValueWithDefault('slug', '');
+        $value = $this->getNullableStringValue('slug');
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getDescription(): string
     {
-        return $this->getStringValueWithDefault('description', '');
+        $value = $this->getNullableStringValue('description');
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getMetaKeywords(): string
     {
-        return $this->getStringValueWithDefault('metaKeywords', '');
+        $value = $this->getNullableStringValue('metaKeywords');
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getMetaDescription(): string
     {
-        return $this->getStringValueWithDefault('metaDescription', '');
+        $value = $this->getNullableStringValue('metaDescription');
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getShortDescription(): string
     {
-        return $this->getStringValueWithDefault('shortDescription', '');
+        $value = $this->getNullableStringValue('shortDescription');
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
     }
 
     public function getCustomData(): array

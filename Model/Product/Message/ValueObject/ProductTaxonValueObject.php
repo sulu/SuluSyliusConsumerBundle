@@ -31,6 +31,6 @@ class ProductTaxonValueObject
 
     public function getTaxonId(): int
     {
-        return $this->getArrayValue('taxon')['id'];
+        return $this->getIntValue('taxonId');
     }
 }
