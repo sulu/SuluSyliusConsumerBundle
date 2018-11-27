@@ -94,8 +94,11 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         $queryBuilder->addSelect('categories');
         $queryBuilder->addSelect('mediaReferences');
         $queryBuilder->addSelect('attributeValues');
+        $queryBuilder->leftJoin('product.productInformations', 'productInformation');
         $queryBuilder->leftJoin('product.mediaReferences', 'mediaReferences');
         $queryBuilder->leftJoin('productInformation.attributeValues', 'attributeValues');
+        $queryBuilder->leftJoin('product.mainCategory', 'mainCategory');
+        $queryBuilder->leftJoin('product.productCategories', 'categories');
 
         $queryBuilder->setFirstResult(($page - 1) * $limit);
         $queryBuilder->setMaxResults($limit);
@@ -159,7 +162,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
                 ' AND attributeValue.' . $propertyName . ' = :' . $placeholderValue;
 
             $queryBuilder
-                ->join('productInformation.attributeValues', 'attributeValue')
+                ->leftJoin('productInformation.attributeValues', 'attributeValue')
                 ->andWhere($whereStatement)
                 ->setParameter($placeholderCode, $code)
                 ->setParameter($placeholderValue, $value);
