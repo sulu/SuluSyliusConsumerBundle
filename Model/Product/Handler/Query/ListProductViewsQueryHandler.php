@@ -17,12 +17,13 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
 class ListProductViewsQueryHandler
 {
-    const DEFAULT_PAGE_SIZE = 10;
+    const DEFAULT_LIMIT = 10;
     const DEFAULT_QUERY_FIELDS = ['product.code', 'productInformation.name'];
 
     /**
@@ -57,7 +58,7 @@ class ListProductViewsQueryHandler
         $this->productViewFactory = $productViewFactory;
     }
 
-    public function __invoke(ListProductViewsQuery $query): array
+    public function __invoke(ListProductViewsQuery $query): ProductViewList
     {
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
@@ -69,6 +70,44 @@ class ListProductViewsQueryHandler
             ]
         );
 
+        $page = $query->getPage() ?: 1;
+        $limit = $query->getLimit() ?: self::DEFAULT_LIMIT;
+        $queryFields = $query->getQueryFields() ?: self::DEFAULT_QUERY_FIELDS;
+        $attributeFilters = $this->getAttributeFilters($query);
+
+        $total = $this->productRepository->searchCount(
+            [$liveDimension, $localizedLiveDimension],
+            $query->getCategoryKeys(),
+            $attributeFilters,
+            $query->getQuery(),
+            $queryFields
+        );
+
+        $products = $this->productRepository->search(
+            [$liveDimension, $localizedLiveDimension],
+            $page,
+            $limit,
+            $query->getCategoryKeys(),
+            $attributeFilters,
+            $query->getQuery(),
+            $queryFields
+        );
+
+        $productViews = [];
+        foreach ($products as $product) {
+            $productViews[] = $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+        }
+
+        return new ProductViewList(
+            $page,
+            $limit,
+            $total,
+            $productViews
+        );
+    }
+
+    private function getAttributeFilters(ListProductViewsQuery $query): array
+    {
         $attributeFilters = [];
         $types = $this->productInformationAttributeValueRepository->getTypeByCodes(
             array_keys($query->getAttributeFilters())
@@ -85,21 +124,6 @@ class ListProductViewsQueryHandler
             ];
         }
 
-        $products = $this->productRepository->search(
-            [$liveDimension, $localizedLiveDimension],
-            $query->getPage() ?: 1,
-            $query->getPageSize() ?: self::DEFAULT_PAGE_SIZE,
-            $query->getCategoryKeys(),
-            $attributeFilters,
-            $query->getQuery(),
-            $query->getQueryFields() ?: self::DEFAULT_QUERY_FIELDS
-        );
-
-        $productViews = [];
-        foreach ($products as $product) {
-            $productViews[] = $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
-        }
-
-        return $productViews;
+        return $attributeFilters;
     }
 }

@@ -87,10 +87,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
         foreach ($dimensions as $dimension) {
             if (null === $productInformation) {
-                $productInformation = $this->productInformationRepository->findByProductId(
-                    $product->getId(),
-                    $dimension
-                );
+                $productInformation = $product->findProductInformationByDimension($dimension);
             }
 
             if (null === $routableResource) {
