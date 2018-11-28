@@ -36,4 +36,6 @@ interface ProductViewInterface
     public function getContent(): ?ContentViewInterface;
 
     public function getRoutableResource(): RoutableResourceInterface;
+
+    public function getRoutePath(): string;
 }

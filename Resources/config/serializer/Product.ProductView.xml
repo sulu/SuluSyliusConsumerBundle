@@ -3,5 +3,6 @@
     <class name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView" exclusion-policy="ALL">
         <property name="id" expose="true" />
         <property name="locale" expose="true" />
+        <virtual-property method="getRoutePath" serialized-name="routePath" expose="true"/>
     </class>
 </serializer>
