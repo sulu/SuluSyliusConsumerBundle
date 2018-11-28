@@ -94,11 +94,8 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         $queryBuilder->addSelect('categories');
         $queryBuilder->addSelect('mediaReferences');
         $queryBuilder->addSelect('attributeValues');
-        $queryBuilder->leftJoin('product.productInformations', 'productInformation');
+
         $queryBuilder->leftJoin('product.mediaReferences', 'mediaReferences');
-        $queryBuilder->leftJoin('productInformation.attributeValues', 'attributeValues');
-        $queryBuilder->leftJoin('product.mainCategory', 'mainCategory');
-        $queryBuilder->leftJoin('product.productCategories', 'categories');
 
         $queryBuilder->setFirstResult(($page - 1) * $limit);
         $queryBuilder->setMaxResults($limit);
@@ -123,10 +120,12 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
             ->where('IDENTITY(productInformation.dimension) IN(:dimensionIds)')
             ->setParameter('dimensionIds', $dimensionIds);
 
+        $queryBuilder->leftJoin('productInformation.attributeValues', 'attributeValues');
+        $queryBuilder->leftJoin('product.mainCategory', 'mainCategory');
+        $queryBuilder->leftJoin('product.productCategories', 'categories');
+
         if ($categoryKeys) {
             $queryBuilder
-                ->leftJoin('product.mainCategory', 'mainCategory')
-                ->leftJoin('product.productCategories', 'categories')
                 ->andWhere('mainCategory.key IN(:categoryKeys) OR categories.key IN(:categoryKeys)')
                 ->setParameter('categoryKeys', $categoryKeys);
         }
@@ -162,7 +161,6 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
                 ' AND attributeValue.' . $propertyName . ' = :' . $placeholderValue;
 
             $queryBuilder
-                ->leftJoin('productInformation.attributeValues', 'attributeValue')
                 ->andWhere($whereStatement)
                 ->setParameter($placeholderCode, $code)
                 ->setParameter($placeholderValue, $value);
