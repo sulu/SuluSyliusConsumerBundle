@@ -23,5 +23,8 @@ interface ProductViewListInterface
 
     public function getTotal(): int;
 
+    /**
+     * @return ProductViewInterface[]
+     */
     public function getProductViews(): array;
 }

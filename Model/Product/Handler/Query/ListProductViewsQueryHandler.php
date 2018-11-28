@@ -18,6 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewListInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
@@ -58,7 +59,7 @@ class ListProductViewsQueryHandler
         $this->productViewFactory = $productViewFactory;
     }
 
-    public function __invoke(ListProductViewsQuery $query): ProductViewList
+    public function __invoke(ListProductViewsQuery $query): ProductViewListInterface
     {
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
