@@ -21,7 +21,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterf
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
@@ -34,11 +33,6 @@ class ProductViewFactory implements ProductViewFactoryInterface
      * @var DimensionRepositoryInterface
      */
     private $dimensionRepository;
-
-    /**
-     * @var ProductInformationRepositoryInterface
-     */
-    private $productInformationRepository;
 
     /**
      * @var RoutableResourceRepositoryInterface
@@ -62,14 +56,12 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
-        ProductInformationRepositoryInterface $productInformationRepository,
         RoutableResourceRepositoryInterface $routableResourceRepository,
         ContentViewFactoryInterface $contentViewFactory,
         MediaManagerInterface $mediaManager,
         CategoryManagerInterface $categoryManager
     ) {
         $this->dimensionRepository = $dimensionRepository;
-        $this->productInformationRepository = $productInformationRepository;
         $this->routableResourceRepository = $routableResourceRepository;
         $this->contentViewFactory = $contentViewFactory;
         $this->mediaManager = $mediaManager;
@@ -87,10 +79,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
         foreach ($dimensions as $dimension) {
             if (null === $productInformation) {
-                $productInformation = $this->productInformationRepository->findByProductId(
-                    $product->getId(),
-                    $dimension
-                );
+                $productInformation = $product->findProductInformationByDimension($dimension);
             }
 
             if (null === $routableResource) {

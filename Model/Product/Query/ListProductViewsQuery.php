@@ -28,7 +28,7 @@ class ListProductViewsQuery
     /**
      * @var null|int
      */
-    private $pageSize;
+    private $limit;
 
     /**
      * @var null|string
@@ -53,7 +53,7 @@ class ListProductViewsQuery
     public function __construct(
         string $locale,
         ?int $page = null,
-        ?int $pageSize = null,
+        ?int $limit = null,
         ?string $query = null,
         array $queryFields = [],
         array $categoryKeys = [],
@@ -61,7 +61,7 @@ class ListProductViewsQuery
     ) {
         $this->locale = $locale;
         $this->page = $page;
-        $this->pageSize = $pageSize;
+        $this->limit = $limit;
         $this->query = $query;
         $this->queryFields = $queryFields;
         $this->categoryKeys = $categoryKeys;
@@ -78,9 +78,9 @@ class ListProductViewsQuery
         return $this->page;
     }
 
-    public function getPageSize(): ?int
+    public function getLimit(): ?int
     {
-        return $this->pageSize;
+        return $this->limit;
     }
 
     public function getQuery(): ?string

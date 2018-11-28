@@ -39,7 +39,7 @@ class ListProductViewsQueryTest extends TestCase
 
         $this->assertEquals('en', $query->getLocale());
         $this->assertEquals(1, $query->getPage());
-        $this->assertEquals(10, $query->getPageSize());
+        $this->assertEquals(10, $query->getLimit());
         $this->assertEquals('abc', $query->getQuery());
         $this->assertEquals(['product.code', 'productInformation.name'], $query->getQueryFields());
         $this->assertEquals(['c1', 'c2'], $query->getCategoryKeys());

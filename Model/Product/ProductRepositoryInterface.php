@@ -21,10 +21,18 @@ interface ProductRepositoryInterface
 
     public function findById(string $id): ?ProductInterface;
 
+    public function searchCount(
+        array $dimensions,
+        array $categoryKeys = [],
+        array $attributeFilters = [],
+        string $query = null,
+        array $queryFields = []
+    ): int;
+
     public function search(
         array $dimensions,
         int $page,
-        int $pageSize,
+        int $limit,
         array $categoryKeys = [],
         array $attributeFilters = [],
         string $query = null,

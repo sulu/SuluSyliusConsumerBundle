@@ -22,7 +22,7 @@ jobs:
             name: Install OS dependencies (mysql, gd)
             command: |
               sudo apt-get install -y libpng-dev
-              sudo docker-php-ext-install pdo_mysql gd
+              sudo -E docker-php-ext-install pdo_mysql gd
             parallel: true
 
       - restore_cache:
