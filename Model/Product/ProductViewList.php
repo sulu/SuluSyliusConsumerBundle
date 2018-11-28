@@ -48,7 +48,7 @@ class ProductViewList implements ProductViewListInterface
     ) {
         $this->page = $page;
         $this->limit = $limit;
-        $this->pages = intval(ceil($total/$limit));
+        $this->pages = intval(ceil($total / $limit));
         $this->total = $total;
         $this->productViews = $productViews;
     }

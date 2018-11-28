@@ -16,8 +16,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Ramsey\Uuid\Uuid;
-use Sulu\Bundle\CategoryBundle\Entity\Category;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
