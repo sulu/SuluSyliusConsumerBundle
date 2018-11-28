@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
@@ -43,9 +44,15 @@ class ListProductViewsQueryTest extends SuluTestCase
         $product5 = $this->create('product-5', 'Product Five', 'en');
 
         $query = new ListProductViewsQuery('en');
+
+        /** @var ProductViewList $result */
         $result = $this->getMessageBus()->dispatch($query);
 
-        $this->assertCount(4, $result);
+        $this->assertCount(4, $result->getProductViews());
+        $this->assertEquals(10, $result->getLimit());
+        $this->assertEquals(1, $result->getPage());
+        $this->assertEquals(1, $result->getPages());
+        $this->assertEquals(4, $result->getTotal());
     }
 
     public function testPagination(): void
@@ -59,7 +66,11 @@ class ListProductViewsQueryTest extends SuluTestCase
         $query = new ListProductViewsQuery('en', 2, 2);
         $result = $this->getMessageBus()->dispatch($query);
 
-        $this->assertCount(2, $result);
+        $this->assertCount(2, $result->getProductViews());
+        $this->assertEquals(2, $result->getLimit());
+        $this->assertEquals(2, $result->getPage());
+        $this->assertEquals(2, $result->getPages());
+        $this->assertEquals(4, $result->getTotal());
     }
 
     public function testSearch(): void
@@ -73,7 +84,11 @@ class ListProductViewsQueryTest extends SuluTestCase
         $query = new ListProductViewsQuery('en', null, null, 'four');
         $result = $this->getMessageBus()->dispatch($query);
 
-        $this->assertCount(1, $result);
+        $this->assertCount(1, $result->getProductViews());
+        $this->assertEquals(10, $result->getLimit());
+        $this->assertEquals(1, $result->getPage());
+        $this->assertEquals(1, $result->getPages());
+        $this->assertEquals(1, $result->getTotal());
     }
 
     private function create(

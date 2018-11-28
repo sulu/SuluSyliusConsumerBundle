@@ -36,11 +36,6 @@ class ProductViewFactory implements ProductViewFactoryInterface
     private $dimensionRepository;
 
     /**
-     * @var ProductInformationRepositoryInterface
-     */
-    private $productInformationRepository;
-
-    /**
      * @var RoutableResourceRepositoryInterface
      */
     private $routableResourceRepository;
@@ -62,14 +57,12 @@ class ProductViewFactory implements ProductViewFactoryInterface
 
     public function __construct(
         DimensionRepositoryInterface $dimensionRepository,
-        ProductInformationRepositoryInterface $productInformationRepository,
         RoutableResourceRepositoryInterface $routableResourceRepository,
         ContentViewFactoryInterface $contentViewFactory,
         MediaManagerInterface $mediaManager,
         CategoryManagerInterface $categoryManager
     ) {
         $this->dimensionRepository = $dimensionRepository;
-        $this->productInformationRepository = $productInformationRepository;
         $this->routableResourceRepository = $routableResourceRepository;
         $this->contentViewFactory = $contentViewFactory;
         $this->mediaManager = $mediaManager;

@@ -40,7 +40,6 @@ class ProductViewFactoryTest extends TestCase
     public function testCreate()
     {
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
-        $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $routableResourceRepository = $this->prophesize(RoutableResourceRepositoryInterface::class);
         $contentViewFactory = $this->prophesize(ContentViewFactoryInterface::class);
         $mediaManager = $this->prophesize(MediaManagerInterface::class);
@@ -48,7 +47,6 @@ class ProductViewFactoryTest extends TestCase
 
         $factory = new ProductViewFactory(
             $dimensionRepository->reveal(),
-            $productInformationRepository->reveal(),
             $routableResourceRepository->reveal(),
             $contentViewFactory->reveal(),
             $mediaManager->reveal(),
@@ -87,7 +85,7 @@ class ProductViewFactoryTest extends TestCase
         $productInformation->getProductId()->willReturn('123-123-123');
         $productInformation->getProductCode()->willReturn('product-1');
         $productInformation->getName()->willReturn('Product One');
-        $productInformationRepository->findByProductId('123-123-123', $dimension->reveal())
+        $product->findProductInformationByDimension($dimension->reveal())
             ->willReturn($productInformation->reveal());
 
         $contentView = $this->prophesize(ContentViewInterface::class);
