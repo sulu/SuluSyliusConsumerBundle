@@ -131,4 +131,9 @@ class ProductView implements ProductViewInterface
     {
         return $this->routableResource;
     }
+
+    public function getRoutePath(): string
+    {
+        return $this->routableResource->getRoute()->getPath();
+    }
 }
