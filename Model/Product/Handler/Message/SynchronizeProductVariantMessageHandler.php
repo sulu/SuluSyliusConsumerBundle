@@ -13,10 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductVariantMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductVariantTranslationValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
@@ -24,6 +22,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInter
 
 class SynchronizeProductVariantMessageHandler
 {
+    use SynchronizeProductVariantTrait {
+        __construct as initializeSynchronizeProductVariantTrait;
+    }
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -34,16 +36,6 @@ class SynchronizeProductVariantMessageHandler
      */
     private $productVariantRepository;
 
-    /**
-     * @var ProductVariantInformationRepositoryInterface
-     */
-    private $productVariantInformationRepository;
-
-    /**
-     * @var DimensionRepositoryInterface
-     */
-    private $dimensionRepository;
-
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductVariantRepositoryInterface $productionVariantRepository,
@@ -52,8 +44,13 @@ class SynchronizeProductVariantMessageHandler
     ) {
         $this->productRepository = $productRepository;
         $this->productVariantRepository = $productionVariantRepository;
-        $this->productVariantInformationRepository = $productVariantInformationRepository;
-        $this->dimensionRepository = $dimensionRepository;
+
+        $this->initializeSynchronizeProductVariantTrait(
+            $productRepository,
+            $productionVariantRepository,
+            $productVariantInformationRepository,
+            $dimensionRepository
+        );
     }
 
     public function __invoke(SynchronizeProductVariantMessage $message): ProductVariantInterface
@@ -71,56 +68,5 @@ class SynchronizeProductVariantMessageHandler
         $this->synchronizeProductVariant($message, $productVariant);
 
         return $productVariant;
-    }
-
-    protected function synchronizeProductVariant(
-        SynchronizeProductVariantMessage $message,
-        ProductVariantInterface $productVariant
-    ): void {
-        $productVariant->setCustomData($productVariant->getCustomData());
-        $this->synchronizeTranslations($message, $productVariant);
-    }
-
-    protected function synchronizeTranslations(
-        SynchronizeProductVariantMessage $message,
-        ProductVariantInterface $productVariant
-    ): void {
-        foreach ($message->getTranslations() as $translationValueObject) {
-            $dimensionDraft = $this->dimensionRepository->findOrCreateByAttributes(
-                [
-                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT,
-                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
-                ]
-            );
-            $dimensionLive = $this->dimensionRepository->findOrCreateByAttributes(
-                [
-                    DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-                    DimensionInterface::ATTRIBUTE_KEY_LOCALE => $translationValueObject->getLocale(),
-                ]
-            );
-
-            $this->synchronizeTranslation($translationValueObject, $productVariant, $dimensionDraft);
-            $this->synchronizeTranslation($translationValueObject, $productVariant, $dimensionLive);
-        }
-    }
-
-    protected function synchronizeTranslation(
-        ProductVariantTranslationValueObject $translationValueObject,
-        ProductVariantInterface $productVariant,
-        DimensionInterface $dimension
-    ): void {
-        $productVariantInformation = $this->productVariantInformationRepository->findByVariantId(
-            $productVariant->getId(),
-            $dimension
-        );
-        if (!$productVariantInformation) {
-            $productVariantInformation = $this->productVariantInformationRepository->create(
-                $productVariant,
-                $dimension
-            );
-        }
-
-        $productVariantInformation->setName($translationValueObject->getName());
-        $productVariantInformation->setCustomData($translationValueObject->getCustomData());
     }
 }

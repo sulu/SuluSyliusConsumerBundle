@@ -20,6 +20,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductVariantMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
@@ -31,12 +32,18 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReference;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductMessageHandler
 {
+    use SynchronizeProductVariantTrait {
+        __construct as initializeSynchronizeProductVariantTrait;
+    }
+
     /**
      * @var ClientInterface
      */
@@ -106,6 +113,8 @@ class SynchronizeProductMessageHandler
         DimensionRepositoryInterface $dimensionRepository,
         ProductMediaReferenceRepositoryInterface $productMediaReferenceRepository,
         CategoryRepositoryInterface $categoryRepository,
+        ProductVariantRepositoryInterface $productionVariantRepository,
+        ProductVariantInformationRepositoryInterface $productVariantInformationRepository,
         MediaFactory $mediaFactory,
         Filesystem $filesystem,
         string $syliusBaseUrl,
@@ -123,6 +132,13 @@ class SynchronizeProductMessageHandler
         $this->filesystem = $filesystem;
         $this->syliusBaseUrl = $syliusBaseUrl;
         $this->autoPublish = $autoPublish;
+
+        $this->initializeSynchronizeProductVariantTrait(
+            $productRepository,
+            $productionVariantRepository,
+            $productVariantInformationRepository,
+            $dimensionRepository
+        );
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
@@ -159,6 +175,21 @@ class SynchronizeProductMessageHandler
         $this->synchronizeMainTaxon($message, $product);
         $this->synchronizeProductTaxons($message, $product);
         $this->synchronizeImages($message, $product);
+
+        foreach ($message->getVariants() as $variantPayload) {
+            $productVariant = $product->findVariantByCode($message->getCode());
+            if (!$productVariant) {
+                $productVariant = $this->productVariantRepository->create($product, $message->getCode());
+            }
+
+            $synchronizeProductVariantMessage = new SynchronizeProductVariantMessage(
+                $product->getCode(),
+                $variantPayload['code'],
+                $variantPayload
+            );
+
+            $this->synchronizeProductVariant($synchronizeProductVariantMessage, $productVariant);
+        }
     }
 
     protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void
