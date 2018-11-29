@@ -14,3 +14,7 @@ phpunit.xml
 Tests/app/cache
 Tests/app/data
 Tests/var
+
+# npm
+Resources/js/package-lock.json
+Resources/js/node_modules
