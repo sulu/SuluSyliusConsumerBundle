@@ -19,9 +19,12 @@ use Ramsey\Uuid\Uuid;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Repository\FindScheduldedEntityInsertionTrait;
 
 class ProductRepository extends EntityRepository implements ProductRepositoryInterface
 {
+    use FindScheduldedEntityInsertionTrait;
+
     public function create(string $code): ProductInterface
     {
         $className = $this->getClassName();
@@ -35,6 +38,12 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
     {
         /** @var ProductInterface $product */
         $product = $this->findOneBy(['code' => $code]);
+
+        if (!$product) {
+            $product = $this->findScheduldedEntityInsertion(function(ProductInterface $product) use ($code) {
+                return $code === $product->getCode();
+            });
+        }
 
         return $product;
     }
