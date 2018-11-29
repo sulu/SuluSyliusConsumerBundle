@@ -36,11 +36,12 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
 
     public function findByCode(string $code): ?ProductInterface
     {
-        /** @var ProductInterface $product */
+        /** @var ProductInterface|null $product */
         $product = $this->findOneBy(['code' => $code]);
 
         if (!$product) {
-            $product = $this->findScheduldedEntityInsertion(function(ProductInterface $product) use ($code) {
+            /** @var ProductInterface|null $product */
+            $product = $this->findScheduldedEntityInsertion(function (ProductInterface $product) use ($code) {
                 return $code === $product->getCode();
             });
         }

@@ -38,10 +38,10 @@ trait FindScheduldedEntityInsertionTrait
     /**
      * @return EntityManagerInterface
      */
-    abstract function getEntityManager();
+    abstract public function getEntityManager();
 
     /**
      * @return string
      */
-    abstract function getClassName();
+    abstract public function getClassName();
 }
