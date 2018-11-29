@@ -20,6 +20,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductVariantMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
@@ -159,6 +160,16 @@ class SynchronizeProductMessageHandler
         $this->synchronizeMainTaxon($message, $product);
         $this->synchronizeProductTaxons($message, $product);
         $this->synchronizeImages($message, $product);
+
+        foreach ($message->getVariants() as $variantPayload) {
+            $this->messageBus->dispatch(
+                new SynchronizeProductVariantMessage(
+                    $product->getCode(),
+                    $variantPayload['code'],
+                    $variantPayload
+                )
+            );
+        }
     }
 
     protected function synchronizeTranslations(SynchronizeProductMessage $message, ProductInterface $product): void

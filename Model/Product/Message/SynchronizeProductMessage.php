@@ -107,6 +107,11 @@ class SynchronizeProductMessage
         return $attributeValues;
     }
 
+    public function getVariants(): array
+    {
+        return $this->getArrayValueWithDefault('variants');
+    }
+
     public function getCustomData(): array
     {
         return $this->getArrayValueWithDefault('customData');

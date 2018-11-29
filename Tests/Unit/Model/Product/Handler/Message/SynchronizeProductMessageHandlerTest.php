@@ -89,6 +89,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getAttributeValues('de')->willReturn(
             [$attributeValueValueObject1->reveal(), $attributeValueValueObject2->reveal()]
         );
+        $message->getVariants()->willReturn([]);
 
         $client = $this->prophesize(ClientInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
@@ -265,6 +266,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getAttributeValues('de')->willReturn(
             [$attributeValueValueObject1->reveal(), $attributeValueValueObject2->reveal()]
         );
+        $message->getVariants()->willReturn([]);
 
         $client = $this->prophesize(ClientInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
