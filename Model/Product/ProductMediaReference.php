@@ -65,6 +65,11 @@ class ProductMediaReference
         return $this->media;
     }
 
+    public function getMediaId(): int
+    {
+        return $this->media->getId();
+    }
+
     public function getType(): string
     {
         return $this->type;

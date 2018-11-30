@@ -3,11 +3,11 @@ import React from 'react';
 import {observer} from 'mobx-react';
 import type {FieldTypeProps} from 'sulu-admin-bundle/types';
 import SyliusMultiMediaSelection from '../../SyliusMultiMediaSelection';
-import type {Value} from '../../SyliusMultiMediaSelection';
+import type {MediaReference} from '../../SyliusMultiMediaSelection';
 
 @observer
 export default class MediaSelection extends React.Component<FieldTypeProps<Value>> {
-    handleChange = (value: Value) => {
+    handleChange = (value: Array<MediaReference>) => {
         const {onChange, onFinish} = this.props;
 
         onChange(value);

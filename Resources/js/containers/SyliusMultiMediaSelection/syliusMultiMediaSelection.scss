@@ -19,6 +19,11 @@
     .media-title {
         margin-left: 15px;
     }
+}
+
+.buttons {
+    display: flex;
+    height: 100%;
 
     .button {
         border: 0;
@@ -26,10 +31,5 @@
         cursor: pointer;
         background-color: transparent;
     }
-}
-
-.buttons {
-    display: flex;
-    height: 100%;
 }
 

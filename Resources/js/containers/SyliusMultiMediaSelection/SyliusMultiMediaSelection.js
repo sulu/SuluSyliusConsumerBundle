@@ -1,6 +1,6 @@
 // @flow
 import React, {Fragment} from 'react';
-import {action, autorun, toJS, observable, untracked} from 'mobx';
+import {action, autorun, toJS, observable, untracked, computed} from 'mobx';
 import {observer} from 'mobx-react';
 import equals from 'fast-deep-equal';
 import {MultiItemSelection} from 'sulu-admin-bundle/components';
@@ -8,27 +8,21 @@ import {translate} from 'sulu-admin-bundle/utils';
 import type {IObservableValue} from 'mobx';
 import MultiMediaSelectionStore from 'sulu-media-bundle/stores/MultiMediaSelectionStore';
 import MultiMediaSelectionOverlay from 'sulu-media-bundle/containers/MultiMediaSelectionOverlay';
-import MimeTypeIndicator from 'sulu-media-bundle/components/MimeTypeIndicator';
-import syliusMultiMediaSelectionStyle from './syliusMultiMediaSelection.scss';
-import type {Value} from './types';
-import Icon from "sulu-admin-bundle/components/Icon";
+import MultiItemSelectionItem from './MultiItemSelectionItem';
+import type {MediaReference} from './types';
 
 type Props = {|
     disabled: boolean,
     locale: IObservableValue<string>,
-    onChange: (selectedIds: Value) => void,
-    value: Value,
+    onChange: (value: Array<MediaReference>) => void,
+    value: Array<MediaReference>,
 |}
-
-const THUMBNAIL_SIZE = 'sulu-25x25';
-const REMOVE_ICON = 'su-trash-alt';
-const DISABLE_ICON = 'su-eye';
 
 @observer
 export default class SyliusMultiMediaSelection extends React.Component<Props> {
     static defaultProps = {
         disabled: false,
-        value: {ids: []},
+        value: [],
     };
 
     mediaSelectionStore: MultiMediaSelectionStore;
@@ -37,36 +31,61 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
 
     @observable overlayOpen: boolean = false;
 
+    @computed get selectedMediaIds(): Array<number> {
+        const {value} = this.props;
+
+        return value.map((mediaReference) => mediaReference.mediaId);
+    }
+
+    getValueEntry(mediaId: number)
+    {
+        const {value} = this.props;
+
+        const media = value.find((mediaReference) => mediaReference.mediaId === mediaId);
+
+        return media ? media : {
+            mediaId: mediaId,
+            type: '',
+            syliusId: null,
+            syliusPath: null,
+            enabled: true,
+        };
+    }
+
     constructor(props: Props) {
         super(props);
 
-        const {locale, value} = this.props;
+        const {locale} = this.props;
 
-        this.mediaSelectionStore = new MultiMediaSelectionStore(value.ids, locale);
+        this.mediaSelectionStore = new MultiMediaSelectionStore(this.selectedMediaIds, locale);
         this.changeDisposer = autorun(() => {
             const {onChange, value} = untracked(() => this.props);
             const loadedMediaIds = this.mediaSelectionStore.selectedMediaIds;
+            const selectedMediaIds = value.map((mediaReference) => mediaReference.mediaId);
 
             if (!this.changeAutorunInitialized) {
                 this.changeAutorunInitialized = true;
                 return;
             }
 
-            if (equals(toJS(value.ids), toJS(loadedMediaIds))) {
+            if (equals(selectedMediaIds, toJS(loadedMediaIds))) {
                 return;
             }
 
-            onChange({ids: loadedMediaIds});
+            const newValue = loadedMediaIds.map((mediaId) => {
+                return this.getValueEntry(mediaId);
+            });
+
+            onChange(newValue);
         });
     }
 
     componentDidUpdate() {
         const {
             locale,
-            value,
         } = this.props;
 
-        const newSelectedIds = toJS(value.ids);
+        const newSelectedIds = toJS(this.selectedMediaIds);
         const loadedSelectedIds = toJS(this.mediaSelectionStore.selectedMediaIds);
 
         newSelectedIds.sort();
@@ -119,6 +138,19 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
         this.closeMediaOverlay();
     };
 
+    handleMediaReferenceChange = (newMediaReference: MediaReference) => {
+        const {onChange, value} = this.props;
+        const newValue = toJS(value);
+        newValue.forEach((mediaReference) => {
+            if (mediaReference.mediaId === newMediaReference.mediaId) {
+                mediaReference.type = newMediaReference.type;
+                mediaReference.enabled = newMediaReference.enabled;
+            }
+        });
+
+        onChange(newValue);
+    };
+
     render() {
         const {locale, disabled} = this.props;
 
@@ -143,46 +175,13 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
                 >
                     {selectedMedia.map((media, index) => {
                         return (
-                            <MultiItemSelection.Item
-                                id={media.id}
-                                index={index + 1}
-                                key={media.id}
-                            >
-                                <div className={syliusMultiMediaSelectionStyle.mediaItemContainer}>
-                                    <div className={syliusMultiMediaSelectionStyle.mediaItem}>
-                                        {media.thumbnails[THUMBNAIL_SIZE]
-                                            ? <img
-                                                alt={media.title}
-                                                className={syliusMultiMediaSelectionStyle.thumbnailImage}
-                                                src={media.thumbnails[THUMBNAIL_SIZE]}
-                                            />
-                                            : <MimeTypeIndicator
-                                                height={25}
-                                                iconSize={16}
-                                                mimeType={media.mimeType}
-                                                width={25}
-                                            />
-                                        }
-                                        <div className={syliusMultiMediaSelectionStyle.mediaTitle}>{media.title}</div>
-                                    </div>
-                                    <div className={syliusMultiMediaSelectionStyle.buttons}>
-                                        <button
-                                            className={syliusMultiMediaSelectionStyle.button}
-                                            onClick={this.handleRemove}
-                                            type="button"
-                                        >
-                                            <Icon name={REMOVE_ICON} />
-                                        </button>
-                                        <button
-                                            className={syliusMultiMediaSelectionStyle.button}
-                                            onClick={this.handleRemove}
-                                            type="button"
-                                        >
-                                            <Icon name={DISABLE_ICON} />
-                                        </button>
-                                    </div>
-                                </div>
-                            </MultiItemSelection.Item>
+                            <MultiItemSelectionItem
+                                key={index}
+                                media={media}
+                                mediaReference={this.getValueEntry(media.id)}
+                                onRemove={this.handleRemove}
+                                onMediaReferenceChange={this.handleMediaReferenceChange}
+                            />
                         );
                     })}
                 </MultiItemSelection>

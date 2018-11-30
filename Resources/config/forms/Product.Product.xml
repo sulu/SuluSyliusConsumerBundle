@@ -15,7 +15,7 @@
             </meta>
         </property>
 
-        <property name="media" type="sylius_media_selection">
+        <property name="mediaReferences" type="sylius_media_selection">
             <meta>
                 <title>sulu_sylius_product.media</title>
             </meta>

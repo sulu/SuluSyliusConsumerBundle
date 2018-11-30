@@ -1,4 +1,8 @@
 // @flow
-export type Value = {
-    ids: Array<number>,
+export type MediaReference = {
+    mediaId: number,
+    type: string,
+    syliusId: ?number,
+    sorting: ?number,
+    enabled: boolean,
 };

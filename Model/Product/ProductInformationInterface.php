@@ -23,6 +23,8 @@ interface ProductInformationInterface
 
     public function getProductCode(): string;
 
+    public function getMediaReferences(): array;
+
     public function getDimension(): DimensionInterface;
 
     public function getName(): string;
