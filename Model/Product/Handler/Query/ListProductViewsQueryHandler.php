@@ -76,8 +76,10 @@ class ListProductViewsQueryHandler
         $queryFields = $query->getQueryFields() ?: self::DEFAULT_QUERY_FIELDS;
         $attributeFilters = $this->getAttributeFilters($query);
 
+        $dimensions = [$liveDimension, $localizedLiveDimension];
+
         $total = $this->productRepository->searchCount(
-            [$liveDimension, $localizedLiveDimension],
+            $dimensions,
             $query->getCategoryKeys(),
             $attributeFilters,
             $query->getQuery(),
@@ -85,7 +87,7 @@ class ListProductViewsQueryHandler
         );
 
         $products = $this->productRepository->search(
-            [$liveDimension, $localizedLiveDimension],
+            $dimensions,
             $page,
             $limit,
             $query->getCategoryKeys(),
