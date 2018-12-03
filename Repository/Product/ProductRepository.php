@@ -60,7 +60,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
     public function findByIdsAndDimensionIds(array $ids, array $dimensionIds): array
     {
         $queryBuilder = $this->createQueryBuilder('product')
-            ->leftJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
+            ->innerJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
             ->where('product.id IN(:ids)')
             ->setParameter('ids', $ids)
             ->setParameter('dimensionIds', $dimensionIds);
@@ -145,7 +145,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         }
 
         $queryBuilder = $this->createQueryBuilder('product')
-            ->leftJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
+            ->innerJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
             ->setParameter('dimensionIds', $dimensionIds);
 
         if ($categoryKeys) {
