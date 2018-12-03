@@ -57,6 +57,32 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         return $product;
     }
 
+    public function findByIdsAndDimensionIds(array $ids, array $dimensionIds): array
+    {
+        $queryBuilder = $this->createQueryBuilder('product')
+            ->leftJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
+            ->where('product.id IN(:ids)')
+            ->setParameter('ids', $ids)
+            ->setParameter('dimensionIds', $dimensionIds);
+
+        $queryBuilder->leftJoin('productInformation.attributeValues', 'attributeValues');
+        $queryBuilder->leftJoin('product.mainCategory', 'mainCategory');
+        $queryBuilder->leftJoin('product.productCategories', 'categories');
+        $queryBuilder->leftJoin('product.mediaReferences', 'mediaReferences');
+
+        $queryBuilder->select('product');
+        $queryBuilder->addSelect('productInformation');
+        $queryBuilder->addSelect('mainCategory');
+        $queryBuilder->addSelect('categories');
+        $queryBuilder->addSelect('mediaReferences');
+        $queryBuilder->addSelect('attributeValues');
+
+        /** @var ProductInterface[] $products */
+        $products = $queryBuilder->getQuery()->getResult();
+
+        return $products;
+    }
+
     public function searchCount(
         array $dimensions,
         array $categoryKeys = [],
@@ -96,19 +122,14 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
             $queryFields
         );
 
-        $queryBuilder->select('product');
-        $queryBuilder->addSelect('productInformation');
-        $queryBuilder->addSelect('mainCategory');
-        $queryBuilder->addSelect('categories');
-        $queryBuilder->addSelect('mediaReferences');
-        $queryBuilder->addSelect('attributeValues');
-
-        $queryBuilder->leftJoin('product.mediaReferences', 'mediaReferences');
+        $queryBuilder->select('product.id');
 
         $queryBuilder->setFirstResult(($page - 1) * $limit);
         $queryBuilder->setMaxResults($limit);
 
-        return $queryBuilder->getQuery()->getResult();
+        $ids = array_column($queryBuilder->getQuery()->getArrayResult(), 'id');
+
+        return $this->findByIdsAndDimensionIds($ids, $dimensions);
     }
 
     protected function getSearchQueryBuilder(
@@ -124,16 +145,13 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         }
 
         $queryBuilder = $this->createQueryBuilder('product')
-            ->leftJoin('product.productInformations', 'productInformation')
-            ->where('IDENTITY(productInformation.dimension) IN(:dimensionIds)')
+            ->leftJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
             ->setParameter('dimensionIds', $dimensionIds);
-
-        $queryBuilder->leftJoin('productInformation.attributeValues', 'attributeValues');
-        $queryBuilder->leftJoin('product.mainCategory', 'mainCategory');
-        $queryBuilder->leftJoin('product.productCategories', 'categories');
 
         if ($categoryKeys) {
             $queryBuilder
+                ->leftJoin('product.mainCategory', 'mainCategory')
+                ->leftJoin('product.productCategories', 'categories')
                 ->andWhere('mainCategory.key IN(:categoryKeys) OR categories.key IN(:categoryKeys)')
                 ->setParameter('categoryKeys', $categoryKeys);
         }
@@ -169,6 +187,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
                 ' AND attributeValue.' . $propertyName . ' = :' . $placeholderValue;
 
             $queryBuilder
+                ->leftJoin('productInformation.attributeValues', 'attributeValues')
                 ->andWhere($whereStatement)
                 ->setParameter($placeholderCode, $code)
                 ->setParameter($placeholderValue, $value);
