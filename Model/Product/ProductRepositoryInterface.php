@@ -29,6 +29,9 @@ interface ProductRepositoryInterface
         array $queryFields = []
     ): int;
 
+    /**
+     * @return ProductInterface[]
+     */
     public function search(
         array $dimensions,
         int $page,
@@ -38,6 +41,11 @@ interface ProductRepositoryInterface
         string $query = null,
         array $queryFields = []
     ): array;
+
+    /**
+     * @return ProductInterface[]
+     */
+    public function findByIdsAndDimensionIds(array $ids, array $dimensionIds): array;
 
     public function remove(ProductInterface $product): void;
 }

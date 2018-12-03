@@ -5,6 +5,10 @@
     <entity name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValue"
             table="pr_product_information_attribute_values"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductInformationAttributeValueRepository">
+        <indexes>
+            <index columns="attributeCode"/>
+        </indexes>
+
         <id name="id" type="integer" column="id">
             <generator strategy="AUTO"/>
         </id>
