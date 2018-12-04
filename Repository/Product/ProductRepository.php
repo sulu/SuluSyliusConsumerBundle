@@ -98,7 +98,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
             $queryFields
         );
 
-        $queryBuilder->select('COUNT(product.id)');
+        $queryBuilder->select('COUNT(DISTINCT product.id)');
 
         $count = $queryBuilder->getQuery()->getSingleScalarResult();
 
@@ -123,6 +123,7 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
         );
 
         $queryBuilder->select('product.id');
+        $queryBuilder->groupBy('product.id');
 
         $queryBuilder->setFirstResult(($page - 1) * $limit);
         $queryBuilder->setMaxResults($limit);
