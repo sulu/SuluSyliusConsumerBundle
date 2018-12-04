@@ -75,6 +75,8 @@ class ModifyProductMessageHandler
             $mediaReference->setSorting($sorting);
         }
 
+        // TODO: Check for deleted
+
         return $product;
     }
 }
