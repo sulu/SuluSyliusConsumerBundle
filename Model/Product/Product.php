@@ -220,6 +220,17 @@ class Product implements ProductInterface
         return $this;
     }
 
+    public function findMediaReferenceByMediaId(int $id): ?ProductMediaReference
+    {
+        foreach ($this->mediaReferences as $mediaReference) {
+            if ($id === $mediaReference->getMediaId()) {
+                return $mediaReference;
+            }
+        }
+
+        return null;
+    }
+
     public function getCustomData(): array
     {
         return $this->customData;

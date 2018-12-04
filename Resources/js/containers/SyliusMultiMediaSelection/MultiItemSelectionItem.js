@@ -1,16 +1,15 @@
 // @flow
 import React from 'react';
-import {MultiItemSelection} from 'sulu-admin-bundle/components';
 import Input from 'sulu-admin-bundle/components/Input';
 import MimeTypeIndicator from 'sulu-media-bundle/components/MimeTypeIndicator';
-import syliusMultiMediaSelectionStyle from './syliusMultiMediaSelection.scss';
+import multiItemSelectionItemStyle from './multiItemSelectionItem.scss';
 import type {MediaReference} from './types';
 import Icon from 'sulu-admin-bundle/components/Icon';
 
 type Props = {|
     media: Object,
     mediaReference: MediaReference,
-    onRemove: (value: Array<MediaReference>) => void,
+    onRemove: (mediaId: number) => void,
     onMediaReferenceChange: (value: MediaReference) => void,
 |}
 
@@ -35,60 +34,59 @@ export default class MultiItemSelectionItem extends React.PureComponent<Props> {
         onMediaReferenceChange(newValue);
     };
 
+    handleRemove = () => {
+        const {onRemove, media} = this.props;
+        onRemove(media.id);
+    };
+
     render() {
         const {
             media,
             mediaReference,
-            onRemove,
         } = this.props;
 
         return (
-            <MultiItemSelection.Item
-                id={media.id}
-                key={media.id}
-            >
-                <div className={syliusMultiMediaSelectionStyle.mediaItemContainer}>
-                    <div className={syliusMultiMediaSelectionStyle.mediaItem}>
-                        {media.thumbnails[THUMBNAIL_SIZE]
-                            ? <img
-                                alt={media.title}
-                                className={syliusMultiMediaSelectionStyle.thumbnailImage}
-                                src={media.thumbnails[THUMBNAIL_SIZE]}
-                            />
-                            : <MimeTypeIndicator
-                                height={25}
-                                iconSize={16}
-                                mimeType={media.mimeType}
-                                width={25}
-                            />
-                        }
-                        <div className={syliusMultiMediaSelectionStyle.mediaTitle}>{media.title}</div>
-                        <div className={syliusMultiMediaSelectionStyle.mediaTitle}>
-                            <Input value={mediaReference.type} onChange={this.handleTypeChange} />
-                        </div>
-                    </div>
-                    <div className={syliusMultiMediaSelectionStyle.buttons}>
-                        {mediaReference.syliusId
-                            ?
-                            <button
-                                className={syliusMultiMediaSelectionStyle.button}
-                                onClick={this.handleStatusChange}
-                                type='button'
-                            >
-                                <Icon name={DISABLE_ICON} />
-                            </button>
-                            :
-                            <button
-                                className={syliusMultiMediaSelectionStyle.button}
-                                onClick={onRemove}
-                                type='button'
-                            >
-                                <Icon name={REMOVE_ICON} />
-                            </button>
-                        }
-                    </div>
+            <div className={multiItemSelectionItemStyle.mediaItemContainer}>
+                <div className={multiItemSelectionItemStyle.mediaItem}>
+                    {media.thumbnails[THUMBNAIL_SIZE]
+                        ? <img
+                            alt={media.title}
+                            className={multiItemSelectionItemStyle.thumbnailImage}
+                            src={media.thumbnails[THUMBNAIL_SIZE]}
+                        />
+                        : <MimeTypeIndicator
+                            height={25}
+                            iconSize={16}
+                            mimeType={media.mimeType}
+                            width={25}
+                        />
+                    }
+                    <div className={multiItemSelectionItemStyle.mediaTitle}>{media.title}</div>
                 </div>
-            </MultiItemSelection.Item>
+                <div className={multiItemSelectionItemStyle.mediaTitle}>
+                    <Input value={mediaReference.type} onChange={this.handleTypeChange} disabled={!!mediaReference.syliusId} />
+                </div>
+                <div className={multiItemSelectionItemStyle.buttons}>
+                    {mediaReference.syliusId
+                        ?
+                        <button
+                            className={multiItemSelectionItemStyle.button}
+                            onClick={this.handleStatusChange}
+                            type='button'
+                        >
+                            <Icon name={DISABLE_ICON} />
+                        </button>
+                        :
+                        <button
+                            className={multiItemSelectionItemStyle.button}
+                            onClick={this.handleRemove}
+                            type='button'
+                        >
+                            <Icon name={REMOVE_ICON} />
+                        </button>
+                    }
+                </div>
+            </div>
         );
     }
 }

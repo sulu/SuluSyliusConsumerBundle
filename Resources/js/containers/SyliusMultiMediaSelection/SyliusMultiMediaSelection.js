@@ -31,12 +31,6 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
 
     @observable overlayOpen: boolean = false;
 
-    @computed get selectedMediaIds(): Array<number> {
-        const {value} = this.props;
-
-        return value.map((mediaReference) => mediaReference.mediaId);
-    }
-
     getValueEntry(mediaId: number)
     {
         const {value} = this.props;
@@ -55,9 +49,10 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
     constructor(props: Props) {
         super(props);
 
-        const {locale} = this.props;
+        const {locale, value} = this.props;
+        const selectedMediaIds = value.map((mediaReference) => mediaReference.mediaId);
 
-        this.mediaSelectionStore = new MultiMediaSelectionStore(this.selectedMediaIds, locale);
+        this.mediaSelectionStore = new MultiMediaSelectionStore(selectedMediaIds, locale);
         this.changeDisposer = autorun(() => {
             const {onChange, value} = untracked(() => this.props);
             const loadedMediaIds = this.mediaSelectionStore.selectedMediaIds;
@@ -83,9 +78,10 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
     componentDidUpdate() {
         const {
             locale,
+            value,
         } = this.props;
 
-        const newSelectedIds = toJS(this.selectedMediaIds);
+        const newSelectedIds = value.map((mediaReference) => mediaReference.mediaId);
         const loadedSelectedIds = toJS(this.mediaSelectionStore.selectedMediaIds);
 
         newSelectedIds.sort();
@@ -175,13 +171,18 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
                 >
                     {selectedMedia.map((media, index) => {
                         return (
-                            <MultiItemSelectionItem
-                                key={index}
-                                media={media}
-                                mediaReference={this.getValueEntry(media.id)}
-                                onRemove={this.handleRemove}
-                                onMediaReferenceChange={this.handleMediaReferenceChange}
-                            />
+                            <MultiItemSelection.Item
+                                id={media.id}
+                                index={index + 1}
+                                key={media.id}
+                            >
+                                <MultiItemSelectionItem
+                                    media={media}
+                                    mediaReference={this.getValueEntry(media.id)}
+                                    onMediaReferenceChange={this.handleMediaReferenceChange}
+                                    onRemove={this.handleRemove}
+                                />
+                            </MultiItemSelection.Item>
                         );
                     })}
                 </MultiItemSelection>

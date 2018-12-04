@@ -21,7 +21,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceReposito
 
 class ProductMediaReferenceRepository extends EntityRepository implements ProductMediaReferenceRepositoryInterface
 {
-    public function create(ProductInterface $product, MediaInterface $media, string $type, int $syliusId): ProductMediaReference
+    public function create(ProductInterface $product, MediaInterface $media, string $type, ?int $syliusId = null): ProductMediaReference
     {
         $className = $this->getClassName();
         $mediaReference = new $className($product, $media, $type, $syliusId);

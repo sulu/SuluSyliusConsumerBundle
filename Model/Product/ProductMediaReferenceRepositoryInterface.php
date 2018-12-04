@@ -17,7 +17,7 @@ use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 
 interface ProductMediaReferenceRepositoryInterface
 {
-    public function create(ProductInterface $product, MediaInterface $media, string $type, int $syliusId): ProductMediaReference;
+    public function create(ProductInterface $product, MediaInterface $media, string $type, ?int $syliusId = null): ProductMediaReference;
 
     public function findBySyliusId(int $syliusId): ?ProductMediaReference;
 

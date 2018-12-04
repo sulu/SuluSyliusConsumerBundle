@@ -43,11 +43,16 @@ class ProductMediaReference
     private $syliusPath;
 
     /**
+     * @var bool
+     */
+    private $active = true;
+
+    /**
      * @var ProductInterface
      */
     private $product;
 
-    public function __construct(ProductInterface $product, MediaInterface $media, string $type, int $syliusId)
+    public function __construct(ProductInterface $product, MediaInterface $media, string $type, ?int $syliusId)
     {
         $this->product = $product;
         $this->media = $media;
@@ -75,7 +80,18 @@ class ProductMediaReference
         return $this->type;
     }
 
-    public function getSyliusId(): int
+    public function setType(string $type): self
+    {
+        if ($this->syliusId) {
+            throw new \RuntimeException('Sylius MediaReferences "type" is not changeable');
+        }
+
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getSyliusId(): ?int
     {
         return $this->syliusId;
     }
@@ -92,7 +108,7 @@ class ProductMediaReference
         return $this;
     }
 
-    public function getSyliusPath(): string
+    public function getSyliusPath(): ?string
     {
         return $this->syliusPath;
     }
@@ -100,6 +116,22 @@ class ProductMediaReference
     public function setSyliusPath(string $syliusPath): self
     {
         $this->syliusPath = $syliusPath;
+
+        return $this;
+    }
+
+    public function getActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        if (!$this->syliusId) {
+            throw new \RuntimeException('Sulu MediaReferences "active" property is not changeable');
+        }
+
+        $this->active = $active;
 
         return $this;
     }
