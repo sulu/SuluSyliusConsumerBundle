@@ -56,8 +56,8 @@ class AuthenticationGateway implements AuthenticationGatewayInterface
             array_key_exists('username', $userData) ? $userData['username'] : null,
             $userData['roles'],
             $userData['email'],
-            $userData['firstName'],
-            $userData['lastName']
+            $userData['firstName'] ?? null,
+            $userData['lastName'] ?? null
         );
     }
 }
