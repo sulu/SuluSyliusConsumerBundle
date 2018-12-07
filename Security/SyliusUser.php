@@ -36,12 +36,12 @@ class SyliusUser implements SyliusUserInterface
     private $email;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $firstName;
 
     /**
-     * @var string
+     * @var null|string
      */
     private $lastName;
 
@@ -50,8 +50,8 @@ class SyliusUser implements SyliusUserInterface
         ?string $username,
         array $roles,
         string $email,
-        string $firstName,
-        string $lastName
+        ?string $firstName,
+        ?string $lastName
     ) {
         $this->id = $id;
         $this->username = $username;
@@ -77,6 +77,16 @@ class SyliusUser implements SyliusUserInterface
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
     }
 
     public function getRoles(): array

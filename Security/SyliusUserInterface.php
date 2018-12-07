@@ -30,4 +30,8 @@ interface SyliusUserInterface extends UserInterface
     public function getPassword(): ?string;
 
     public function getSalt(): ?string;
+
+    public function getFirstName(): ?string;
+
+    public function getLastName(): ?string;
 }
