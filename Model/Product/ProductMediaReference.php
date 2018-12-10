@@ -82,10 +82,6 @@ class ProductMediaReference
 
     public function setType(string $type): self
     {
-        if ($this->syliusId) {
-            throw new \RuntimeException('Sylius MediaReferences "type" is not changeable');
-        }
-
         $this->type = $type;
 
         return $this;
