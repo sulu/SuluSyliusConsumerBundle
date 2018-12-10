@@ -72,7 +72,7 @@ class CartGateway implements CartGatewayInterface
                     'customer' => $customer,
                     'channel' => $channel,
                     'localeCode' => $locale,
-                ]
+                ],
             ]
         );
 
@@ -96,8 +96,8 @@ class CartGateway implements CartGatewayInterface
                     RequestOptions::JSON => [
                         'variantCode' => $variantCode,
                         'quantity' => $quantity,
-                    ]
-                ]
+                    ],
+                ],
             ]
         );
 
@@ -113,8 +113,8 @@ class CartGateway implements CartGatewayInterface
                 [
                     RequestOptions::JSON => [
                         'quantity' => $quantity,
-                    ]
-                ]
+                    ],
+                ],
             ]
         );
 
