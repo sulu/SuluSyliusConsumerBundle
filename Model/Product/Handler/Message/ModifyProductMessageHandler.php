@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
+use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ModifyProductMessage;
@@ -59,6 +60,7 @@ class ModifyProductMessageHandler
         foreach ($message->getMediaReferences() as $mediaReferenceValueObject) {
             $mediaReference = $product->findMediaReferenceByMediaId($mediaReferenceValueObject->getMediaId());
             if (!$mediaReference) {
+                /** @var MediaInterface $media */
                 $media = $this->mediaRepository->find($mediaReferenceValueObject->getMediaId());
                 $mediaReference = $this->productMediaReferenceRepository->create(
                     $product,
@@ -75,7 +77,7 @@ class ModifyProductMessageHandler
 
             $mediaReference->setSorting($sorting);
 
-            $sorting++;
+            ++$sorting;
             $processedMediaIds[] = $mediaReference->getMediaId();
         }
 
