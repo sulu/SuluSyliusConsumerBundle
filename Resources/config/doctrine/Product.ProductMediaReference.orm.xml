@@ -6,6 +6,7 @@
             table="pr_product_media_references"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductMediaReferenceRepository">
         <id name="media" association-key="true"/>
+        <id name="product" association-key="true"/>
         <id name="type" column="type" type="string"/>
 
         <field name="syliusId" unique="true" column="syliusId" nullable="true" type="integer"/>
