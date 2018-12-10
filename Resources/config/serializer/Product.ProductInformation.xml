@@ -3,6 +3,7 @@
     <class name="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation">
         <virtual-property method="getProductId" serialized-name="id" expose="true"/>
         <virtual-property method="getProductCode" serialized-name="code" expose="true"/>
+        <virtual-property method="getMediaReferences" serialized-name="mediaReferences" expose="true"/>
         <property name="dimension" exclude="true" />
         <property name="product" exclude="true" />
         <property name="attributeValues" type="array"/>

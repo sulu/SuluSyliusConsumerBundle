@@ -6,11 +6,18 @@
             table="pr_product_media_references"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductMediaReferenceRepository">
         <id name="media" association-key="true"/>
+        <id name="product" association-key="true"/>
         <id name="type" column="type" type="string"/>
 
-        <field name="syliusId" unique="true" column="syliusId" type="integer"/>
+        <field name="syliusId" unique="true" column="syliusId" nullable="true" type="integer"/>
+        <field name="syliusPath" column="syliusPath" nullable="true"/>
+
         <field name="sorting" column="sorting" type="integer"/>
-        <field name="syliusPath" column="syliusPath" type="string"/>
+        <field name="active" column="active" type="boolean">
+            <options>
+                <option name="default">1</option>
+            </options>
+        </field>
 
         <many-to-one field="media" target-entity="Sulu\Bundle\MediaBundle\Entity\MediaInterface">
             <join-column name="media" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>

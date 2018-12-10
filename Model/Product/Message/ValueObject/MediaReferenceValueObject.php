@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class ProductImageValueObject
+class MediaReferenceValueObject
 {
     use PayloadTrait;
 
@@ -24,20 +24,23 @@ class ProductImageValueObject
         $this->initializePayload($payload);
     }
 
-    public function getId(): int
+    public function getMediaId(): int
     {
-        return $this->getIntValue('id');
+        return $this->getIntValue('mediaId');
     }
 
     public function getType(): string
     {
-        $type = $this->getNullableStringValue('type');
-
-        return $type ?: '';
+        return $this->getStringValue('type');
     }
 
-    public function getPath(): string
+    public function getSorting(): int
     {
-        return $this->getStringValue('path');
+        return $this->getIntValue('sorting');
+    }
+
+    public function getActive(): bool
+    {
+        return $this->getBoolValue('active');
     }
 }

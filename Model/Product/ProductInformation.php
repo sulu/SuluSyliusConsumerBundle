@@ -88,6 +88,11 @@ class ProductInformation implements ProductInformationInterface
         return $this->product->getCode();
     }
 
+    public function getMediaReferences(): array
+    {
+        return $this->product->getMediaReferences();
+    }
+
     public function getDimension(): DimensionInterface
     {
         return $this->dimension;

@@ -1,0 +1,40 @@
+.media-item-container {
+    align-items: center;
+    display: flex;
+    height: 100%;
+}
+
+.media-item {
+    align-items: center;
+    display: flex;
+    height: 100%;
+    flex-grow: 1;
+    width: 70%;
+
+    .thumbnail-image {
+        display: block;
+        width: 25px;
+        height: 25px;
+    }
+
+    .media-title {
+        margin-left: 15px;
+    }
+}
+
+.type {
+    margin: 0 15px;
+    width: 30%;
+}
+
+.buttons {
+    display: flex;
+    height: 100%;
+
+    .button {
+        border: 0;
+        padding: 0 10px;
+        cursor: pointer;
+        background-color: transparent;
+    }
+}

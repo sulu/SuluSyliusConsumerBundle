@@ -330,11 +330,10 @@ class SynchronizeProductMessageHandler
     {
         $currentMediaReferences = $product->getMediaReferences();
 
+        // sync existing and new one
         $processedImageIds = [];
-        $sorting = 1;
         foreach ($message->getImages() as $imageValueObject) {
-            $this->synchronizeImage($imageValueObject, $product, $sorting);
-            ++$sorting;
+            $this->synchronizeImage($imageValueObject, $product);
             $processedImageIds[] = $imageValueObject->getId();
         }
 
@@ -350,19 +349,18 @@ class SynchronizeProductMessageHandler
 
     protected function synchronizeImage(
         ProductImageValueObject $imageValueObject,
-        ProductInterface $product,
-        int $sorting
+        ProductInterface $product
     ): void {
         $mediaReference = $this->productMediaReferenceRepository->findBySyliusId($imageValueObject->getId());
 
         if (!$mediaReference) {
-            $this->createMediaReference($imageValueObject, $product, $sorting);
+            $this->createMediaReference($imageValueObject, $product);
 
             return;
         }
 
         if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
-            $this->updateMediaReference($imageValueObject, $product, $mediaReference, $sorting);
+            $this->updateMediaReference($imageValueObject, $product, $mediaReference);
 
             return;
         }
@@ -372,8 +370,7 @@ class SynchronizeProductMessageHandler
 
     protected function createMediaReference(
         ProductImageValueObject $imageValueObject,
-        ProductInterface $product,
-        int $sorting
+        ProductInterface $product
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
@@ -394,7 +391,7 @@ class SynchronizeProductMessageHandler
 
         // save path
         $mediaReference->setSyliusPath($imageValueObject->getPath());
-        $mediaReference->setSorting($sorting);
+        $mediaReference->setSorting(count($product->getMediaReferences()) + 1);
 
         return $mediaReference;
     }
@@ -402,8 +399,7 @@ class SynchronizeProductMessageHandler
     protected function updateMediaReference(
         ProductImageValueObject $imageValueObject,
         ProductInterface $product,
-        ProductMediaReference $mediaReference,
-        int $sorting
+        ProductMediaReference $mediaReference
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
@@ -416,7 +412,6 @@ class SynchronizeProductMessageHandler
 
         // save new path
         $mediaReference->setSyliusPath($imageValueObject->getPath());
-        $mediaReference->setSorting($sorting);
 
         return $mediaReference;
     }

@@ -153,6 +153,10 @@ class ProductViewFactory implements ProductViewFactoryInterface
     {
         $media = [];
         foreach ($product->getMediaReferences() as $mediaReference) {
+            if (!$mediaReference->getActive()) {
+                continue;
+            }
+
             $mediaApi = new Media($mediaReference->getMedia(), $locale);
 
             if (!array_key_exists($mediaReference->getType(), $media)) {
