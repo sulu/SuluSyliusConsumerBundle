@@ -55,9 +55,8 @@ class ModifyProductMessageHandler
             throw new ProductNotFoundException($message->getId());
         }
 
-        $sorting = 1;
         $processedMediaIds = [];
-        foreach ($message->getMediaReferences() as $mediaReferenceValueObject) {
+        foreach ($message->getMediaReferences() as $key => $mediaReferenceValueObject) {
             $mediaReference = $product->findMediaReferenceByMediaId($mediaReferenceValueObject->getMediaId());
             if (!$mediaReference) {
                 /** @var MediaInterface $media */
@@ -75,9 +74,8 @@ class ModifyProductMessageHandler
                 $mediaReference->setType($mediaReferenceValueObject->getType());
             }
 
-            $mediaReference->setSorting($sorting);
+            $mediaReference->setSorting($key + 1);
 
-            ++$sorting;
             $processedMediaIds[] = $mediaReference->getMediaId();
         }
 

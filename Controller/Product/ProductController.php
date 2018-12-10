@@ -43,9 +43,7 @@ class ProductController implements ClassResourceInterface
     {
         $locale = $request->query->get('locale');
 
-        $this->messageBus->dispatch(
-            new ModifyProductMessage($id, $locale, $request->request->all())
-        );
+        $this->messageBus->dispatch(new ModifyProductMessage($id, $locale, $request->request->all()));
 
         $product = $this->messageBus->dispatch(new FindProductQuery($id, $request->query->get('locale')));
 

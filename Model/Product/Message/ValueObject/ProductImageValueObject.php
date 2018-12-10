@@ -31,9 +31,9 @@ class ProductImageValueObject
 
     public function getType(): string
     {
-        $typo = $this->getNullableStringValue('type');
+        $typ = $this->getNullableStringValue('type');
 
-        return $typo ?: '';
+        return $typ ?: '';
     }
 
     public function getPath(): string

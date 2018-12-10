@@ -87,7 +87,7 @@ class CartGateway implements CartGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'POST',
-            self::URI . '/' . $cartId . '/items',
+            self::URI . '/' . $cartId . '/items/',
             [
                 'variantCode' => $variantCode,
                 'quantity' => $quantity,
@@ -101,7 +101,7 @@ class CartGateway implements CartGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'PUT',
-            self::URI . '/' . $cartId . '/' . $cartItemId,
+            self::URI . '/' . $cartId . '/' . $cartItemId . '/',
             [
                 'quantity' => $quantity,
             ]
