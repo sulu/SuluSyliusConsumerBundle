@@ -35,7 +35,7 @@ class CreateCartMessage
     public function __construct(
         SyliusUserInterface $syliusUser,
         string $locale,
-        string $channel
+        string $channel = null
     ) {
         $this->syliusUser = $syliusUser;
         $this->locale = $locale;
