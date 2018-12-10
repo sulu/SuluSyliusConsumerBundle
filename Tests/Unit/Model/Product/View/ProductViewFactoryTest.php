@@ -67,9 +67,11 @@ class ProductViewFactoryTest extends TestCase
         $mediaReference1 = $this->prophesize(ProductMediaReference::class);
         $mediaReference1->getMedia()->willReturn($media1->reveal());
         $mediaReference1->getType()->willReturn('test_type_1');
+        $mediaReference1->getActive()->willReturn(true);
         $mediaReference2 = $this->prophesize(ProductMediaReference::class);
         $mediaReference2->getMedia()->willReturn($media2->reveal());
         $mediaReference2->getType()->willReturn('test_type_2');
+        $mediaReference2->getActive()->willReturn(true);
         $mediaReferences = [$mediaReference1->reveal(), $mediaReference2->reveal()];
 
         $product = $this->prophesize(ProductInterface::class);
