@@ -25,6 +25,7 @@ class ProductMediaReferenceRepository extends EntityRepository implements Produc
     {
         $className = $this->getClassName();
         $mediaReference = new $className($product, $media, $type, $syliusId);
+        $product->addMediaReference($mediaReference);
         $this->getEntityManager()->persist($mediaReference);
 
         return $mediaReference;

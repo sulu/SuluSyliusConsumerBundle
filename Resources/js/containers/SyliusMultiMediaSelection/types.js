@@ -4,5 +4,5 @@ export type MediaReference = {
     type: string,
     syliusId: ?number,
     sorting: ?number,
-    enabled: boolean,
+    active: boolean,
 };

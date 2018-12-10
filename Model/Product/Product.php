@@ -205,12 +205,22 @@ class Product implements ProductInterface
         return $this;
     }
 
+    public function addMediaReference(ProductMediaReference $mediaReference): ProductInterface
+    {
+        $this->mediaReferences->add($mediaReference);
+
+        return $this;
+    }
+
     /**
      * @return ProductMediaReference[]
      */
     public function getMediaReferences(): array
     {
-        return $this->mediaReferences->getValues();
+        $criteria = Criteria::create()->orderBy(['sorting' => Criteria::ASC]);
+        $result = $this->mediaReferences->matching($criteria);
+
+        return $result->getValues();
     }
 
     public function removeMediaReference(ProductMediaReference $mediaReference): ProductInterface

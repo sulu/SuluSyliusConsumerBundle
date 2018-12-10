@@ -55,6 +55,7 @@ class ModifyProductMessageHandler
         }
 
         $sorting = 1;
+        $processedMediaIds = [];
         foreach ($message->getMediaReferences() as $mediaReferenceValueObject) {
             $mediaReference = $product->findMediaReferenceByMediaId($mediaReferenceValueObject->getMediaId());
             if (!$mediaReference) {
@@ -73,9 +74,18 @@ class ModifyProductMessageHandler
             }
 
             $mediaReference->setSorting($sorting);
+
+            $sorting++;
+            $processedMediaIds[] = $mediaReference->getMediaId();
         }
 
-        // TODO: Check for deleted
+        foreach ($product->getMediaReferences() as $mediaReference) {
+            if (in_array($mediaReference->getMediaId(), $processedMediaIds)) {
+                continue;
+            }
+
+            $product->removeMediaReference($mediaReference);
+        }
 
         return $product;
     }

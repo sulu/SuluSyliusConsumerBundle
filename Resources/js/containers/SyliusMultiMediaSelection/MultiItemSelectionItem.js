@@ -15,13 +15,14 @@ type Props = {|
 
 const THUMBNAIL_SIZE = 'sulu-25x25';
 const REMOVE_ICON = 'su-trash-alt';
-const DISABLE_ICON = 'su-eye';
+const DEACTIVATE_ICON = 'su-check-circle';
+const ACTIVATE_ICON = 'su-circle';
 
 export default class MultiItemSelectionItem extends React.PureComponent<Props> {
     handleStatusChange = () => {
         const {mediaReference, onMediaReferenceChange} = this.props;
         const newValue = {...mediaReference};
-        newValue.enabled = !newValue.enabled;
+        newValue.active = !newValue.active;
 
         onMediaReferenceChange(newValue);
     };
@@ -63,7 +64,7 @@ export default class MultiItemSelectionItem extends React.PureComponent<Props> {
                     }
                     <div className={multiItemSelectionItemStyle.mediaTitle}>{media.title}</div>
                 </div>
-                <div className={multiItemSelectionItemStyle.mediaTitle}>
+                <div className={multiItemSelectionItemStyle.type}>
                     <Input value={mediaReference.type} onChange={this.handleTypeChange} disabled={!!mediaReference.syliusId} />
                 </div>
                 <div className={multiItemSelectionItemStyle.buttons}>
@@ -74,7 +75,7 @@ export default class MultiItemSelectionItem extends React.PureComponent<Props> {
                             onClick={this.handleStatusChange}
                             type='button'
                         >
-                            <Icon name={DISABLE_ICON} />
+                            <Icon name={mediaReference.active ? DEACTIVATE_ICON : ACTIVATE_ICON} />
                         </button>
                         :
                         <button

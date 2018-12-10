@@ -67,6 +67,8 @@ interface ProductInterface
 
     public function removeProductCategory(CategoryInterface $productCategory): ProductInterface;
 
+    public function addMediaReference(ProductMediaReference $mediaReference): ProductInterface;
+
     /**
      * @return ProductMediaReference[]
      */

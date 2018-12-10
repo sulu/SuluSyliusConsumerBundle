@@ -42,7 +42,7 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
             type: '',
             syliusId: null,
             syliusPath: null,
-            enabled: true,
+            active: true,
         };
     }
 
@@ -140,7 +140,7 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
         newValue.forEach((mediaReference) => {
             if (mediaReference.mediaId === newMediaReference.mediaId) {
                 mediaReference.type = newMediaReference.type;
-                mediaReference.enabled = newMediaReference.enabled;
+                mediaReference.active = newMediaReference.active;
             }
         });
 
