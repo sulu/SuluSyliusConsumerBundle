@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\RequestOptions;
 
 class CartGateway implements CartGatewayInterface
 {
@@ -45,7 +46,7 @@ class CartGateway implements CartGatewayInterface
             'GET',
             self::URI,
             [
-                'query' => [
+                RequestOptions::QUERY => [
                     'criteria[customer][type]' => 'equal',
                     'criteria[customer][value]' => $customerEmail,
                 ],
@@ -65,11 +66,13 @@ class CartGateway implements CartGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'POST',
-            self::URI,
+            self::URI . '/',
             [
-                'customer' => $customer,
-                'channel' => $channel,
-                'locale' => $locale,
+                RequestOptions::JSON => [
+                    'customer' => $customer,
+                    'channel' => $channel,
+                    'localeCode' => $locale,
+                ]
             ]
         );
 
@@ -89,8 +92,12 @@ class CartGateway implements CartGatewayInterface
             'POST',
             self::URI . '/' . $cartId . '/items',
             [
-                'variantCode' => $variantCode,
-                'quantity' => $quantity,
+                [
+                    RequestOptions::JSON => [
+                        'variantCode' => $variantCode,
+                        'quantity' => $quantity,
+                    ]
+                ]
             ]
         );
 
@@ -103,7 +110,11 @@ class CartGateway implements CartGatewayInterface
             'PUT',
             self::URI . '/' . $cartId . '/' . $cartItemId,
             [
-                'quantity' => $quantity,
+                [
+                    RequestOptions::JSON => [
+                        'quantity' => $quantity,
+                    ]
+                ]
             ]
         );
 
