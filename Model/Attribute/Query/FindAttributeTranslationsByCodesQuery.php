@@ -16,6 +16,11 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query;
 class FindAttributeTranslationsByCodesQuery
 {
     /**
+     * @var string
+     */
+    private $locale;
+
+    /**
      * @var string[]
      */
     private $codes;
