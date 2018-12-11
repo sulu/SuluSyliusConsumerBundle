@@ -102,28 +102,24 @@ class CartGateway implements CartGatewayInterface
         return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function modifyItem(int $cartId, int $cartItemId, int $quantity): array
+    public function modifyItem(int $cartId, int $cartItemId, int $quantity): void
     {
         $response = $this->gatewayClient->request(
             'PUT',
-            self::URI . '/' . $cartId . '/' . $cartItemId . '/',
+            self::URI . '/' . $cartId . '/items/' . $cartItemId,
             [
                 RequestOptions::JSON => [
                     'quantity' => $quantity,
                 ],
             ]
         );
-
-        return json_decode($response->getBody()->getContents(), true);
     }
 
-    public function removeItem(int $cartId, int $cartItemId): array
+    public function removeItem(int $cartId, int $cartItemId): void
     {
         $response = $this->gatewayClient->request(
             'DELETE',
-            self::URI . '/' . $cartId . '/' . $cartItemId
+            self::URI . '/' . $cartId . '/items/' . $cartItemId
         );
-
-        return json_decode($response->getBody()->getContents(), true);
     }
 }

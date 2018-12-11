@@ -25,7 +25,7 @@ interface CartGatewayInterface
 
     public function addItem(int $cartId, string $variantCode, int $quantity): array;
 
-    public function modifyItem(int $cartId, int $cartItemId, int $quantity): array;
+    public function modifyItem(int $cartId, int $cartItemId, int $quantity): void;
 
-    public function removeItem(int $cartId, int $cartItemId): array;
+    public function removeItem(int $cartId, int $cartItemId): void;
 }

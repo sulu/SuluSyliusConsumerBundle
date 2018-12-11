@@ -28,9 +28,9 @@ class ChangeItemQuantityMessageHandler
         $this->cartGateway = $cartGateway;
     }
 
-    public function __invoke(ChangeItemQuantityMessage $message): array
+    public function __invoke(ChangeItemQuantityMessage $message): void
     {
-        return $this->cartGateway->modifyItem(
+        $this->cartGateway->modifyItem(
             $message->getCartId(),
             $message->getCartItemId(),
             $message->getQuantity()
