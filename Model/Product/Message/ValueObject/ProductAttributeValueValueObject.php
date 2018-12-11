@@ -48,4 +48,9 @@ class ProductAttributeValueValueObject
     {
         return $this->getStringValue('localeCode');
     }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }

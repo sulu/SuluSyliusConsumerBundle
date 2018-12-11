@@ -40,4 +40,9 @@ class ProductImageValueObject
     {
         return $this->getStringValue('path');
     }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }
