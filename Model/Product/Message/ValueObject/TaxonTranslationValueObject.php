@@ -43,4 +43,9 @@ class TaxonTranslationValueObject
     {
         return $this->getStringValueWithDefault('description', '');
     }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }

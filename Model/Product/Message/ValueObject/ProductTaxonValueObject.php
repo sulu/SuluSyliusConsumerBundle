@@ -33,4 +33,14 @@ class ProductTaxonValueObject
     {
         return $this->getIntValue('taxonId');
     }
+
+    public function getPosition(): ?int
+    {
+        return $this->getNullableIntValue('sorting');
+    }
+
+    public function getCustomData(): array
+    {
+        return $this->getArrayValueWithDefault('customData');
+    }
 }
