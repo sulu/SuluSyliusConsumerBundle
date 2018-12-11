@@ -92,11 +92,9 @@ class CartGateway implements CartGatewayInterface
             'POST',
             self::URI . '/' . $cartId . '/items/',
             [
-                [
-                    RequestOptions::JSON => [
-                        'variantCode' => $variantCode,
-                        'quantity' => $quantity,
-                    ],
+                RequestOptions::JSON => [
+                    'variantCode' => $variantCode,
+                    'quantity' => $quantity,
                 ],
             ]
         );
@@ -110,10 +108,8 @@ class CartGateway implements CartGatewayInterface
             'PUT',
             self::URI . '/' . $cartId . '/' . $cartItemId . '/',
             [
-                [
-                    RequestOptions::JSON => [
-                        'quantity' => $quantity,
-                    ],
+                RequestOptions::JSON => [
+                    'quantity' => $quantity,
                 ],
             ]
         );
