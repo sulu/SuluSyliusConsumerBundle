@@ -11,5 +11,9 @@
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
             <argument type="service" id="security.token_storage"/>
         </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductAttributeGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductAttributeGateway">
+            <argument type="service" id="sulu_sylius_consumer.gateway_client" />
+        </service>
     </services>
 </container>
