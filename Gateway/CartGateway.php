@@ -93,7 +93,7 @@ class CartGateway implements CartGatewayInterface
             self::URI . '/' . $cartId . '/items/',
             [
                 RequestOptions::JSON => [
-                    'variantCode' => $variantCode,
+                    'variant' => $variantCode,
                     'quantity' => $quantity,
                 ],
             ]
