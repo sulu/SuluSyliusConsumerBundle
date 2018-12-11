@@ -70,6 +70,7 @@ class MediaFactory implements MediaFactoryInterface
 
     public function create(
         SymfonyFile $uploadedFile,
+        ?string $filename,
         string $collectionKey,
         array $titles
     ): MediaInterface {
@@ -91,7 +92,7 @@ class MediaFactory implements MediaFactoryInterface
         $media->setType($mediaType);
         $media->setCollection($collection);
 
-        $this->update($media, $uploadedFile, $titles);
+        $this->update($media, $uploadedFile, $filename, $titles);
 
         $this->entityManager->persist($file);
         $this->entityManager->persist($media);
@@ -102,14 +103,15 @@ class MediaFactory implements MediaFactoryInterface
     public function update(
         MediaInterface $media,
         SymfonyFile $uploadedFile,
+        ?string $filename,
         array $titles
     ): MediaInterface {
-        $fileName = $uploadedFile->getFilename();
+        $filename = $filename ?: $uploadedFile->getFilename();
         if ($uploadedFile instanceof UploadedFile) {
-            $fileName = $uploadedFile->getClientOriginalName() ?: $fileName;
+            $filename = $uploadedFile->getClientOriginalName() ?: $filename;
         }
 
-        $storageOptions = $this->mediaStorage->save($uploadedFile->getPathname(), $fileName, 1);
+        $storageOptions = $this->mediaStorage->save($uploadedFile->getPathname(), $filename);
 
         $file = $media->getFiles()[0];
         $file->setVersion($file->getVersion() + 1);
@@ -117,7 +119,7 @@ class MediaFactory implements MediaFactoryInterface
         $fileVersion = new FileVersion();
         $fileVersion->setVersion($file->getVersion());
         $fileVersion->setSize($uploadedFile->getSize());
-        $fileVersion->setName($fileName);
+        $fileVersion->setName($filename);
         $fileVersion->setStorageOptions($storageOptions);
         $fileVersion->setMimeType($this->getMimeType($uploadedFile));
         $fileVersion->setFile($file);

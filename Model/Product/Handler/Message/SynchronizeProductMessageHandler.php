@@ -376,7 +376,12 @@ class SynchronizeProductMessageHandler
         $file = $this->downloadImage($imageValueObject->getPath());
 
         // create sulu media
-        $media = $this->mediaFactory->create($file, 'sylius', $this->getImageTitles($product));
+        $media = $this->mediaFactory->create(
+            $file,
+            $imageValueObject->getFilename(),
+            'sylius',
+            $this->getImageTitles($product)
+        );
 
         // delete temp file
         $this->filesystem->remove($file->getPathname());
@@ -405,7 +410,12 @@ class SynchronizeProductMessageHandler
         $file = $this->downloadImage($imageValueObject->getPath());
 
         // update sulu media
-        $this->mediaFactory->update($mediaReference->getMedia(), $file, $this->getImageTitles($product));
+        $this->mediaFactory->update(
+            $mediaReference->getMedia(),
+            $file,
+            $imageValueObject->getFilename(),
+            $this->getImageTitles($product)
+        );
 
         // delete temp file
         $this->filesystem->remove($file->getPathname());

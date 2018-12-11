@@ -60,6 +60,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productImageValueObject = $this->prophesize(ProductImageValueObject::class);
         $productImageValueObject->getId()->willReturn(27);
         $productImageValueObject->getPath()->willReturn('ab/12/test1.png');
+        $productImageValueObject->getFilename()->willReturn('nice_file.png');
         $productImageValueObject->getType()->willReturn('test_type');
 
         $productTaxonValueObject1 = $this->prophesize(ProductTaxonValueObject::class);
@@ -179,7 +180,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem->remove(__DIR__ . '/images/test.png')->shouldBeCalled();
 
         $media = $this->prophesize(MediaInterface::class);
-        $mediaFactory->create(Argument::type(File::class), 'sylius', ['de' => 'Product One'])
+        $mediaFactory->create(Argument::type(File::class), 'nice_file.png', 'sylius', ['de' => 'Product One'])
             ->willReturn($media->reveal());
 
         $productMediaReference = $this->prophesize(ProductMediaReference::class);
@@ -244,6 +245,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productImageValueObject = $this->prophesize(ProductImageValueObject::class);
         $productImageValueObject->getId()->willReturn(27);
         $productImageValueObject->getPath()->willReturn('ab/12/test1.png');
+        $productImageValueObject->getFilename()->willReturn('nice_file.png');
         $productImageValueObject->getType()->willReturn('test_type');
 
         $attributeValueValueObject1 = $this->prophesize(ProductAttributeValueValueObject::class);
@@ -370,7 +372,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem->remove(__DIR__ . '/images/test.png')->shouldBeCalled();
 
         $media = $this->prophesize(MediaInterface::class);
-        $mediaFactory->update($media->reveal(), Argument::type(File::class), ['de' => 'Product One'])
+        $mediaFactory->update($media->reveal(), Argument::type(File::class), 'nice_file.png', ['de' => 'Product One'])
             ->willReturn($media->reveal());
 
         $oldProductMediaReference = $this->prophesize(ProductMediaReference::class);
