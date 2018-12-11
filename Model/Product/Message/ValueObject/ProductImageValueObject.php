@@ -41,6 +41,11 @@ class ProductImageValueObject
         return $this->getStringValue('path');
     }
 
+    public function getFilename(): ?string
+    {
+        return $this->getNullableStringValue('filename');
+    }
+
     public function getCustomData(): array
     {
         return $this->getArrayValueWithDefault('customData');

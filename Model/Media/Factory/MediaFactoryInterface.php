@@ -20,6 +20,7 @@ interface MediaFactoryInterface
 {
     public function create(
         SymfonyFile $uploadedFile,
+        ?string $filename,
         string $collectionKey,
         array $titles
     ): MediaInterface;
@@ -27,6 +28,7 @@ interface MediaFactoryInterface
     public function update(
         MediaInterface $media,
         SymfonyFile $uploadedFile,
+        ?string $filename,
         array $titles
     ): MediaInterface;
 
