@@ -23,7 +23,7 @@ sulu_core:
         structure:
             paths:
                 products:
-                    path: "%kernel.project_dir%/app/Resources/templates/products"
+                    path: "%kernel.project_dir%/Resources/templates/products"
                     type: "products"
 
 sulu_route:
