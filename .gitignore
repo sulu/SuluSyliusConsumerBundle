@@ -13,6 +13,7 @@ phpunit.xml
 .env
 Tests/app/cache
 Tests/app/data
+Tests/app/var
 Tests/var
 
 # npm
