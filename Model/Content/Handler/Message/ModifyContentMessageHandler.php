@@ -109,17 +109,23 @@ class ModifyContentMessageHandler
         $draftData = [];
         foreach ($metadata->getProperties() as $property) {
             $value = null;
-            if (array_key_exists($property->getName(), $data)) {
-                $value = $data[$property->getName()];
+
+            $name = $property->getName();
+            if (is_float($name)) {
+                $name = strval($name);
+            }
+
+            if (array_key_exists($name, $data)) {
+                $value = $data[$name];
             }
 
             if ($property->isLocalized()) {
-                $localizedDraftData[$property->getName()] = $value;
+                $localizedDraftData[$name] = $value;
 
                 continue;
             }
 
-            $draftData[$property->getName()] = $value;
+            $draftData[$name] = $value;
         }
 
         $localizedDraftContent->setData($localizedDraftData);
