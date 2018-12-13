@@ -382,7 +382,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
 
         $productMediaReference = $this->prophesize(ProductMediaReference::class);
         $productMediaReference->setSyliusPath('ab/12/test1.png')->willReturn($productMediaReference->reveal());
-        $productMediaReference->setSorting(1)->willReturn($productMediaReference->reveal());
+        $productMediaReference->setType('test_type')->willReturn($productMediaReference->reveal());
         $productMediaReference->getSyliusPath()->willReturn('/old-path');
         $productMediaReference->getMedia()->willReturn($media->reveal());
         $productMediaReferenceRepository->findBySyliusId(27)->willReturn($productMediaReference->reveal());
