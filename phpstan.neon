@@ -15,4 +15,4 @@ parameters:
         - %currentWorkingDirectory%/Tests/app/var/*
         - %currentWorkingDirectory%/Tests/var/*
     symfony:
-        container_xml_path: %rootDir%/../../../Tests/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml
+        container_xml_path: %rootDir%/../../../Tests/app/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml
