@@ -59,13 +59,18 @@ class ContentSerializerSubscriber implements EventSubscriberInterface
         /** @var JsonSerializationVisitor $visitor */
         $visitor = $event->getVisitor();
         foreach ($metadata->getProperties() as $property) {
-            if (array_key_exists($property->getName(), $data)) {
-                $visitor->setData($property->getName(), $data[$property->getName()]);
+            $name = $property->getName();
+            if (is_float($name)) {
+                $name = strval($name);
+            }
+
+            if (array_key_exists($name, $data)) {
+                $visitor->setData(strval($name), $data[$name]);
 
                 continue;
             }
 
-            $visitor->setData($property->getName(), null);
+            $visitor->setData(strval($name), null);
         }
     }
 }

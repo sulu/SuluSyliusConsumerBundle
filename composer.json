@@ -51,11 +51,12 @@
     "scripts": {
         "initialize": [
             "Tests/app/console doctrine:database:create --if-not-exists",
-            "Tests/app/console doctrine:schema:update --force"
+            "Tests/app/console doctrine:schema:update --force",
+            "Tests/app/console cache:clear"
         ],
         "test": [
-            "@phpunit",
             "@phpstan",
+            "@phpunit",
             "@php-cs"
         ],
         "phpunit": "vendor/bin/phpunit",
