@@ -359,6 +359,8 @@ class SynchronizeProductMessageHandler
             return;
         }
 
+        $mediaReference->setType($imageValueObject->getType());
+
         if ($mediaReference->getSyliusPath() !== $imageValueObject->getPath()) {
             $this->updateMediaReference($imageValueObject, $product, $mediaReference);
 
@@ -396,7 +398,6 @@ class SynchronizeProductMessageHandler
 
         // save path
         $mediaReference->setSyliusPath($imageValueObject->getPath());
-        $mediaReference->setSorting(count($product->getMediaReferences()) + 1);
 
         return $mediaReference;
     }

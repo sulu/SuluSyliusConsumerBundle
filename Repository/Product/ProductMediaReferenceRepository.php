@@ -24,7 +24,12 @@ class ProductMediaReferenceRepository extends EntityRepository implements Produc
     public function create(ProductInterface $product, MediaInterface $media, string $type, ?int $syliusId = null): ProductMediaReference
     {
         $className = $this->getClassName();
+
+        $sorting = count($product->getMediaReferences()) + 1;
+
+        /** @var ProductMediaReference $mediaReference */
         $mediaReference = new $className($product, $media, $type, $syliusId);
+        $mediaReference->setSorting($sorting);
         $product->addMediaReference($mediaReference);
         $this->getEntityManager()->persist($mediaReference);
 
