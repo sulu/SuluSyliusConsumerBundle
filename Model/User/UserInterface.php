@@ -11,11 +11,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Security;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\User;
 
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\UserInterface as SymfonyUserInterface;
 
-interface SyliusUserInterface extends UserInterface
+interface UserInterface extends SymfonyUserInterface
 {
     public function getId(): int;
 

@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
-use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUserInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Security\UserInterface;
 
 interface AuthenticationGatewayInterface
 {
-    public function getUser(string $email, string $password): ?SyliusUserInterface;
+    public function getUser(string $email, string $password): ?UserInterface;
 }

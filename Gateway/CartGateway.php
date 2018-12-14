@@ -104,7 +104,7 @@ class CartGateway implements CartGatewayInterface
 
     public function modifyItem(int $cartId, int $cartItemId, int $quantity): void
     {
-        $response = $this->gatewayClient->request(
+        $this->gatewayClient->request(
             'PUT',
             self::URI . '/' . $cartId . '/items/' . $cartItemId,
             [
@@ -117,7 +117,7 @@ class CartGateway implements CartGatewayInterface
 
     public function removeItem(int $cartId, int $cartItemId): void
     {
-        $response = $this->gatewayClient->request(
+        $this->gatewayClient->request(
             'DELETE',
             self::URI . '/' . $cartId . '/items/' . $cartItemId
         );

@@ -4,6 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service
+            id="sulu_sylius.controller.website_customer"
+            class="Sulu\Bundle\SyliusConsumerBundle\Controller\Customer\WebsiteCustomerController"
+            public="true"
+        >
+            <argument type="service" id="message_bus"/>
+        </service>
+
+        <service
             id="sulu_sylius_product.controller.product"
             class="Sulu\Bundle\SyliusConsumerBundle\Controller\Product\ProductController"
             public="true"

@@ -7,8 +7,11 @@
         <import resource="services/cart-handler.xml"/>
         <import resource="services/content-handler.xml"/>
         <import resource="services/controllers.xml"/>
+        <import resource="services/customer-handler.xml"/>
+        <import resource="services/user.xml"/>
         <import resource="services/gateway.xml"/>
         <import resource="services/gateway-client.xml"/>
+        <import resource="services/message-middleware.xml"/>
         <import resource="services/product-handler.xml"/>
         <import resource="services/repository.xml"/>
         <import resource="services/routable-handler.xml"/>
