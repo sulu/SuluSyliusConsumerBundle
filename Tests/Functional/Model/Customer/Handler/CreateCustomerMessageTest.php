@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
 use GuzzleHttp\Psr7\Response;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\CreateCustomerMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -37,7 +39,7 @@ class CreateCustomerMessageTest extends SuluTestCase
         $this->getGatewayClient()->setHandleRequestCallable(
             function($method, $uri, array $options = []) {
                 return new Response(
-                    200,
+                    201,
                     [],
                     '{
                         "id": 564,
@@ -59,17 +61,45 @@ class CreateCustomerMessageTest extends SuluTestCase
             }
         );
 
+        $messageLogger = $this->createAndRegisterMessageLogger();
+
         $message = new CreateCustomerMessage(
             'test@test.com',
             'super-password-123',
-            'first name',
-            'last name',
+            'John',
+            'Diggle',
             'm'
         );
 
+        // send message
         $result = $this->getMessageBus()->dispatch($message);
 
-        $this->assertCount(4, $result);
+        // check result
+        $this->assertInstanceOf(Customer::class, $result);
+
+        // checks that an email was sent
+        $this->assertSame(1, $messageLogger->countMessages());
+        $message = $messageLogger->getMessages()[0];
+
+        // Asserting email data
+        $this->assertInstanceOf('Swift_Message', $message);
+        $this->assertSame('Verify your email address', $message->getSubject());
+        $this->assertSame('no-reply@example.com', key($message->getFrom()));
+        $this->assertSame('test@test.com', key($message->getTo()));
+        $this->assertContains(
+            'http://localhost/verify/72FThg24HeesEPbM',
+            $message->getBody()
+        );
+    }
+
+    private function createAndRegisterMessageLogger(): \Swift_Plugins_MessageLogger
+    {
+        // register swiftmailer logger
+        $mailer = $this->getContainer()->get('mailer');
+        $logger = new \Swift_Plugins_MessageLogger();
+        $mailer->registerPlugin($logger);
+
+        return $logger;
     }
 
     private function getGatewayClient(): GatewayClient

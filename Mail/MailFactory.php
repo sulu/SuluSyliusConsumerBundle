@@ -32,30 +32,21 @@ class MailFactory
     /**
      * @var array
      */
-    protected $webspacesConfig;
-
-    /**
-     * @var string
-     */
-    protected $adminEmail;
+    protected $sender;
 
     public function __construct(
         \Swift_Mailer $mailer,
         EngineInterface $engine,
         TranslatorInterface $translator,
-        TemplateAttributeResolver $templateAttributeResolver,
-        array $webspacesConfig,
-        string $adminEmail
+        array $sender
     ) {
         $this->mailer = $mailer;
         $this->engine = $engine;
         $this->translator = $translator;
-        $this->templateAttributeResolver = $templateAttributeResolver;
-        $this->webspacesConfig = $webspacesConfig;
-        $this->adminEmail = $adminEmail;
+        $this->sender = $sender;
     }
 
-    public function sendConfirmEmail(Customer $customer): void
+    public function sendVerifyEmail(Customer $customer): void
     {
         if (!$customer->getUser()->getToken()) {
             throw new \RuntimeException('No token given');
@@ -63,8 +54,8 @@ class MailFactory
 
         $this->sendEmail(
             [$customer->getEmail() => $customer->getFullName()],
-            'email_customer_confirm_subject',
-            '@App/email-templates/invitation/new-user.html.twig',
+            'sulu_sylius.email_customer_verify.subject',
+            'SuluSyliusConsumerBundle:Email:customer-verify.html.twig',
             [
                 'customer' => $customer,
                 'token' => $customer->getUser()->getToken(),
@@ -80,8 +71,7 @@ class MailFactory
         string $subject,
         string $template,
         array $data = [],
-        string $locale = null,
-        bool $resolve = true
+        string $locale = null
     ): void {
         $translatorLocale = $this->translator->getLocale();
 
@@ -89,15 +79,11 @@ class MailFactory
             $this->translator->setLocale($locale);
         }
 
-        if ($resolve) {
-            $data = $this->templateAttributeResolver->resolve($data);
-        }
-
         $body = $this->engine->render($template, $data);
 
-        $message = \Swift_Message::newInstance();
+        $message = new \Swift_Message();
         $message->setSubject($this->translator->trans($subject));
-        $message->setFrom($this->getFromMails());
+        $message->setFrom($this->getFrom());
         $message->setTo($to);
         $message->setBody($body, 'text/html');
 
@@ -106,8 +92,10 @@ class MailFactory
         $this->translator->setLocale($translatorLocale);
     }
 
-    private function getFromMails(): array
+    protected function getFrom(): array
     {
-        return $this->webspacesConfig['talentscreen']['from'];
+        return [
+            $this->sender['address'] => $this->sender['name']
+        ];
     }
 }

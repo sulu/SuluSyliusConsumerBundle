@@ -37,7 +37,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
 
     public function findById(int $id): Customer
     {
-        $response = $this->gatewayClient->request(
+        $response = $this->sendRequest(
             'GET',
             self::URI . '/' . $id
         );
@@ -46,9 +46,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
             $this->handleErrors($response);
         }
 
-        $data = json_decode($response->getBody()->getContents(), true);
-
-        return $this->customerFactory->createFromArray($data);
+        return $this->customerFactory->createFromArray($this->getData($response));
     }
 
     public function create(
@@ -59,7 +57,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
         string $gender,
         bool $enabled = false
     ): Customer {
-        $response = $this->gatewayClient->request(
+        $response = $this->sendRequest(
             'POST',
             self::URI . '/',
             [
@@ -80,9 +78,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
             $this->handleErrors($response);
         }
 
-        $data = json_decode($response->getBody()->getContents(), true);
-
-        return $this->customerFactory->createFromArray($data);
+        return $this->customerFactory->createFromArray($this->getData($response));
     }
 
     public function modify(
@@ -120,20 +116,11 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
             }
         }
 
-        $response = $this->gatewayClient->request(
+        $response = $this->sendRequest(
             'PATCH',
             self::URI . '/',
             [
-                RequestOptions::JSON => [
-                    'email' => $email,
-                    'firstName' => $firstName,
-                    'lastName' => $lastName,
-                    'gender' => $gender,
-                    'user' => [
-                        'plainPassword' => $plainPassword,
-                        'enabled' => $enabled,
-                    ]
-                ],
+                RequestOptions::JSON => $data,
             ]
         );
 
@@ -144,14 +131,12 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
 
     public function verify(string $token): Customer
     {
-        $response = $this->gatewayClient->request('PUT', '/api/v1/verify/' . $token, ['http_errors' => false]);
-
-        $data = json_decode($response->getBody()->getContents(), true);
+        $response = $this->sendRequest('PUT', '/api/v1/verify/' . $token);
 
         if (200 !== $response->getStatusCode()) {
             $this->handleErrors($response);
         }
 
-        return $this->customerFactory->createFromArray($data);
+        return $this->customerFactory->createFromArray($this->getData($response));
     }
 }

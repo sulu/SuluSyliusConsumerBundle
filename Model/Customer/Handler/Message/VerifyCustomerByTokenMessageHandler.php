@@ -14,9 +14,11 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception\NotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event\CustomerCreatedEvent;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerByTokenMessage;
 
 class VerifyCustomerByTokenMessageHandler
@@ -41,7 +43,12 @@ class VerifyCustomerByTokenMessageHandler
 
     public function __invoke(VerifyCustomerByTokenMessage $message): Customer
     {
-        $customer = $this->customerGateway->verify($message->getToken());
+        $token = $message->getToken();
+        try {
+            $customer = $this->customerGateway->verify($token);
+        } catch (NotFoundException $notFoundException) {
+            throw new TokenNotFoundException($token);
+        }
 
         $event = new CustomerCreatedEvent($customer);
         $this->eventCollector->push($event::NAME, $event);

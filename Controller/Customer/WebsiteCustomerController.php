@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Customer;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerByTokenMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,11 @@ class WebsiteCustomerController extends AbstractController
 
     public function verify(string $token): Response
     {
-        $this->messageBus->dispatch(new VerifyCustomerByTokenMessage($token));
+        try {
+            $this->messageBus->dispatch(new VerifyCustomerByTokenMessage($token));
+        } catch (TokenNotFoundException $tokenNotFoundException) {
+            throw $this->createNotFoundException('Token not found');
+        }
 
         return $this->redirect('/');
     }

@@ -14,26 +14,28 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Security\User;
-use Sulu\Bundle\SyliusConsumerBundle\Security\UserInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactory;
 
-class AuthenticationGateway implements AuthenticationGatewayInterface
+class AuthenticationGateway extends AbstractGateway implements AuthenticationGatewayInterface
 {
     const URI = '/api/v1/authenticate';
 
     /**
-     * @var ClientInterface
+     * @var CustomerFactory
      */
-    private $gatewayClient;
+    protected $customerFactory;
 
-    public function __construct(ClientInterface $gatewayClient)
+    public function __construct(ClientInterface $gatewayClient, CustomerFactory $customerFactory)
     {
-        $this->gatewayClient = $gatewayClient;
+        parent::__construct($gatewayClient);
+
+        $this->customerFactory = $customerFactory;
     }
 
-    public function getUser(string $email, string $password): ?UserInterface
+    public function getCustomer(string $email, string $password): ?Customer
     {
-        $response = $this->gatewayClient->request(
+        $response = $this->sendRequest(
             'GET',
             self::URI,
             [
@@ -44,20 +46,14 @@ class AuthenticationGateway implements AuthenticationGatewayInterface
             ]
         );
 
-        $data = json_decode($response->getBody()->getContents(), true);
-        if ($data['exception']) {
+        if (400 === $response->getStatusCode()) {
             return null;
         }
 
-        $userData = $data['user'];
+        if (200 !== $response->getStatusCode()) {
+            $this->handleErrors($response);
+        }
 
-        return new User(
-            $userData['id'],
-            array_key_exists('username', $userData) ? $userData['username'] : null,
-            $userData['roles'],
-            $userData['email'],
-            $userData['firstName'] ?? null,
-            $userData['lastName'] ?? null
-        );
+        return $this->customerFactory->createFromArray($this->getData($response));
     }
 }

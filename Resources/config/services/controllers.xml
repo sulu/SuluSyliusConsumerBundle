@@ -9,6 +9,8 @@
             public="true"
         >
             <argument type="service" id="message_bus"/>
+
+            <tag name="sulu.context" context="website"/>
         </service>
 
         <service
@@ -18,6 +20,8 @@
         >
             <argument type="service" id="message_bus"/>
             <argument type="service" id="fos_rest.view_handler.default"/>
+
+            <tag name="sulu.context" context="admin"/>
         </service>
 
         <service
@@ -27,6 +31,8 @@
         >
             <argument type="service" id="message_bus"/>
             <argument type="service" id="fos_rest.view_handler.default"/>
+
+            <tag name="sulu.context" context="admin"/>
         </service>
     </services>
 </container>

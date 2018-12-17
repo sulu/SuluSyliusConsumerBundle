@@ -32,6 +32,20 @@ abstract class AbstractGateway
         $this->gatewayClient = $gatewayClient;
     }
 
+    protected function sendRequest(string $method, string $uri, array $options = []): ResponseInterface
+    {
+        if (!array_key_exists('http_errors', $options)) {
+            $options['http_errors'] = false;
+        }
+
+        return $this->gatewayClient->request($method, $uri, $options);
+    }
+
+    protected function getData(ResponseInterface $response): array
+    {
+        return json_decode($response->getBody()->getContents(), true);
+    }
+
     protected function handleErrors(ResponseInterface $response)
     {
         switch ($response->getStatusCode()) {

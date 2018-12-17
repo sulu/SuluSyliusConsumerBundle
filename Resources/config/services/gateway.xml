@@ -5,6 +5,7 @@
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactory"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\CartGateway">

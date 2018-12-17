@@ -63,3 +63,7 @@ sulu_sylius_consumer:
         client_secret: secret_demo_client
     route_defaults_fallback:
         view: 'templates/products/default'
+    firewall_provider_key: 'main'
+
+swiftmailer:
+    disable_delivery: true
