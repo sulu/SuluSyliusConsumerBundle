@@ -12,20 +12,14 @@ doctrine:
                 is_bundle: false
 
 framework:
+    router:
+        resource: "%kernel.root_dir%/config/routing_%sulu.context%.yml"
     messenger:
         buses:
             command_bus:
                 middleware:
                     - doctrine_transaction_middleware
                     - event_middleware
-
-sulu_core:
-    content:
-        structure:
-            paths:
-                products:
-                    path: "%kernel.project_dir%/Resources/templates/products"
-                    type: "products"
 
 sulu_route:
     mappings:

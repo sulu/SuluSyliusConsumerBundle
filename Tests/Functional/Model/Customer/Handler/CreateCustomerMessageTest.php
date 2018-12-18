@@ -11,14 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Customer\Handler;
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\CreateCustomerMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Bundle\SwiftmailerBundle\DataCollector\MessageDataCollector;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -34,10 +33,15 @@ class CreateCustomerMessageTest extends SuluTestCase
         parent::tearDown();
     }
 
+    public function getKernelConfiguration()
+    {
+        return ['sulu_context' => 'website'];
+    }
+
     public function testMin(): void
     {
         $this->getGatewayClient()->setHandleRequestCallable(
-            function($method, $uri, array $options = []) {
+            function ($method, $uri, array $options = []) {
                 return new Response(
                     201,
                     [],

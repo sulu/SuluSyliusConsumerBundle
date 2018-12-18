@@ -13,20 +13,22 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+
 class FindCartForCustomerMessage
 {
     /**
-     * @var string
+     * @var Customer
      */
-    private $customerEmail;
+    private $customer;
 
-    public function __construct(string $customerEmail)
+    public function __construct(Customer $customer)
     {
-        $this->customerEmail = $customerEmail;
+        $this->customer = $customer;
     }
 
-    public function getCustomerEmail(): string
+    public function getCustomer(): Customer
     {
-        return $this->customerEmail;
+        return $this->customer;
     }
 }

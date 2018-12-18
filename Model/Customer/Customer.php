@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
 
 class Customer
@@ -57,7 +56,7 @@ class Customer
         int $id,
         string $email,
         string $emailCanonical,
-        ?string $gender,
+        string $gender,
         ?string $firstName = null,
         ?string $lastName = null
     ) {

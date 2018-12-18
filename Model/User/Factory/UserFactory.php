@@ -29,10 +29,8 @@ class UserFactory
             $this->keyExists('username') ? $this->getStringValue('username') : null,
             $this->getArrayValueWithDefault('roles'),
             $this->getBoolValue('enabled'),
-            $this->keyExists('token') ? $this->getStringValue('token') : null
+            $this->keyExists('token') ? $this->getNullableStringValue('token') : null
         );
-
-        $this->payload = null;
 
         return $customer;
     }

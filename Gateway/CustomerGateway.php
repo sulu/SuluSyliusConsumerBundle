@@ -69,7 +69,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
                     'user' => [
                         'plainPassword' => $plainPassword,
                         'enabled' => $enabled,
-                    ]
+                    ],
                 ],
             ]
         );

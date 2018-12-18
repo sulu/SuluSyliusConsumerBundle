@@ -47,8 +47,6 @@ class CustomerFactory
         $user = $this->userFactory->createFromArray($data['user']);
         $customer->setUser($user);
 
-        $this->payload = null;
-
         return $customer;
     }
 }

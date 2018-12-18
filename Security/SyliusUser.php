@@ -14,18 +14,27 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
-use Symfony\Component\Security\Core\User\UserInterface;
 
-class SyliusUser implements UserInterface
+class SyliusUser implements SyliusUserInterface
 {
     /**
-     * @var int
+     * @var Customer
      */
     private $customer;
 
     public function __construct(Customer $customer)
     {
         $this->customer = $customer;
+    }
+
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
+    }
+
+    public function getId(): int
+    {
+        return $this->customer->getUser()->getId();
     }
 
     public function getUsername(): ?string

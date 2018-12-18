@@ -19,9 +19,9 @@ use Psr\Http\Message\RequestInterface;
 class GatewayClient implements ClientInterface
 {
     /**
-     * @var callable
+     * @var null|callable
      */
-    private $handleRequestCallable;
+    private $handleRequestCallable = null;
 
     public function setHandleRequestCallable(callable $handleRequestCallable)
     {
@@ -35,6 +35,7 @@ class GatewayClient implements ClientInterface
         }
 
         $callable = $this->handleRequestCallable;
+
         return $callable($method, $uri, $options);
     }
 

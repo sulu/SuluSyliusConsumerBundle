@@ -17,7 +17,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception\NotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event\CustomerCreatedEvent;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event\CustomerVerifiedEvent;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerByTokenMessage;
 
@@ -50,7 +50,7 @@ class VerifyCustomerByTokenMessageHandler
             throw new TokenNotFoundException($token);
         }
 
-        $event = new CustomerCreatedEvent($customer);
+        $event = new CustomerVerifiedEvent($customer);
         $this->eventCollector->push($event::NAME, $event);
 
         return $customer;

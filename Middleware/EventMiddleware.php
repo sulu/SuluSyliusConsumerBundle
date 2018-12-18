@@ -13,8 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Middleware;
 
-use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
 
 class EventMiddleware implements MiddlewareInterface
 {

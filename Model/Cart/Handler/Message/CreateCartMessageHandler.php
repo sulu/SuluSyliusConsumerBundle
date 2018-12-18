@@ -36,14 +36,14 @@ class CreateCartMessageHandler
 
     public function __invoke(CreateCartMessage $message): array
     {
-        $syliusUser = $message->getSyliusUser();
-        if (!$syliusUser) {
+        $customer = $message->getCustomer();
+        if (!$customer) {
             // TODO: Anonymous Cart
             throw new \Exception('not implemented');
         }
 
         return $this->cartGateway->create(
-            $syliusUser->getEmail(),
+            $customer->getEmail(),
             $message->getChannel() ?: $this->defaultChannel,
             $message->getLocale()
         );
