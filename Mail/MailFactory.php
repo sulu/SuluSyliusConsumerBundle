@@ -36,11 +36,6 @@ class MailFactory
     protected $translator;
 
     /**
-     * @var TemplateAttributeResolver
-     */
-    protected $templateAttributeResolver;
-
-    /**
      * @var array
      */
     protected $sender;
