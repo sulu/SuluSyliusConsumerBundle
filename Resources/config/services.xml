@@ -52,6 +52,7 @@
             <argument>%sulu_sylius_consumer.firewall_provider_key%</argument>
 
             <tag name="kernel.event_subscriber"/>
+            <tag name="sulu.context" context="website"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider">

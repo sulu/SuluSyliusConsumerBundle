@@ -12,6 +12,7 @@
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector"/>
 
             <tag name="messenger.message_handler"/>
+            <tag name="sulu.context" context="website"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Handler\Message\VerifyCustomerByTokenMessageHandler">
@@ -19,6 +20,7 @@
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector"/>
 
             <tag name="messenger.message_handler"/>
+            <tag name="sulu.context" context="website"/>
         </service>
     </services>
 </container>
