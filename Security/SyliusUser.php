@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class SyliusUser implements SyliusUserInterface
 {
@@ -60,5 +61,14 @@ class SyliusUser implements SyliusUserInterface
     public function getSalt(): ?string
     {
         return null;
+    }
+
+    public function isEqualTo(UserInterface $user)
+    {
+        if (!$user instanceof SyliusUserInterface) {
+            return false;
+        }
+
+        return $user->getCustomer()->getUser()->getHash() === $this->customer->getUser()->getHash();
     }
 }

@@ -13,34 +13,45 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
-use Sulu\Bundle\SyliusConsumerBundle\Gateway\AuthenticationGatewayInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
 class SyliusUserProvider implements UserProviderInterface
 {
     /**
-     * @var AuthenticationGatewayInterface
+     * @var CustomerGatewayInterface
      */
-    private $authenticationGateway;
+    private $customerGateway;
 
-    public function __construct(AuthenticationGatewayInterface $authenticationGateway)
+    public function __construct(CustomerGatewayInterface $customerGateway)
     {
-        $this->authenticationGateway = $authenticationGateway;
+        $this->customerGateway = $customerGateway;
     }
 
     public function loadUserByUsername($username)
     {
-        throw new \Exception('load');
+        throw new \Exception('"loadUserByUsername" method is not implemented');
     }
 
     public function refreshUser(UserInterface $user)
     {
-        return $user;
+        if (!$user instanceof SyliusUserInterface) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+        }
+
+        $customer = $this->customerGateway->findById($user->getCustomer()->getId());
+        if (null === $customer) {
+            throw new UsernameNotFoundException(sprintf('Customer with id %s not found', json_encode($user->getCustomer()->getId())));
+        }
+
+        return new SyliusUser($customer);
     }
 
     public function supportsClass($class)
     {
-        return is_subclass_of($class, UserInterface::class);
+        return is_subclass_of($class, SyliusUserInterface::class);
     }
 }
