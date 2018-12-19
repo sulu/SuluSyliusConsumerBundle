@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception;
 
-interface GatewayException
+abstract class GatewayException extends \Exception
 {
 }

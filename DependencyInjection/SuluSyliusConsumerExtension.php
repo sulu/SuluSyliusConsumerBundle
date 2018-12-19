@@ -47,6 +47,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
         );
         $container->setParameter('sulu_sylius_consumer.firewall_provider_key', $config['firewall_provider_key']);
         $container->setParameter('sulu_sylius_consumer.mail_sender', $config['mail_sender']);
+        $container->setParameter('sulu_sylius_consumer.verify.redirect_to', $config['verify']['redirect_to']);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');

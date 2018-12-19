@@ -19,9 +19,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event\CustomerVerifiedEvent;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerByTokenMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerMessage;
 
-class VerifyCustomerByTokenMessageHandler
+class VerifyCustomerMessageHandler
 {
     /**
      * @var CustomerGatewayInterface
@@ -41,7 +41,7 @@ class VerifyCustomerByTokenMessageHandler
         $this->eventCollector = $eventCollector;
     }
 
-    public function __invoke(VerifyCustomerByTokenMessage $message): Customer
+    public function __invoke(VerifyCustomerMessage $message): Customer
     {
         $token = $message->getToken();
         try {

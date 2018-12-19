@@ -15,7 +15,7 @@
             <tag name="sulu.context" context="website"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Handler\Message\VerifyCustomerByTokenMessageHandler">
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Handler\Message\VerifyCustomerMessageHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector"/>
 

@@ -9,6 +9,8 @@
             public="true"
         >
             <argument type="service" id="message_bus"/>
+            <argument type="service" id="router"/>
+            <argument>%sulu_sylius_consumer.verify.redirect_to%</argument>
 
             <tag name="sulu.context" context="website"/>
         </service>

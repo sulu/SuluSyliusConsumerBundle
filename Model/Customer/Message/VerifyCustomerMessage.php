@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message;
 
-class VerifyCustomerByTokenMessage
+class VerifyCustomerMessage
 {
     /**
      * @var string

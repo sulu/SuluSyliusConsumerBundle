@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception;
 
-final class ValidationException extends \Exception implements GatewayException
+final class ValidationException extends GatewayException
 {
 }

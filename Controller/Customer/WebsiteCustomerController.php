@@ -14,8 +14,10 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Customer;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerByTokenMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -26,19 +28,37 @@ class WebsiteCustomerController extends AbstractController
      */
     private $messageBus;
 
-    public function __construct(MessageBusInterface $messageBus)
+    /**
+     * @var Router
+     */
+    private $router;
+
+    /**
+     * @var string
+     */
+    private $redirectTo;
+
+    public function __construct(MessageBusInterface $messageBus, Router $router, string $redirectTo)
     {
         $this->messageBus = $messageBus;
+        $this->router = $router;
+        $this->redirectTo = $redirectTo;
     }
 
-    public function verify(string $token): Response
+    public function verify(Request $request, string $token): Response
     {
         try {
-            $this->messageBus->dispatch(new VerifyCustomerByTokenMessage($token));
+            $this->messageBus->dispatch(new VerifyCustomerMessage($token));
         } catch (TokenNotFoundException $tokenNotFoundException) {
             throw $this->createNotFoundException('Token not found');
         }
 
-        return $this->redirect('/');
+        if (0 === strpos($this->redirectTo, '/')) {
+            $url = str_replace('{localization}', $request->getLocale(), $this->redirectTo);
+        } else {
+            $url = $this->router->generate($this->redirectTo);
+        }
+
+        return $this->redirect($url);
     }
 }

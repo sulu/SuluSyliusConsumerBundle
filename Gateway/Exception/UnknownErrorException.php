@@ -13,6 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception;
 
-final class UnknownErrorException extends \Exception implements GatewayException
+final class UnknownErrorException extends GatewayException
 {
 }
