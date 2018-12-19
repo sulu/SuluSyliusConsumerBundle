@@ -4,12 +4,26 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service
+            id="sulu_sylius.controller.website_customer"
+            class="Sulu\Bundle\SyliusConsumerBundle\Controller\Customer\WebsiteCustomerController"
+            public="true"
+        >
+            <argument type="service" id="message_bus"/>
+            <argument type="service" id="router"/>
+            <argument>%sulu_sylius_consumer.verify.redirect_to%</argument>
+
+            <tag name="sulu.context" context="website"/>
+        </service>
+
+        <service
             id="sulu_sylius_product.controller.product"
             class="Sulu\Bundle\SyliusConsumerBundle\Controller\Product\ProductController"
             public="true"
         >
             <argument type="service" id="message_bus"/>
             <argument type="service" id="fos_rest.view_handler.default"/>
+
+            <tag name="sulu.context" context="admin"/>
         </service>
 
         <service
@@ -19,6 +33,8 @@
         >
             <argument type="service" id="message_bus"/>
             <argument type="service" id="fos_rest.view_handler.default"/>
+
+            <tag name="sulu.context" context="admin"/>
         </service>
     </services>
 </container>

@@ -41,6 +41,6 @@ class SyliusUserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return is_subclass_of($class, SyliusUserInterface::class);
+        return is_subclass_of($class, UserInterface::class);
     }
 }

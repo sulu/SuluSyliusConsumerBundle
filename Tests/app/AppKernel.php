@@ -11,7 +11,6 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-use Sulu\Bundle\SyliusConsumerBundle\SuluSyliusConsumerBundle;
 use Sulu\Bundle\TestBundle\Kernel\SuluTestKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
@@ -20,8 +19,13 @@ class AppKernel extends SuluTestKernel
     public function registerBundles()
     {
         $bundles = [
-            new SuluSyliusConsumerBundle(),
+            new \Sulu\Bundle\SyliusConsumerBundle\SuluSyliusConsumerBundle(),
+            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
         ];
+
+        if (self::CONTEXT_WEBSITE === $this->getContext()) {
+            $bundles[] = new \Symfony\Bundle\SecurityBundle\SecurityBundle();
+        }
 
         return array_merge($bundles, parent::registerBundles());
     }
@@ -30,6 +34,6 @@ class AppKernel extends SuluTestKernel
     {
         parent::registerContainerConfiguration($loader);
 
-        $loader->load(__DIR__ . '/config/config.yml');
+        $loader->load(__DIR__ . '/config/config_' . $this->getContext() . '.yml');
     }
 }

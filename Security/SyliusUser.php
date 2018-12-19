@@ -13,85 +13,38 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+
 class SyliusUser implements SyliusUserInterface
 {
     /**
-     * @var int
+     * @var Customer
      */
-    private $id;
+    private $customer;
 
-    /**
-     * @var null|string
-     */
-    private $username;
-
-    /**
-     * @var array
-     */
-    private $roles;
-
-    /**
-     * @var string
-     */
-    private $email;
-
-    /**
-     * @var null|string
-     */
-    private $firstName;
-
-    /**
-     * @var null|string
-     */
-    private $lastName;
-
-    public function __construct(
-        int $id,
-        ?string $username,
-        array $roles,
-        string $email,
-        ?string $firstName,
-        ?string $lastName
-    ) {
-        $this->id = $id;
-        $this->username = $username;
-        $this->roles = $roles;
-        $this->email = $email;
-        $this->firstName = $firstName;
-        $this->lastName = $lastName;
+    public function __construct(Customer $customer)
+    {
+        $this->customer = $customer;
     }
 
-    /**
-     * @return int
-     */
+    public function getCustomer(): Customer
+    {
+        return $this->customer;
+    }
+
     public function getId(): int
     {
-        return $this->id;
+        return $this->customer->getUser()->getId();
     }
 
     public function getUsername(): ?string
     {
-        return $this->username;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return $this->firstName;
-    }
-
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
+        return $this->customer->getUser()->getUsername() ?: $this->customer->getEmailCanonical();
     }
 
     public function getRoles(): array
     {
-        return $this->roles;
+        return $this->customer->getUser()->getRoles();
     }
 
     public function eraseCredentials(): void

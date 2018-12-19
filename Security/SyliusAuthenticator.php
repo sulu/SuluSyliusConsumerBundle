@@ -60,7 +60,12 @@ class SyliusAuthenticator extends AbstractGuardAuthenticator
             return null;
         }
 
-        return $this->authenticationGateway->getUser($email, $password);
+        $customer = $this->authenticationGateway->getCustomer($email, $password);
+        if (!$customer) {
+            return null;
+        }
+
+        return new SyliusUser($customer);
     }
 
     public function checkCredentials($credentials, UserInterface $user)

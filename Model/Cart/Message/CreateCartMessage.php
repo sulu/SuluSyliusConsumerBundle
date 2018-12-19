@@ -13,14 +13,14 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUserInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 
 class CreateCartMessage
 {
     /**
-     * @var SyliusUserInterface
+     * @var null|Customer
      */
-    private $syliusUser;
+    private $customer;
 
     /**
      * @var string
@@ -33,18 +33,18 @@ class CreateCartMessage
     private $channel;
 
     public function __construct(
-        SyliusUserInterface $syliusUser,
+        ?Customer $customer,
         string $locale,
         string $channel = null
     ) {
-        $this->syliusUser = $syliusUser;
+        $this->customer = $customer;
         $this->locale = $locale;
         $this->channel = $channel;
     }
 
-    public function getSyliusUser(): ?SyliusUserInterface
+    public function getCustomer(): ?Customer
     {
-        return $this->syliusUser;
+        return $this->customer;
     }
 
     public function getLocale(): string

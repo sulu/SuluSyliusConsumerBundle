@@ -7,8 +7,11 @@
         <import resource="services/cart-handler.xml"/>
         <import resource="services/content-handler.xml"/>
         <import resource="services/controllers.xml"/>
+        <import resource="services/customer-handler.xml"/>
+        <import resource="services/user.xml"/>
         <import resource="services/gateway.xml"/>
         <import resource="services/gateway-client.xml"/>
+        <import resource="services/message-middleware.xml"/>
         <import resource="services/product-handler.xml"/>
         <import resource="services/repository.xml"/>
         <import resource="services/routable-handler.xml"/>
@@ -36,6 +39,23 @@
             <tag name="jms_serializer.event_subscriber"/>
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\MailSubscriber">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Mail\MailFactory"/>
+
+            <tag name="kernel.event_subscriber"/>
+            <tag name="sulu.context" context="website"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\AutoLoginSubscriber">
+            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="event_dispatcher"/>
+            <argument>%sulu_sylius_consumer.firewall_provider_key%</argument>
+
+            <tag name="kernel.event_subscriber"/>
+            <tag name="sulu.context" context="website"/>
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider">
             <argument type="service" id="message_bus"/>
             <argument type="service" id="sulu_content.structure.factory"/>
@@ -51,6 +71,13 @@
             <argument type="service" id="sulu_media.type_manager"/>
             <argument type="service" id="doctrine.orm.entity_manager"/>
             <argument type="service" id="sulu_media.system_collections.manager"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Mail\MailFactory">
+            <argument type="service" id="mailer"/>
+            <argument type="service" id="templating"/>
+            <argument type="service" id="translator"/>
+            <argument>%sulu_sylius_consumer.mail_sender%</argument>
         </service>
     </services>
 </container>

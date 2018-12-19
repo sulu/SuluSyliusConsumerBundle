@@ -12,19 +12,14 @@ doctrine:
                 is_bundle: false
 
 framework:
+    router:
+        resource: "%kernel.root_dir%/config/routing_%sulu.context%.yml"
     messenger:
         buses:
             command_bus:
                 middleware:
                     - doctrine_transaction_middleware
-
-sulu_core:
-    content:
-        structure:
-            paths:
-                products:
-                    path: "%kernel.project_dir%/Resources/templates/products"
-                    type: "products"
+                    - event_middleware
 
 sulu_route:
     mappings:
@@ -48,6 +43,9 @@ services:
         factory: "doctrine.orm.messenger.middleware_factory.transaction:createMiddleware"
         abstract: true
         arguments: ["default"]
+    sulu_sylius_consumer.gateway_client:
+        class: Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient
+        public: true
 
 sulu_sylius_consumer:
     sylius_base_url: 'http://sylius.localhost'
@@ -59,3 +57,7 @@ sulu_sylius_consumer:
         client_secret: secret_demo_client
     route_defaults_fallback:
         view: 'templates/products/default'
+    firewall_provider_key: 'main'
+
+swiftmailer:
+    disable_delivery: true

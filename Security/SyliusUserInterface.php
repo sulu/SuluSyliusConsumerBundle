@@ -13,25 +13,12 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 interface SyliusUserInterface extends UserInterface
 {
+    public function getCustomer(): Customer;
+
     public function getId(): int;
-
-    public function getUsername(): ?string;
-
-    public function getRoles(): array;
-
-    public function getEmail(): string;
-
-    public function eraseCredentials(): void;
-
-    public function getPassword(): ?string;
-
-    public function getSalt(): ?string;
-
-    public function getFirstName(): ?string;
-
-    public function getLastName(): ?string;
 }
