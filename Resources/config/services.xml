@@ -43,6 +43,7 @@
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Mail\MailFactory"/>
 
             <tag name="kernel.event_subscriber"/>
+            <tag name="sulu.context" context="website"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\AutoLoginSubscriber">

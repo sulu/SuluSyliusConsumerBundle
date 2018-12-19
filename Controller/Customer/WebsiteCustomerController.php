@@ -16,10 +16,10 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerMessage;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class WebsiteCustomerController extends AbstractController
 {
@@ -29,19 +29,22 @@ class WebsiteCustomerController extends AbstractController
     private $messageBus;
 
     /**
-     * @var Router
+     * @var UrlGeneratorInterface
      */
-    private $router;
+    private $urlGenerator;
 
     /**
      * @var string
      */
     private $redirectTo;
 
-    public function __construct(MessageBusInterface $messageBus, Router $router, string $redirectTo)
-    {
+    public function __construct(
+        MessageBusInterface $messageBus,
+        UrlGeneratorInterface $urlGenerator,
+        string $redirectTo
+    ) {
         $this->messageBus = $messageBus;
-        $this->router = $router;
+        $this->urlGenerator = $urlGenerator;
         $this->redirectTo = $redirectTo;
     }
 
@@ -56,7 +59,7 @@ class WebsiteCustomerController extends AbstractController
         if (0 === strpos($this->redirectTo, '/')) {
             $url = str_replace('{localization}', $request->getLocale(), $this->redirectTo);
         } else {
-            $url = $this->router->generate($this->redirectTo);
+            $url = $this->urlGenerator->generate($this->redirectTo);
         }
 
         return $this->redirect($url);
