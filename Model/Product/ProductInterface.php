@@ -20,8 +20,6 @@ interface ProductInterface
 {
     const RESOURCE_KEY = 'products';
 
-    public function __construct(string $id, string $code);
-
     public function getId(): string;
 
     public function getCode(): string;
