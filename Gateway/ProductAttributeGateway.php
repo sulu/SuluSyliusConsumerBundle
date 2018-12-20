@@ -44,11 +44,16 @@ class ProductAttributeGateway implements ProductAttributeGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'GET',
-            self::URI,
+            self::URI . '/',
             [
                 RequestOptions::QUERY => [
-                    'criteria[customer][type]' => 'in',
-                    'criteria[customer][value]' => implode(',', $codes),
+                    'criteria' => [
+                        'code' => [
+                            'type' => 'in',
+                            'value' => implode(',', $codes),
+                        ],
+                    ],
+                    'limit' => count($codes),
                 ],
             ]
         );
