@@ -58,7 +58,8 @@ class CreateCustomerMessageTest extends SuluTestCase
                                 "ROLE_USER"
                             ],
                             "enabled": false,
-                            "token": "72FThg24HeesEPbM"
+                            "token": "72FThg24HeesEPbM",
+                            "hash": "afjkasd-jfkladf-123jkfasd-123"
                         }
                     }'
                 );
