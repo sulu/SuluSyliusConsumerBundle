@@ -18,7 +18,7 @@ use GuzzleHttp\RequestOptions;
 
 class ProductAttributeGateway implements ProductAttributeGatewayInterface
 {
-    const URI = '/api/v1/product-attributes';
+    const URI = '/api/v1/product-attributes/';
 
     /**
      * @var ClientInterface
@@ -34,7 +34,7 @@ class ProductAttributeGateway implements ProductAttributeGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'GET',
-            self::URI . '/' . $code
+            self::URI . $code
         );
 
         return json_decode($response->getBody()->getContents(), true);
@@ -44,7 +44,7 @@ class ProductAttributeGateway implements ProductAttributeGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'GET',
-            self::URI . '/',
+            self::URI,
             [
                 RequestOptions::QUERY => [
                     'criteria' => [
