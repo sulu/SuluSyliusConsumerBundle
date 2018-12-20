@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Security;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception\NotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,12 +40,17 @@ class SyliusUserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof SyliusUserInterface) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(
+                sprintf('Instances of "%s" are not supported.', \get_class($user))
+            );
         }
 
-        $customer = $this->customerGateway->findById($user->getCustomer()->getId());
-        if (null === $customer) {
-            throw new UsernameNotFoundException(sprintf('Customer with id %s not found', json_encode($user->getCustomer()->getId())));
+        try {
+            $customer = $this->customerGateway->findById($user->getCustomer()->getId());
+        } catch (NotFoundException $exception) {
+            throw new UsernameNotFoundException(
+                sprintf('Customer with id %s not found', json_encode($user->getCustomer()->getId()))
+            );
         }
 
         return new SyliusUser($customer);
