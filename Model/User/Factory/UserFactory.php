@@ -26,9 +26,10 @@ class UserFactory
 
         $customer = new User(
             $this->getIntValue('id'),
-            $this->keyExists('username') ? $this->getStringValue('username') : null,
+            $this->keyExists('username') ? $this->getNullableStringValue('username') : null,
             $this->getArrayValueWithDefault('roles'),
             $this->getBoolValue('enabled'),
+            $this->getStringValue('hash'),
             $this->keyExists('token') ? $this->getNullableStringValue('token') : null
         );
 

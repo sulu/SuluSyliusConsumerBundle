@@ -36,16 +36,22 @@ class User
     private $enabled;
 
     /**
+     * @var string
+     */
+    private $hash;
+
+    /**
      * @var null|string
      */
     private $token;
 
-    public function __construct(int $id, ?string $username, array $roles, bool $enabled, ?string $token)
+    public function __construct(int $id, ?string $username, array $roles, bool $enabled, string $hash, ?string $token)
     {
         $this->id = $id;
         $this->username = $username;
         $this->roles = $roles;
         $this->enabled = $enabled;
+        $this->hash = $hash;
         $this->token = $token;
     }
 
@@ -67,6 +73,11 @@ class User
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function getHash(): string
+    {
+        return $this->hash;
     }
 
     public function getToken(): ?string

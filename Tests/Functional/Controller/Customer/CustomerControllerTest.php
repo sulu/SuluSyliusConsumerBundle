@@ -49,7 +49,8 @@ class CustomerControllerTest extends SuluTestCase
                                 "ROLE_USER"
                             ],
                             "enabled": true,
-                            "token": null
+                            "token": null,
+                            "hash": "afjkasd-jfkladf-123jkfasd-123"
                         }
                     }'
                 );
