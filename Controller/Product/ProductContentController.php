@@ -25,7 +25,7 @@ class ProductContentController extends ContentController
 {
     protected function getResourceKey(): string
     {
-        return ProductInterface::RESOURCE_KEY;
+        return ProductInterface::CONTENT_RESOURCE_KEY;
     }
 
     protected function handlePublish(string $resourceId, string $locale): void

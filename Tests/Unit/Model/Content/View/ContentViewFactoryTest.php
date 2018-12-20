@@ -32,7 +32,7 @@ class ContentViewFactoryTest extends TestCase
 
         $contentDimension1 = $this->prophesize(ContentInterface::class);
         $contentDimension1->getDimension()->willReturn($dimension->reveal());
-        $contentDimension1->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $contentDimension1->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $contentDimension1->getResourceId()->willReturn('product-1');
         $contentDimension1->getType()->willReturn('default');
         $contentDimension1->getData()->willReturn(['title' => 'Sulu']);
@@ -48,7 +48,7 @@ class ContentViewFactoryTest extends TestCase
             return;
         }
 
-        $this->assertEquals(ProductInterface::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $result->getResourceKey());
         $this->assertEquals('product-1', $result->getResourceId());
         $this->assertEquals('default', $result->getType());
         $this->assertEquals(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());
@@ -65,7 +65,7 @@ class ContentViewFactoryTest extends TestCase
 
         $contentDimension1 = $this->prophesize(ContentInterface::class);
         $contentDimension1->getDimension()->willReturn($localizedDimension->reveal());
-        $contentDimension1->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $contentDimension1->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $contentDimension1->getResourceId()->willReturn('product-1');
         $contentDimension1->getType()->willReturn('default');
         $contentDimension1->getData()->willReturn(['title' => 'Sulu']);
@@ -74,13 +74,13 @@ class ContentViewFactoryTest extends TestCase
         $contentDimension2->getData()->willReturn(['article' => '<p>Sulu is awesome</p>']);
 
         $contentRepository->findByDimensions(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             [$localizedDimension, $draftDimension]
         )->willReturn([$contentDimension1, $contentDimension2]);
 
         $result = $factory->loadAndCreate(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             [$localizedDimension->reveal(), $draftDimension->reveal()]
         );
@@ -91,7 +91,7 @@ class ContentViewFactoryTest extends TestCase
             return;
         }
 
-        $this->assertEquals(ProductInterface::RESOURCE_KEY, $result->getResourceKey());
+        $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $result->getResourceKey());
         $this->assertEquals('product-1', $result->getResourceId());
         $this->assertEquals('default', $result->getType());
         $this->assertEquals(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>'], $result->getData());

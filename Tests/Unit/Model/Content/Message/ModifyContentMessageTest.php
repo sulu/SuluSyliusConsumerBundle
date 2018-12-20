@@ -22,19 +22,19 @@ class ModifyContentMessageTest extends TestCase
     public function testGetResourceKey(): void
     {
         $message = new ModifyContentMessage(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
         );
 
-        $this->assertEquals(ProductInterface::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $message = new ModifyContentMessage(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
@@ -46,7 +46,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetLocale(): void
     {
         $message = new ModifyContentMessage(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
@@ -58,7 +58,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetType(): void
     {
         $message = new ModifyContentMessage(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]
@@ -70,7 +70,7 @@ class ModifyContentMessageTest extends TestCase
     public function testGetData(): void
     {
         $message = new ModifyContentMessage(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'en',
             ['type' => 'default', 'data' => ['title' => 'Sulu is awesome']]

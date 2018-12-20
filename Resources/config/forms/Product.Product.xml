@@ -2,6 +2,8 @@
 <form xmlns="http://schemas.sulu.io/template/template"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://schemas.sulu.io/template/template http://schemas.sulu.io/template/form-1.0.xsd">
+    <key>products</key>
+
     <properties>
         <property name="code" type="text_line" disabledCondition="true">
             <meta>

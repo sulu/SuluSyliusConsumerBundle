@@ -90,9 +90,9 @@ class ProductViewFactoryTest extends TestCase
             ->willReturn($productInformation->reveal());
 
         $contentView = $this->prophesize(ContentViewInterface::class);
-        $contentView->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $contentView->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $contentView->getResourceId()->willReturn('123-123-123');
-        $contentViewFactory->loadAndCreate(ProductInterface::RESOURCE_KEY, '123-123-123', [$dimension->reveal()])
+        $contentViewFactory->loadAndCreate(ProductInterface::CONTENT_RESOURCE_KEY, '123-123-123', [$dimension->reveal()])
             ->willReturn($contentView->reveal());
 
         $route = $this->prophesize(RouteInterface::class);

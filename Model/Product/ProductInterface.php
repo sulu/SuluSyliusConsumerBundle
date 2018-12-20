@@ -19,6 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 interface ProductInterface
 {
     const RESOURCE_KEY = 'products';
+    const CONTENT_RESOURCE_KEY = 'product_contents';
 
     public function getId(): string;
 

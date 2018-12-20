@@ -39,7 +39,7 @@ class PublishContentMessageHandlerTest extends TestCase
         );
 
         $message = $this->prophesize(PublishContentMessage::class);
-        $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $message->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $message->getResourceId()->willReturn('product-1');
         $message->getLocale()->willReturn('en');
         $message->getMandatory()->willReturn(true);
@@ -88,16 +88,16 @@ class PublishContentMessageHandlerTest extends TestCase
         $localizedLiveContent->setType('default')->shouldBeCalled();
         $localizedLiveContent->setData(['title' => 'Sulu'])->shouldBeCalled();
 
-        $contentRepository->findByResource(ProductInterface::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
+        $contentRepository->findByResource(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', $draftDimension->reveal())
             ->willReturn($draftContent);
 
-        $contentRepository->findOrCreate(ProductInterface::RESOURCE_KEY, 'product-1', $liveDimension->reveal())
+        $contentRepository->findOrCreate(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', $liveDimension->reveal())
             ->willReturn($liveContent);
 
-        $contentRepository->findByResource(ProductInterface::RESOURCE_KEY, 'product-1', $localizedDraftDimension->reveal())
+        $contentRepository->findByResource(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', $localizedDraftDimension->reveal())
             ->willReturn($localizedDraftContent);
 
-        $contentRepository->findOrCreate(ProductInterface::RESOURCE_KEY, 'product-1', $localizedLiveDimension->reveal())
+        $contentRepository->findOrCreate(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', $localizedLiveDimension->reveal())
             ->willReturn($localizedLiveContent);
 
         $contentView = $this->prophesize(ContentViewInterface::class);

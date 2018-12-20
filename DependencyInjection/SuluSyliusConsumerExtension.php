@@ -119,18 +119,18 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                 'content' => [
                     'structure' => [
                         'type_map' => [
-                            ProductInterface::RESOURCE_KEY => StructureBridge::class,
+                            ProductInterface::CONTENT_RESOURCE_KEY => StructureBridge::class,
                         ],
                         'paths' => [
-                            ProductInterface::RESOURCE_KEY => [
+                            ProductInterface::CONTENT_RESOURCE_KEY => [
                                 'path' => '%kernel.project_dir%/config/templates/products',
-                                'type' => ProductInterface::RESOURCE_KEY,
+                                'type' => ProductInterface::CONTENT_RESOURCE_KEY,
                             ],
                         ],
                         'resources' => [
-                            'product_contents' => [
+                            ProductInterface::CONTENT_RESOURCE_KEY => [
                                 'datagrid' => Product::class,
-                                'types' => [ProductInterface::RESOURCE_KEY],
+                                'types' => [ProductInterface::CONTENT_RESOURCE_KEY],
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
                         ],
@@ -189,10 +189,14 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
         $container->prependExtensionConfig(
             'sulu_admin',
             [
+                'forms' => [
+                    'directories' => [
+                        __DIR__ . '/../Resources/config/forms',
+                    ],
+                ],
                 'resources' => [
                     ProductInterface::RESOURCE_KEY => [
                         'datagrid' => Product::class,
-                        'form' => ['@SuluSyliusConsumerBundle/Resources/config/forms/Product.Product.xml'],
                         'endpoint' => 'sulu_sylius_product.get_products',
                     ],
                 ],

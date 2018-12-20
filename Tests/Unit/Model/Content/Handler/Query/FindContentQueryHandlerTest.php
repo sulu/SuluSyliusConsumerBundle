@@ -37,7 +37,7 @@ class FindContentQueryHandlerTest extends TestCase
 
         $message = $this->prophesize(FindContentQuery::class);
         $message->getResourceId()->willReturn('product-1');
-        $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $message->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $message->getLocale()->willReturn('de');
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
@@ -55,7 +55,7 @@ class FindContentQueryHandlerTest extends TestCase
 
         $contentView = $this->prophesize(ContentViewInterface::class);
         $contentViewFactory->loadAndCreate(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             [$draftDimension->reveal(), $localizedDimension->reveal()]
         )->willReturn($contentView->reveal());
@@ -79,7 +79,7 @@ class FindContentQueryHandlerTest extends TestCase
 
         $message = $this->prophesize(FindContentQuery::class);
         $message->getResourceId()->willReturn('product-1');
-        $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $message->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $message->getLocale()->willReturn('de');
 
         $draftDimension = $this->prophesize(DimensionInterface::class);
@@ -96,7 +96,7 @@ class FindContentQueryHandlerTest extends TestCase
         )->willReturn($localizedDimension->reveal());
 
         $contentViewFactory->loadAndCreate(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             [$draftDimension->reveal(), $localizedDimension->reveal()]
         )->willReturn(null);

@@ -83,7 +83,7 @@ class ProductViewSerializerSubscriberTest extends TestCase
         $structure->getProperties(true)->willReturn([$property->reveal()]);
         $structure->getKey()->willReturn('default');
 
-        $structureManager->getStructure('default', ProductInterface::RESOURCE_KEY)->willReturn($structure->reveal());
+        $structureManager->getStructure('default', ProductInterface::CONTENT_RESOURCE_KEY)->willReturn($structure->reveal());
 
         $contentType = $this->prophesize(ContentTypeInterface::class);
         $contentTypeManager->get('text_line')->willReturn($contentType->reveal());
