@@ -14,13 +14,16 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\OAuth2;
 
 use GuzzleHttp\ClientInterface;
-use Psr\Cache\InvalidArgumentException;
 use Sainsburys\Guzzle\Oauth2\AccessToken;
 use Sainsburys\Guzzle\Oauth2\GrantType\GrantTypeInterface;
 use Sainsburys\Guzzle\Oauth2\GrantType\RefreshTokenGrantTypeInterface;
 use Sainsburys\Guzzle\Oauth2\Middleware\OAuthMiddleware;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\CacheItem;
 
+/**
+ * Inspired from https://github.com/gregurco/GuzzleBundleOAuth2Plugin/blob/master/src/Middleware/CachedOAuthMiddleware.php.
+ */
 class CachedOAuthMiddleware extends OAuthMiddleware
 {
     const CLIENT_NAME = 'sylius';
@@ -30,14 +33,6 @@ class CachedOAuthMiddleware extends OAuthMiddleware
      */
     private $cacheClient;
 
-    /**
-     * Create a new Oauth2 subscriber.
-     *
-     * @param ClientInterface $client
-     * @param GrantTypeInterface|null $grantType
-     * @param RefreshTokenGrantTypeInterface|null $refreshTokenGrantType
-     * @param AdapterInterface $cacheClient
-     */
     public function __construct(
         ClientInterface $client,
         GrantTypeInterface $grantType = null,
@@ -50,30 +45,25 @@ class CachedOAuthMiddleware extends OAuthMiddleware
     }
 
     /**
-     * Get a new access token.
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return AccessToken|null
+     * Get a new access token and call the cacheToken method if available.
      */
-    protected function acquireAccessToken()
+    protected function acquireAccessToken(): ?AccessToken
     {
         $token = parent::acquireAccessToken();
 
-        $this->cacheToken($token);
+        if ($token) {
+            $this->cacheToken($token);
+        }
 
         return $token;
     }
 
     /**
-     * cacheToken sets the token in the cache adapter
-     *
-     * @param AccessToken $token
-     *
-     * @throws InvalidArgumentException
+     * Sets the token in the cache adapter.
      */
-    protected function cacheToken(AccessToken $token)
+    protected function cacheToken(AccessToken $token): void
     {
+        /** @var CacheItem $item */
         $item = $this->cacheClient->getItem(sprintf('oauth.token.%s', self::CLIENT_NAME));
 
         $item->set(
@@ -83,9 +73,10 @@ class CachedOAuthMiddleware extends OAuthMiddleware
                 'data' => $token->getData(),
             ]
         );
-        $item->tag('oauth');
-        $expires = $token->getExpires();
 
+        $item->tag('oauth');
+
+        $expires = $token->getExpires();
         if ($expires) {
             $item->expiresAt($expires->sub(\DateInterval::createFromDateString('1 minute')));
         }
@@ -94,16 +85,11 @@ class CachedOAuthMiddleware extends OAuthMiddleware
     }
 
     /**
-     * getAccessToken will get the oauth token from the cache if available
-     *
-     * @throws \Exception
-     * @throws InvalidArgumentException
-     *
-     * @return null|AccessToken
+     * Get the oauth token from the cache if available.
      */
-    public function getAccessToken()
+    public function getAccessToken(): ?AccessToken
     {
-        if ($this->accessToken === null) {
+        if (null === $this->accessToken) {
             $this->restoreTokenFromCache();
         }
 
@@ -111,12 +97,9 @@ class CachedOAuthMiddleware extends OAuthMiddleware
     }
 
     /**
-     * restoreTokenFromCache
-     *
-     * @throws \Exception
-     * @throws InvalidArgumentException
+     * Restore token from cache.
      */
-    protected function restoreTokenFromCache()
+    protected function restoreTokenFromCache(): void
     {
         $item = $this->cacheClient->getItem(sprintf('oauth.token.%s', self::CLIENT_NAME));
 
