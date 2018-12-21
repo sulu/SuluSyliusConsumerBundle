@@ -86,7 +86,7 @@ class SyliusConsumerAdmin extends Admin
                 ->addOption('tabTitle', 'sulu_sylius_product.content')
                 ->addOption('backRoute', 'sulu_sylius_product.products_datagrid')
                 ->addOption('resourceKey', ProductInterface::CONTENT_RESOURCE_KEY)
-                ->addOption('formKey', ProductInterface::CONTENT_RESOURCE_KEY)
+                ->addOption('formKey', 'product_details')
                 ->addOption('toolbarActions', $formToolbarActions)
                 ->setParent('sulu_sylius_product.product_edit_form'),
         ];
