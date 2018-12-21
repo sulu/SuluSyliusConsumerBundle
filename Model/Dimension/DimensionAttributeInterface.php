@@ -15,8 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Dimension;
 
 interface DimensionAttributeInterface
 {
-    public function __construct(string $key, string $value);
-
     public function setDimension(DimensionInterface $dimension): DimensionAttributeInterface;
 
     public function getDimension(): DimensionInterface;

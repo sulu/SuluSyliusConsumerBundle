@@ -21,11 +21,6 @@ interface DimensionInterface
 
     const ATTRIBUTE_KEY_LOCALE = 'locale';
 
-    /**
-     * @param DimensionAttributeInterface[] $attributes
-     */
-    public function __construct(string $id, array $attributes = []);
-
     public function getId(): string;
 
     public function getAttributeCount(): int;

@@ -15,8 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product;
 
 interface ProductVariantInterface
 {
-    public function __construct(string $id, string $code, ProductInterface $product);
-
     public function getId(): string;
 
     public function getProduct(): ProductInterface;
