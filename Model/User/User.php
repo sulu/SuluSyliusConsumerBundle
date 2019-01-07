@@ -21,7 +21,7 @@ class User
     private $id;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $username;
 
@@ -41,7 +41,7 @@ class User
     private $hash;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $token;
 

@@ -41,7 +41,7 @@ class ProductView implements ProductViewInterface
     private $productInformation;
 
     /**
-     * @var null|Category
+     * @var Category|null
      */
     private $mainCategory;
 
@@ -56,7 +56,7 @@ class ProductView implements ProductViewInterface
     private $media;
 
     /**
-     * @var null|ContentViewInterface
+     * @var ContentViewInterface|null
      */
     private $content;
 

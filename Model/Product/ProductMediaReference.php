@@ -33,7 +33,7 @@ class ProductMediaReference
     private $sorting;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $syliusId;
 

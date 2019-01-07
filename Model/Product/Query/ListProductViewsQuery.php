@@ -21,17 +21,17 @@ class ListProductViewsQuery
     private $locale;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $page;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $limit;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $query;
 

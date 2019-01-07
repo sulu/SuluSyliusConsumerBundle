@@ -31,42 +31,42 @@ class ProductInformationAttributeValue implements ProductInformationAttributeVal
     private $type;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $textValue;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $textAreaValue;
 
     /**
-     * @var null|bool
+     * @var bool|null
      */
     private $booleanValue;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $integerValue;
 
     /**
-     * @var null|float
+     * @var float|null
      */
     private $floatValue;
 
     /**
-     * @var null|\DateTimeInterface
+     * @var \DateTimeInterface|null
      */
     private $dateTimeValue;
 
     /**
-     * @var null|\DateTimeInterface
+     * @var \DateTimeInterface|null
      */
     private $dateValue;
 
     /**
-     * @var null|array
+     * @var array|null
      */
     private $selectValue;
 

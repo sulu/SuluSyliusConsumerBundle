@@ -19,7 +19,7 @@ use Psr\Http\Message\RequestInterface;
 class GatewayClient implements ClientInterface
 {
     /**
-     * @var null|callable
+     * @var callable|null
      */
     private $handleRequestCallable = null;
 
