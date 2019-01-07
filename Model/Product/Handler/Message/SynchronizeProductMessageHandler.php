@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -444,7 +445,18 @@ class SynchronizeProductMessageHandler
     {
         // download the image
         $url = $this->syliusBaseUrl . '/media/image/' . $path;
-        $request = $this->client->request('GET', $url);
+
+        try {
+            $request = $this->client->request('GET', $url);
+        } catch (ClientException $exception) {
+            if (404 === $exception->getCode()) {
+                $this->logger->error('Could not download image from "' . $url . '"');
+
+                return null;
+            }
+
+            throw $exception;
+        }
 
         // create temp file
         $tempFilename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sii');
