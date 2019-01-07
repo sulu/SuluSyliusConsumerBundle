@@ -296,7 +296,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $filesystem->reveal(),
             'http://sylius.localhost',
             false,
-            $logger->reveal(),
+            $logger->reveal()
         );
 
         $category1 = $this->prophesize(CategoryInterface::class);

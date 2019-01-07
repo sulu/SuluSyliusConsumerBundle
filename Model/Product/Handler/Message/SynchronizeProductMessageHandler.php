@@ -102,7 +102,7 @@ class SynchronizeProductMessageHandler
     private $autoPublish;
 
     /**
-     * @var null|LoggerInterface
+     * @var LoggerInterface
      */
     private $logger;
 
