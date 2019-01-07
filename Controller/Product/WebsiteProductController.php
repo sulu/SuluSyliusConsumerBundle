@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 
 use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\HttpCacheBundle\Cache\SuluHttpCache;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query\FindAttributeTranslationsByCodesQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
@@ -22,6 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class WebsiteProductController implements ContainerAwareInterface
 {
@@ -44,14 +46,32 @@ class WebsiteProductController implements ContainerAwareInterface
 
         return $this->render(
             $viewTemplate,
-            $this->getAttributes($attributes, $object),
+            $this->getAttributes($attributes, $object, $request->getLocale()),
             $this->createResponse($request)
         );
     }
 
-    protected function getAttributes(array $attributes, ProductViewInterface $object): array
+    protected function getAttributes(array $attributes, ProductViewInterface $object, string $locale): array
     {
-        return $this->getAttributeResolver()->resolve(array_merge($this->serialize($object), $attributes));
+        $attributes = $this->getAttributeResolver()->resolve(array_merge($this->serialize($object), $attributes));
+
+        return array_merge($attributes, $this->resolveProductAttributes($object, $locale));
+    }
+
+    protected function resolveProductAttributes(ProductViewInterface $object, string $locale): array
+    {
+        $attributeValueCodes = $object->getProductInformation()->getAttributeValueCodes();
+        if (!$attributeValueCodes) {
+            return [];
+        }
+
+        $attributeTranslations = $this->getMessageBus()->dispatch(
+            new FindAttributeTranslationsByCodesQuery($locale, $attributeValueCodes)
+        );
+
+        return [
+            'productAttributeTranslations' => $attributeTranslations,
+        ];
     }
 
     protected function serialize(ProductViewInterface $object): array
@@ -94,5 +114,13 @@ class WebsiteProductController implements ContainerAwareInterface
         $serializer = $this->get('jms_serializer');
 
         return $serializer;
+    }
+
+    protected function getMessageBus(): MessageBusInterface
+    {
+        /** @var MessageBusInterface $messageBus */
+        $messageBus = $this->get('message_bus');
+
+        return $messageBus;
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query\FindAttributeTranslationsByCodesQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
@@ -21,11 +22,17 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewListInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ListProductViewsQueryHandler
 {
     const DEFAULT_LIMIT = 10;
     const DEFAULT_QUERY_FIELDS = ['product.code', 'productInformation.name'];
+
+    /**
+     * @var MessageBusInterface
+     */
+    private $messageBus;
 
     /**
      * @var DimensionRepositoryInterface
@@ -48,11 +55,13 @@ class ListProductViewsQueryHandler
     private $productViewFactory;
 
     public function __construct(
+        MessageBusInterface $messageBus,
         DimensionRepositoryInterface $dimensionRepository,
         ProductRepositoryInterface $productRepository,
         ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         ProductViewFactoryInterface $productViewFactory
     ) {
+        $this->messageBus = $messageBus;
         $this->dimensionRepository = $dimensionRepository;
         $this->productRepository = $productRepository;
         $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
@@ -61,13 +70,15 @@ class ListProductViewsQueryHandler
 
     public function __invoke(ListProductViewsQuery $query): ProductViewListInterface
     {
+        $locale = $query->getLocale();
+
         $liveDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE]
         );
         $localizedLiveDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
                 DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_LIVE,
-                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $query->getLocale(),
+                DimensionInterface::ATTRIBUTE_KEY_LOCALE => $locale,
             ]
         );
 
@@ -97,15 +108,31 @@ class ListProductViewsQueryHandler
         );
 
         $productViews = [];
+        $attributeCodes = [];
         foreach ($products as $product) {
-            $productViews[] = $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+            $productView = $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+
+            $attributeCodes = array_merge(
+                $attributeCodes,
+                $productView->getProductInformation()->getAttributeValueCodes()
+            );
+
+            $productViews[] = $productView;
+        }
+
+        $productAttributeTranslations = [];
+        if ($query->loadAttributeTranslations() && $attributeCodes) {
+            $productAttributeTranslations = $this->messageBus->dispatch(
+                new FindAttributeTranslationsByCodesQuery($locale, $attributeCodes)
+            );
         }
 
         return new ProductViewList(
             $page,
             $limit,
             $total,
-            $productViews
+            $productViews,
+            $productAttributeTranslations
         );
     }
 

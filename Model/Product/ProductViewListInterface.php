@@ -27,4 +27,6 @@ interface ProductViewListInterface
      * @return ProductViewInterface[]
      */
     public function getProductViews(): array;
+
+    public function getProductAttributeTranslations(): array;
 }
