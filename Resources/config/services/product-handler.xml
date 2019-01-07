@@ -15,7 +15,6 @@
         <service id="sulu_sylius_consumer.guzzle_client" class="GuzzleHttp\Client"/>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler">
-            <argument type="service" id="logger"/>
             <argument type="service" id="sulu_sylius_consumer.guzzle_client"/>
             <argument type="service" id="message_bus"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
@@ -28,6 +27,7 @@
             <argument type="service" id="filesystem"/>
             <argument>%sulu_sylius_consumer.sylius_base_url%</argument>
             <argument>%sulu_sylius_consumer.auto_publish%</argument>
+            <argument type="service" id="logger" on-invalid="null"/>
 
             <tag name="messenger.message_handler"/>
         </service>

@@ -93,7 +93,6 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
         $message->getVariants()->willReturn([]);
 
-        $logger = $this->prophesize(LoggerInterface::class);
         $client = $this->prophesize(ClientInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -106,7 +105,6 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem = $this->prophesize(Filesystem::class);
 
         $handler = new SynchronizeProductMessageHandler(
-            $logger->reveal(),
             $client->reveal(),
             $messageBus->reveal(),
             $productRepository->reveal(),
@@ -273,7 +271,6 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
         $message->getVariants()->willReturn([]);
 
-        $logger = $this->prophesize(LoggerInterface::class);
         $client = $this->prophesize(ClientInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -284,9 +281,9 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $mediaFactory = $this->prophesize(MediaFactory::class);
         $filesystem = $this->prophesize(Filesystem::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
-            $logger->reveal(),
             $client->reveal(),
             $messageBus->reveal(),
             $productRepository->reveal(),
@@ -298,7 +295,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $mediaFactory->reveal(),
             $filesystem->reveal(),
             'http://sylius.localhost',
-            false
+            false,
+            $logger->reveal(),
         );
 
         $category1 = $this->prophesize(CategoryInterface::class);

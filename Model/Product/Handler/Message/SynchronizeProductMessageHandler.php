@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -40,11 +41,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductMessageHandler
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
     /**
      * @var ClientInterface
      */
@@ -105,8 +101,12 @@ class SynchronizeProductMessageHandler
      */
     private $autoPublish;
 
+    /**
+     * @var null|LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
-        LoggerInterface $logger,
         ClientInterface $client,
         MessageBusInterface $messageBus,
         ProductRepositoryInterface $productRepository,
@@ -118,9 +118,9 @@ class SynchronizeProductMessageHandler
         MediaFactory $mediaFactory,
         Filesystem $filesystem,
         string $syliusBaseUrl,
-        bool $autoPublish
+        bool $autoPublish,
+        ?LoggerInterface $logger = null
     ) {
-        $this->logger = $logger;
         $this->client = $client;
         $this->messageBus = $messageBus;
         $this->productRepository = $productRepository;
@@ -133,6 +133,7 @@ class SynchronizeProductMessageHandler
         $this->filesystem = $filesystem;
         $this->syliusBaseUrl = $syliusBaseUrl;
         $this->autoPublish = $autoPublish;
+        $this->logger = $logger ?: new NullLogger();
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
