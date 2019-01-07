@@ -45,7 +45,7 @@ class ModifyContentMessageHandlerTest extends TestCase
 
         $message = $this->prophesize(ModifyContentMessage::class);
         $message->getResourceId()->willReturn('product-1');
-        $message->getResourceKey()->willReturn(ProductInterface::RESOURCE_KEY);
+        $message->getResourceKey()->willReturn(ProductInterface::CONTENT_RESOURCE_KEY);
         $message->getLocale()->willReturn('de');
         $message->getType()->willReturn('default');
         $message->getData()->willReturn(['title' => 'Sulu', 'article' => '<p>Sulu is awesome</p>']);
@@ -71,7 +71,7 @@ class ModifyContentMessageHandlerTest extends TestCase
         $articleProperty->getName()->willReturn('article');
         $articleProperty->isLocalized()->willReturn(false);
         $metadata->getProperties()->willReturn([$titleProperty->reveal(), $articleProperty->reveal()]);
-        $factory->getStructureMetadata(ProductInterface::RESOURCE_KEY, 'default')->willReturn($metadata->reveal());
+        $factory->getStructureMetadata(ProductInterface::CONTENT_RESOURCE_KEY, 'default')->willReturn($metadata->reveal());
 
         $draftContent = $this->prophesize(ContentInterface::class);
         $draftContent->setType('default')->shouldBeCalled()->willReturn($draftContent->reveal());
@@ -85,11 +85,11 @@ class ModifyContentMessageHandlerTest extends TestCase
             ->shouldBeCalled()
             ->willReturn($draftContent->reveal());
 
-        $contentRepository->findOrCreate(ProductInterface::RESOURCE_KEY, 'product-1', $draftDimension->reveal())
+        $contentRepository->findOrCreate(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', $draftDimension->reveal())
             ->shouldBeCalled()
             ->willReturn($draftContent->reveal());
 
-        $contentRepository->findOrCreate(ProductInterface::RESOURCE_KEY, 'product-1', $localizedDimension->reveal())
+        $contentRepository->findOrCreate(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', $localizedDimension->reveal())
             ->shouldBeCalled()
             ->willReturn($localizedContent->reveal());
 

@@ -67,7 +67,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 function ($message) {
                     return $message instanceof PublishContentMessage
                         && '123-123-123' === $message->getResourceId()
-                        && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
+                        && ProductInterface::CONTENT_RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale();
                 }
             )
@@ -178,7 +178,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 function ($message) {
                     return $message instanceof PublishContentMessage
                         && '123-123-123' === $message->getResourceId()
-                        && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
+                        && ProductInterface::CONTENT_RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale();
                 }
             )

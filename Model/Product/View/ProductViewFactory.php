@@ -105,7 +105,7 @@ class ProductViewFactory implements ProductViewFactoryInterface
         }
 
         $contentView = $this->contentViewFactory->loadAndCreate(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             $product->getId(),
             $dimensions
         );

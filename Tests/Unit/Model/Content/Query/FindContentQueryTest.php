@@ -21,21 +21,21 @@ class FindContentQueryTest extends TestCase
 {
     public function testGetResourceKey(): void
     {
-        $message = new FindContentQuery(ProductInterface::RESOURCE_KEY, 'product-1', 'en');
+        $message = new FindContentQuery(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', 'en');
 
-        $this->assertEquals(ProductInterface::RESOURCE_KEY, $message->getResourceKey());
+        $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $message->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
-        $message = new FindContentQuery(ProductInterface::RESOURCE_KEY, 'product-1', 'en');
+        $message = new FindContentQuery(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', 'en');
 
         $this->assertEquals('product-1', $message->getResourceId());
     }
 
     public function testGetLocale(): void
     {
-        $message = new FindContentQuery(ProductInterface::RESOURCE_KEY, 'product-1', 'en');
+        $message = new FindContentQuery(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', 'en');
 
         $this->assertEquals('en', $message->getLocale());
     }

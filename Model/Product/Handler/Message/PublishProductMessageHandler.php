@@ -91,7 +91,7 @@ class PublishProductMessageHandler
         }
 
         $this->messageBus->dispatch(
-            new PublishContentMessage(ProductInterface::RESOURCE_KEY, $message->getId(), $message->getLocale(), false)
+            new PublishContentMessage(ProductInterface::CONTENT_RESOURCE_KEY, $message->getId(), $message->getLocale(), false)
         );
 
         // FIXME generate route by-schema

@@ -75,7 +75,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
         /** @var StructureMetadata $metadata */
         $metadata = $this->structureMetadataFactory->getStructureMetadata(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             $object->getContent()->getType()
         );
 

@@ -79,12 +79,14 @@ class SyliusConsumerAdmin extends Admin
             (new Route('sulu_sylius_product.product_edit_form.detail', '/details', 'sulu_admin.form'))
                 ->addOption('tabTitle', 'sulu_sylius_product.details')
                 ->addOption('backRoute', 'sulu_sylius_product.products_datagrid')
+                ->addOption('formKey', 'product_details')
                 ->addOption('toolbarActions', ['sulu_admin.save'])
                 ->setParent('sulu_sylius_product.product_edit_form'),
             (new Route('sulu_sylius_product.product_edit_form.content', '/content', 'sulu_admin.form'))
                 ->addOption('tabTitle', 'sulu_sylius_product.content')
                 ->addOption('backRoute', 'sulu_sylius_product.products_datagrid')
-                ->addOption('resourceKey', 'product_contents')
+                ->addOption('resourceKey', ProductInterface::CONTENT_RESOURCE_KEY)
+                ->addOption('formKey', ProductInterface::CONTENT_RESOURCE_KEY)
                 ->addOption('toolbarActions', $formToolbarActions)
                 ->setParent('sulu_sylius_product.product_edit_form'),
         ];

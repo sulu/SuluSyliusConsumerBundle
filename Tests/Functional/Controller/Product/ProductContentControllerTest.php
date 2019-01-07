@@ -34,7 +34,7 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testGetAction(): void
     {
-        $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1');
+        $content = $this->createContent(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1');
 
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=en');
@@ -50,7 +50,7 @@ class ProductContentControllerTest extends SuluTestCase
 
     public function testGetActionOtherLocale(): void
     {
-        $content = $this->createContent(ProductInterface::RESOURCE_KEY, 'product-1');
+        $content = $this->createContent(ProductInterface::CONTENT_RESOURCE_KEY, 'product-1');
 
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=de');
@@ -82,7 +82,7 @@ class ProductContentControllerTest extends SuluTestCase
     public function testPutActionUpdate(): void
     {
         $content = $this->createContent(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'en',
             'homepage',
@@ -123,7 +123,7 @@ class ProductContentControllerTest extends SuluTestCase
         $product = $this->createProduct('product-1');
         $this->createProductInformation($product->getId(), 'en');
         $content = $this->createContent(
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             $product->getId(),
             'en',
             'homepage',

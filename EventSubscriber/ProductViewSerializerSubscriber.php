@@ -86,7 +86,7 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
             return null;
         }
 
-        $structure = $this->structureManager->getStructure($contentType, ProductInterface::RESOURCE_KEY);
+        $structure = $this->structureManager->getStructure($contentType, ProductInterface::CONTENT_RESOURCE_KEY);
         $structure->setLanguageCode($productView->getLocale());
 
         return $structure;

@@ -23,7 +23,7 @@ class ContentTest extends TestCase
     public function testGetDimension(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $content = new Content($dimension->reveal(), ProductInterface::RESOURCE_KEY, 'product-1');
+        $content = new Content($dimension->reveal(), ProductInterface::CONTENT_RESOURCE_KEY, 'product-1');
 
         $this->assertEquals($dimension->reveal(), $content->getDimension());
     }
@@ -31,15 +31,15 @@ class ContentTest extends TestCase
     public function testGetResourceKey(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $content = new Content($dimension->reveal(), ProductInterface::RESOURCE_KEY, 'product-1');
+        $content = new Content($dimension->reveal(), ProductInterface::CONTENT_RESOURCE_KEY, 'product-1');
 
-        $this->assertEquals(ProductInterface::RESOURCE_KEY, $content->getResourceKey());
+        $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $content->getResourceKey());
     }
 
     public function testGetResourceId(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $content = new Content($dimension->reveal(), ProductInterface::RESOURCE_KEY, 'product-1');
+        $content = new Content($dimension->reveal(), ProductInterface::CONTENT_RESOURCE_KEY, 'product-1');
 
         $this->assertEquals('product-1', $content->getResourceId());
     }
@@ -47,7 +47,7 @@ class ContentTest extends TestCase
     public function testGetType(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $content = new Content($dimension->reveal(), ProductInterface::RESOURCE_KEY, 'product-1', 'default');
+        $content = new Content($dimension->reveal(), ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', 'default');
 
         $this->assertEquals('default', $content->getType());
     }
@@ -57,7 +57,7 @@ class ContentTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $content = new Content(
             $dimension->reveal(),
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'default',
             ['title' => 'Sulu is awesome']
@@ -69,7 +69,7 @@ class ContentTest extends TestCase
     public function testSetType(): void
     {
         $dimension = $this->prophesize(DimensionInterface::class);
-        $content = new Content($dimension->reveal(), ProductInterface::RESOURCE_KEY, 'product-1', 'default');
+        $content = new Content($dimension->reveal(), ProductInterface::CONTENT_RESOURCE_KEY, 'product-1', 'default');
 
         $this->assertEquals($content, $content->setType('homepage'));
         $this->assertEquals('homepage', $content->getType());
@@ -80,7 +80,7 @@ class ContentTest extends TestCase
         $dimension = $this->prophesize(DimensionInterface::class);
         $content = new Content(
             $dimension->reveal(),
-            ProductInterface::RESOURCE_KEY,
+            ProductInterface::CONTENT_RESOURCE_KEY,
             'product-1',
             'default',
             ['title' => 'Sulu is great']
