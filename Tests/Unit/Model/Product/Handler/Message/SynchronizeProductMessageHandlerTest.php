@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
@@ -280,6 +281,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $categoryRepository = $this->prophesize(CategoryRepositoryInterface::class);
         $mediaFactory = $this->prophesize(MediaFactory::class);
         $filesystem = $this->prophesize(Filesystem::class);
+        $logger = $this->prophesize(LoggerInterface::class);
 
         $handler = new SynchronizeProductMessageHandler(
             $client->reveal(),
@@ -293,7 +295,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $mediaFactory->reveal(),
             $filesystem->reveal(),
             'http://sylius.localhost',
-            false
+            false,
+            $logger->reveal()
         );
 
         $category1 = $this->prophesize(CategoryInterface::class);

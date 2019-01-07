@@ -27,6 +27,7 @@
             <argument type="service" id="filesystem"/>
             <argument>%sulu_sylius_consumer.sylius_base_url%</argument>
             <argument>%sulu_sylius_consumer.auto_publish%</argument>
+            <argument type="service" id="logger" on-invalid="null"/>
 
             <tag name="messenger.message_handler"/>
         </service>

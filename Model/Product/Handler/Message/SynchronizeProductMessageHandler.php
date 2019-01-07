@@ -14,6 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\ClientException;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -98,6 +101,11 @@ class SynchronizeProductMessageHandler
      */
     private $autoPublish;
 
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     public function __construct(
         ClientInterface $client,
         MessageBusInterface $messageBus,
@@ -110,7 +118,8 @@ class SynchronizeProductMessageHandler
         MediaFactory $mediaFactory,
         Filesystem $filesystem,
         string $syliusBaseUrl,
-        bool $autoPublish
+        bool $autoPublish,
+        ?LoggerInterface $logger = null
     ) {
         $this->client = $client;
         $this->messageBus = $messageBus;
@@ -124,6 +133,7 @@ class SynchronizeProductMessageHandler
         $this->filesystem = $filesystem;
         $this->syliusBaseUrl = $syliusBaseUrl;
         $this->autoPublish = $autoPublish;
+        $this->logger = $logger ?: new NullLogger();
     }
 
     public function __invoke(SynchronizeProductMessage $message): ProductInterface
@@ -376,6 +386,9 @@ class SynchronizeProductMessageHandler
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
+        if (!$file) {
+            return null;
+        }
 
         // create sulu media
         $media = $this->mediaFactory->create(
@@ -409,6 +422,9 @@ class SynchronizeProductMessageHandler
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
+        if (!$file) {
+            return null;
+        }
 
         // update sulu media
         $this->mediaFactory->update(
@@ -440,11 +456,22 @@ class SynchronizeProductMessageHandler
         return $titles;
     }
 
-    private function downloadImage(string $path): File
+    private function downloadImage(string $path): ?File
     {
         // download the image
         $url = $this->syliusBaseUrl . '/media/image/' . $path;
-        $request = $this->client->request('GET', $url);
+
+        try {
+            $request = $this->client->request('GET', $url);
+        } catch (ClientException $exception) {
+            if (404 === $exception->getCode()) {
+                $this->logger->error('Could not download image from "' . $url . '"');
+
+                return null;
+            }
+
+            throw $exception;
+        }
 
         // create temp file
         $tempFilename = $this->filesystem->tempnam(sys_get_temp_dir(), 'sii');
