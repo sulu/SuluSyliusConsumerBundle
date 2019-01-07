@@ -15,6 +15,7 @@
         <service id="sulu_sylius_consumer.guzzle_client" class="GuzzleHttp\Client"/>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\SynchronizeProductMessageHandler">
+            <argument type="service" id="logger"/>
             <argument type="service" id="sulu_sylius_consumer.guzzle_client"/>
             <argument type="service" id="message_bus"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>

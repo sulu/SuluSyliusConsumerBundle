@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Log\LoggerInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
@@ -92,6 +93,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
         $message->getVariants()->willReturn([]);
 
+        $logger = $this->prophesize(LoggerInterface::class);
         $client = $this->prophesize(ClientInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -104,6 +106,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem = $this->prophesize(Filesystem::class);
 
         $handler = new SynchronizeProductMessageHandler(
+            $logger->reveal(),
             $client->reveal(),
             $messageBus->reveal(),
             $productRepository->reveal(),
@@ -270,6 +273,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         );
         $message->getVariants()->willReturn([]);
 
+        $logger = $this->prophesize(LoggerInterface::class);
         $client = $this->prophesize(ClientInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
@@ -282,6 +286,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $filesystem = $this->prophesize(Filesystem::class);
 
         $handler = new SynchronizeProductMessageHandler(
+            $logger->reveal(),
             $client->reveal(),
             $messageBus->reveal(),
             $productRepository->reveal(),

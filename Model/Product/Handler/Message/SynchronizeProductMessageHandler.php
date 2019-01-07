@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use Psr\Log\LoggerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\CategoryRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -39,6 +40,11 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductMessageHandler
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
     /**
      * @var ClientInterface
      */
@@ -100,6 +106,7 @@ class SynchronizeProductMessageHandler
     private $autoPublish;
 
     public function __construct(
+        LoggerInterface $logger,
         ClientInterface $client,
         MessageBusInterface $messageBus,
         ProductRepositoryInterface $productRepository,
@@ -113,6 +120,7 @@ class SynchronizeProductMessageHandler
         string $syliusBaseUrl,
         bool $autoPublish
     ) {
+        $this->logger = $logger;
         $this->client = $client;
         $this->messageBus = $messageBus;
         $this->productRepository = $productRepository;
@@ -377,6 +385,9 @@ class SynchronizeProductMessageHandler
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
+        if (!$file) {
+            return null;
+        }
 
         // create sulu media
         $media = $this->mediaFactory->create(
@@ -410,6 +421,9 @@ class SynchronizeProductMessageHandler
     ): ?ProductMediaReference {
         // download file from Sylius application
         $file = $this->downloadImage($imageValueObject->getPath());
+        if (!$file) {
+            return null;
+        }
 
         // update sulu media
         $this->mediaFactory->update(
@@ -441,7 +455,7 @@ class SynchronizeProductMessageHandler
         return $titles;
     }
 
-    private function downloadImage(string $path): File
+    private function downloadImage(string $path): ?File
     {
         // download the image
         $url = $this->syliusBaseUrl . '/media/image/' . $path;
