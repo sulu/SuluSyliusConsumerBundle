@@ -70,12 +70,12 @@ class SyliusConsumerAdmin extends Admin
                 ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
                 ->setOption('editRoute', 'sulu_sylius_product.product_edit_form.detail')
                 ->setOption('locales', $locales)
-                ->addAttributeDefault('locale', $locales[0]),
+                ->setAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form', '/products/:locale/:id', 'sulu_admin.resource_tabs'))
                 ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
                 ->setOption('toolbarActions', [])
                 ->setOption('locales', $locales)
-                ->addAttributeDefault('locale', $locales[0]),
+                ->setAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form.detail', '/details', 'sulu_admin.form'))
                 ->setOption('tabTitle', 'sulu_sylius_product.details')
                 ->setOption('backRoute', 'sulu_sylius_product.products_datagrid')
