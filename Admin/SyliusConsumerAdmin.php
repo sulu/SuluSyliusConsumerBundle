@@ -65,29 +65,29 @@ class SyliusConsumerAdmin extends Admin
 
         return [
             (new Route('sulu_sylius_product.products_datagrid', '/products/:locale', 'sulu_admin.datagrid'))
-                ->addOption('title', 'sulu_sylius_product.products')
-                ->addOption('adapters', ['table'])
-                ->addOption('resourceKey', ProductInterface::RESOURCE_KEY)
-                ->addOption('editRoute', 'sulu_sylius_product.product_edit_form.detail')
-                ->addOption('locales', $locales)
-                ->addAttributeDefault('locale', $locales[0]),
+                ->setOption('title', 'sulu_sylius_product.products')
+                ->setOption('adapters', ['table'])
+                ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
+                ->setOption('editRoute', 'sulu_sylius_product.product_edit_form.detail')
+                ->setOption('locales', $locales)
+                ->setAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form', '/products/:locale/:id', 'sulu_admin.resource_tabs'))
-                ->addOption('resourceKey', ProductInterface::RESOURCE_KEY)
-                ->addOption('toolbarActions', [])
-                ->addOption('locales', $locales)
-                ->addAttributeDefault('locale', $locales[0]),
+                ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
+                ->setOption('toolbarActions', [])
+                ->setOption('locales', $locales)
+                ->setAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form.detail', '/details', 'sulu_admin.form'))
-                ->addOption('tabTitle', 'sulu_sylius_product.details')
-                ->addOption('backRoute', 'sulu_sylius_product.products_datagrid')
-                ->addOption('formKey', 'product_details')
-                ->addOption('toolbarActions', ['sulu_admin.save'])
+                ->setOption('tabTitle', 'sulu_sylius_product.details')
+                ->setOption('backRoute', 'sulu_sylius_product.products_datagrid')
+                ->setOption('formKey', 'product_details')
+                ->setOption('toolbarActions', ['sulu_admin.save'])
                 ->setParent('sulu_sylius_product.product_edit_form'),
             (new Route('sulu_sylius_product.product_edit_form.content', '/content', 'sulu_admin.form'))
-                ->addOption('tabTitle', 'sulu_sylius_product.content')
-                ->addOption('backRoute', 'sulu_sylius_product.products_datagrid')
-                ->addOption('resourceKey', ProductInterface::CONTENT_RESOURCE_KEY)
-                ->addOption('formKey', ProductInterface::CONTENT_RESOURCE_KEY)
-                ->addOption('toolbarActions', $formToolbarActions)
+                ->setOption('tabTitle', 'sulu_sylius_product.content')
+                ->setOption('backRoute', 'sulu_sylius_product.products_datagrid')
+                ->setOption('resourceKey', ProductInterface::CONTENT_RESOURCE_KEY)
+                ->setOption('formKey', ProductInterface::CONTENT_RESOURCE_KEY)
+                ->setOption('toolbarActions', $formToolbarActions)
                 ->setParent('sulu_sylius_product.product_edit_form'),
         ];
     }

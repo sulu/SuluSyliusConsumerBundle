@@ -21,17 +21,17 @@ class ListProductViewsQuery
     private $locale;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $page;
 
     /**
-     * @var null|int
+     * @var int|null
      */
     private $limit;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $query;
 
@@ -50,6 +50,11 @@ class ListProductViewsQuery
      */
     private $attributeFilters;
 
+    /**
+     * @var bool
+     */
+    private $loadAttributeTranslations;
+
     public function __construct(
         string $locale,
         ?int $page = null,
@@ -57,7 +62,8 @@ class ListProductViewsQuery
         ?string $query = null,
         array $queryFields = [],
         array $categoryKeys = [],
-        array $attributeFilters = []
+        array $attributeFilters = [],
+        bool $loadAttributeTranslations = false
     ) {
         $this->locale = $locale;
         $this->page = $page;
@@ -66,6 +72,7 @@ class ListProductViewsQuery
         $this->queryFields = $queryFields;
         $this->categoryKeys = $categoryKeys;
         $this->attributeFilters = $attributeFilters;
+        $this->loadAttributeTranslations = $loadAttributeTranslations;
     }
 
     public function getLocale(): string
@@ -101,5 +108,10 @@ class ListProductViewsQuery
     public function getAttributeFilters(): array
     {
         return $this->attributeFilters;
+    }
+
+    public function loadAttributeTranslations(): bool
+    {
+        return $this->loadAttributeTranslations;
     }
 }

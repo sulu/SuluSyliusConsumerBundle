@@ -40,17 +40,24 @@ class ProductViewList implements ProductViewListInterface
      */
     private $productViews;
 
+    /**
+     * @var array[]
+     */
+    private $productAttributeTranslations;
+
     public function __construct(
         int $page,
         int $limit,
         int $total,
-        array $productViews
+        array $productViews,
+        array $productAttributeTranslations = []
     ) {
         $this->page = $page;
         $this->limit = $limit;
         $this->pages = intval(ceil($total / $limit));
         $this->total = $total;
         $this->productViews = $productViews;
+        $this->productAttributeTranslations = $productAttributeTranslations;
     }
 
     public function getPage(): int
@@ -76,5 +83,10 @@ class ProductViewList implements ProductViewListInterface
     public function getProductViews(): array
     {
         return $this->productViews;
+    }
+
+    public function getProductAttributeTranslations(): array
+    {
+        return $this->productAttributeTranslations;
     }
 }

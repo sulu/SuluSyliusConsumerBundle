@@ -38,12 +38,12 @@ class Customer
     private $gender;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $firstName;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $lastName;
 

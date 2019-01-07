@@ -18,7 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 class CreateCartMessage
 {
     /**
-     * @var null|Customer
+     * @var Customer|null
      */
     private $customer;
 
@@ -28,7 +28,7 @@ class CreateCartMessage
     private $locale;
 
     /**
-     * @var null|string
+     * @var string|null
      */
     private $channel;
 

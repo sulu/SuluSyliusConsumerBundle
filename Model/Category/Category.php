@@ -18,7 +18,7 @@ use Sulu\Bundle\CategoryBundle\Entity\Category as BaseCategory;
 class Category extends BaseCategory implements CategoryInterface
 {
     /**
-     * @var null|int
+     * @var int|null
      */
     private $syliusId;
 
