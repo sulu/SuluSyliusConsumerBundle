@@ -18,8 +18,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 
 interface RoutableResourceInterface extends SuluRoutableInterface
 {
-    public function __construct(DimensionInterface $dimension, string $resourceKey, string $resourceId);
-
     public function getDimension(): DimensionInterface;
 
     public function getResourceKey(): string;
