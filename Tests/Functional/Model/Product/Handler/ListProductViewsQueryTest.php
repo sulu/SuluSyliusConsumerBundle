@@ -98,6 +98,7 @@ class ListProductViewsQueryTest extends SuluTestCase
         bool $createLive = true
     ): ProductInterface {
         $product = $this->createProduct($productCode);
+        $product->setEnabled($createLive);
 
         $productInformation = $this->createProductInformation($product->getId(), $locale);
         $productInformation->setName($productName);
