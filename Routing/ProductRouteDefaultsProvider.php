@@ -90,9 +90,9 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
     public function isPublished($entityClass, $id, $locale)
     {
         try {
-            $this->loadProduct($id, $locale);
+            $productView = $this->loadProduct($id, $locale);
 
-            return true;
+            return $productView->getProduct()->isEnabled();
         } catch (ProductInformationNotFoundException $exception) {
             return false;
         }
