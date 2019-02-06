@@ -103,7 +103,10 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $routeDefaultsFallback
         );
 
-        $product = $this->prophesize(ProductViewInterface::class);
+        $product = $this->prophesize(ProductInterface::class);
+
+        $productView = $this->prophesize(ProductViewInterface::class);
+        $productView->getProduct()->willReturn($product->reveal());
 
         $messageBus->dispatch(
             Argument::that(
@@ -111,7 +114,7 @@ class ProductRouteDefaultsProviderTest extends TestCase
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willReturn($product->reveal())->shouldBeCalled();
+        )->willReturn($productView->reveal())->shouldBeCalled();
 
         $this->assertTrue($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }
