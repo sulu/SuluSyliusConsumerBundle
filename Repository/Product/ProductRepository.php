@@ -147,6 +147,8 @@ class ProductRepository extends EntityRepository implements ProductRepositoryInt
 
         $queryBuilder = $this->createQueryBuilder('product')
             ->innerJoin('product.productInformations', 'productInformation', 'WITH', 'productInformation.dimension IN(:dimensionIds)')
+            ->where('product.enabled = :productEnabled')
+            ->setParameter('productEnabled', true)
             ->setParameter('dimensionIds', $dimensionIds);
 
         if ($categoryKeys) {

@@ -103,7 +103,11 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $routeDefaultsFallback
         );
 
-        $product = $this->prophesize(ProductViewInterface::class);
+        $product = $this->prophesize(ProductInterface::class);
+        $product->isEnabled()->willReturn(true);
+
+        $productView = $this->prophesize(ProductViewInterface::class);
+        $productView->getProduct()->willReturn($product->reveal());
 
         $messageBus->dispatch(
             Argument::that(
@@ -111,9 +115,44 @@ class ProductRouteDefaultsProviderTest extends TestCase
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willReturn($product->reveal())->shouldBeCalled();
+        )->willReturn($productView->reveal())->shouldBeCalled();
 
         $this->assertTrue($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
+    }
+
+    public function testIsNotPublishedWithDisabledProduct(): void
+    {
+        $messageBus = $this->prophesize(MessageBusInterface::class);
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
+        $cacheLifetimeResolver = $this->prophesize(CacheLifetimeResolverInterface::class);
+        $routeDefaultsFallback = [
+            'view' => 'default/product/view.html.twig',
+            '_controller' => 'Controller:action',
+            '_cacheLifetime' => 3600,
+        ];
+
+        $provider = new ProductRouteDefaultsProvider(
+            $messageBus->reveal(),
+            $factory->reveal(),
+            $cacheLifetimeResolver->reveal(),
+            $routeDefaultsFallback
+        );
+
+        $product = $this->prophesize(ProductInterface::class);
+        $product->isEnabled()->willReturn(false);
+
+        $productView = $this->prophesize(ProductViewInterface::class);
+        $productView->getProduct()->willReturn($product->reveal());
+
+        $messageBus->dispatch(
+            Argument::that(
+                function (FindProductViewQuery $query) {
+                    return 'product-1' === $query->getId() && 'en' === $query->getLocale();
+                }
+            )
+        )->willReturn($productView->reveal())->shouldBeCalled();
+
+        $this->assertFalse($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }
 
     public function testIsNotPublished(): void
