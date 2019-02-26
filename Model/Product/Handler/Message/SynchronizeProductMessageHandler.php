@@ -349,7 +349,7 @@ class SynchronizeProductMessageHandler
 
         // check for removed
         foreach ($currentMediaReferences as $mediaReference) {
-            if (in_array($mediaReference->getSyliusId(), $processedImageIds)) {
+            if (!$mediaReference->getSyliusId() || in_array($mediaReference->getSyliusId(), $processedImageIds)) {
                 continue;
             }
 
