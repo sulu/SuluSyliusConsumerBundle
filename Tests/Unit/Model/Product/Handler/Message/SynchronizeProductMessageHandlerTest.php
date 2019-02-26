@@ -58,11 +58,11 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productTranslationValueObject->getMetaDescription()->willReturn('Meta description..');
         $productTranslationValueObject->getCustomData()->willReturn(['product_translation_custom_data' => '123']);
 
-        $productImageValueObject = $this->prophesize(ProductImageValueObject::class);
-        $productImageValueObject->getId()->willReturn(27);
-        $productImageValueObject->getPath()->willReturn('ab/12/test1.png');
-        $productImageValueObject->getFilename()->willReturn('nice_file.png');
-        $productImageValueObject->getType()->willReturn('test_type');
+        $productImageValueObject1 = $this->prophesize(ProductImageValueObject::class);
+        $productImageValueObject1->getId()->willReturn(27);
+        $productImageValueObject1->getPath()->willReturn('ab/12/test1.png');
+        $productImageValueObject1->getFilename()->willReturn('nice_file.png');
+        $productImageValueObject1->getType()->willReturn('test_type');
 
         $productTaxonValueObject1 = $this->prophesize(ProductTaxonValueObject::class);
         $productTaxonValueObject1->getTaxonId()->willReturn(34);
@@ -82,7 +82,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getEnabled()->willReturn(true);
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
-        $message->getImages()->willReturn([$productImageValueObject->reveal()]);
+        $message->getImages()->willReturn([$productImageValueObject1->reveal()]);
         $message->getMainTaxonId()->willReturn(4);
         $message->getProductTaxons()->willReturn(
             [$productTaxonValueObject1->reveal(), $productTaxonValueObject2->reveal()]
@@ -119,11 +119,21 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             true
         );
 
+        $productMediaReferenceSulu = $this->prophesize(ProductMediaReference::class);
+        $productMediaReferenceSulu->getSyliusId()->shouldBeCalled()->willReturn(null);
+
+        $productMediaReferenceSylius = $this->prophesize(ProductMediaReference::class);
+        $productMediaReferenceSylius->getSyliusId()->shouldBeCalled()->willReturn(132);
+
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
         $product->getProductCategories()->willReturn([]);
-        $product->getMediaReferences()->willReturn([]);
+        $product->getMediaReferences()->willReturn(
+            [$productMediaReferenceSulu->reveal(), $productMediaReferenceSylius->reveal()]
+        );
         $product->setEnabled(true)->shouldBeCalled();
+        $product->removeMediaReference($productMediaReferenceSylius->reveal())->shouldBeCalled()
+            ->willReturn($product->reveal());
 
         $productRepository->findByCode('product-1')->willReturn(null)->shouldBeCalled();
         $productRepository->create('product-1')->willReturn($product->reveal())->shouldBeCalled();
@@ -243,11 +253,11 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $productTranslationValueObject->getMetaDescription()->willReturn('Meta description..');
         $productTranslationValueObject->getCustomData()->willReturn([]);
 
-        $productImageValueObject = $this->prophesize(ProductImageValueObject::class);
-        $productImageValueObject->getId()->willReturn(27);
-        $productImageValueObject->getPath()->willReturn('ab/12/test1.png');
-        $productImageValueObject->getFilename()->willReturn('nice_file.png');
-        $productImageValueObject->getType()->willReturn('test_type');
+        $productImageValueObject1 = $this->prophesize(ProductImageValueObject::class);
+        $productImageValueObject1->getId()->willReturn(27);
+        $productImageValueObject1->getPath()->willReturn('ab/12/test1.png');
+        $productImageValueObject1->getFilename()->willReturn('nice_file.png');
+        $productImageValueObject1->getType()->willReturn('test_type');
 
         $attributeValueValueObject1 = $this->prophesize(ProductAttributeValueValueObject::class);
         $attributeValueValueObject1->getCode()->willReturn('av_1');
@@ -262,7 +272,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $message->getCode()->willReturn('product-1');
         $message->getEnabled()->willReturn(true);
         $message->getTranslations()->willReturn([$productTranslationValueObject->reveal()]);
-        $message->getImages()->willReturn([$productImageValueObject->reveal()]);
+        $message->getImages()->willReturn([$productImageValueObject1->reveal()]);
         $message->getMainTaxonId()->willReturn(null);
         $message->getProductTaxons()->willReturn([]);
         $message->getCustomData()->willReturn([]);
