@@ -97,8 +97,7 @@ class ModifyContentMessageHandlerTest extends TestCase
         $contentViewFactory->create([$localizedContent->reveal(), $draftContent->reveal()])
             ->willReturn($contentView->reveal());
 
-        $result = $handler->__invoke($message->reveal());
-
-        $this->assertEquals($contentView->reveal(), $result);
+        $message->setContent($contentView->reveal())->shouldBeCalled()->willReturn($message->reveal());
+        $handler->__invoke($message->reveal());
     }
 }

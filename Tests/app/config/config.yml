@@ -18,7 +18,7 @@ framework:
         buses:
             command_bus:
                 middleware:
-                    - doctrine_transaction_middleware
+                    - doctrine_transaction
                     - event_middleware
 
 sulu_route:
@@ -35,14 +35,10 @@ services:
     sulu_sylius_consumer_test.repository.dimension:
         alias: Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface
         public: true
-    doctrine.orm.messenger.middleware_factory.transaction:
-        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddlewareFactory
-        arguments: ["@doctrine"]
-    messenger.middleware.doctrine_transaction_middleware:
+    messenger.middleware.doctrine_transaction:
         class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
-        factory: "doctrine.orm.messenger.middleware_factory.transaction:createMiddleware"
         abstract: true
-        arguments: ["default"]
+        arguments: ['@doctrine']
     sulu_sylius_consumer.gateway_client:
         class: Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient
         public: true

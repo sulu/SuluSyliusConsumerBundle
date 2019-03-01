@@ -42,6 +42,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Repository\Product\ProductMediaReferenceRepository;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class SynchronizeProductMessageHandlerTest extends TestCase
@@ -236,7 +237,7 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             $this->assertEquals('de', $argument->getLocale());
 
             return true;
-        }))->shouldBeCalled();
+        }))->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
 
         $handler->__invoke($message->reveal());
     }

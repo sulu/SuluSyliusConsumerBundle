@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+
 class FindAttributeTranslationsByCodesQuery
 {
     /**
@@ -24,6 +26,11 @@ class FindAttributeTranslationsByCodesQuery
      * @var string[]
      */
     private $codes;
+
+    /**
+     * @var array|null
+     */
+    protected $productAttributeTranslations;
 
     public function __construct(string $locale, array $codes)
     {
@@ -39,5 +46,21 @@ class FindAttributeTranslationsByCodesQuery
     public function getCodes(): array
     {
         return $this->codes;
+    }
+
+    public function getProductAttributeTranslations(): array
+    {
+        if (!$this->productAttributeTranslations) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->productAttributeTranslations;
+    }
+
+    public function setProductAttributeTranslations(array $productAttributeTranslations): self
+    {
+        $this->productAttributeTranslations = $productAttributeTranslations;
+
+        return $this;
     }
 }

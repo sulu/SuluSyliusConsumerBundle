@@ -60,9 +60,8 @@ class FindContentQueryHandlerTest extends TestCase
             [$draftDimension->reveal(), $localizedDimension->reveal()]
         )->willReturn($contentView->reveal());
 
-        $result = $handler->__invoke($message->reveal());
-
-        $this->assertEquals($result, $contentView->reveal());
+        $message->setContent($contentView->reveal())->shouldBeCalled()->willReturn($message->reveal());
+        $handler->__invoke($message->reveal());
     }
 
     public function testInvokeContentNotFound(): void

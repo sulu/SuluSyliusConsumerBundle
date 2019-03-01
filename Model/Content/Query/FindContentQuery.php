@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+
 class FindContentQuery
 {
     /**
@@ -29,6 +32,11 @@ class FindContentQuery
      * @var string
      */
     private $locale;
+
+    /**
+     * @var ContentViewInterface|null
+     */
+    private $content;
 
     public function __construct(string $resourceKey, string $resourceId, string $locale)
     {
@@ -50,5 +58,21 @@ class FindContentQuery
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    public function getContent(): ContentViewInterface
+    {
+        if (!$this->content) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->content;
+    }
+
+    public function setContent(ContentViewInterface $content): self
+    {
+        $this->content = $content;
+
+        return $this;
     }
 }

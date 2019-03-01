@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewListInterface;
+
 class ListProductViewsQuery
 {
     /**
@@ -54,6 +57,11 @@ class ListProductViewsQuery
      * @var bool
      */
     private $loadAttributeTranslations;
+
+    /**
+     * @var ProductViewListInterface|null
+     */
+    private $productViewList;
 
     public function __construct(
         string $locale,
@@ -113,5 +121,21 @@ class ListProductViewsQuery
     public function loadAttributeTranslations(): bool
     {
         return $this->loadAttributeTranslations;
+    }
+
+    public function getProductViewList(): ProductViewListInterface
+    {
+        if (!$this->productViewList) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->productViewList;
+    }
+
+    public function setProductViewList(ProductViewListInterface $productViewList): self
+    {
+        $this->productViewList = $productViewList;
+
+        return $this;
     }
 }

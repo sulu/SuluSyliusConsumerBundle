@@ -27,6 +27,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInte
 use Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\StructureMetadata;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProductRouteDefaultsProviderTest extends TestCase
@@ -57,11 +58,13 @@ class ProductRouteDefaultsProviderTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function (FindProductViewQuery $query) {
+                function (FindProductViewQuery $query) use ($productView) {
+                    $query->setProductView($productView->reveal());
+
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willReturn($productView->reveal())->shouldBeCalled();
+        )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
         $metadata = $this->prophesize(StructureMetadata::class);
         $metadata->getController()->willReturn(WebsiteProductController::class);
@@ -111,11 +114,13 @@ class ProductRouteDefaultsProviderTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function (FindProductViewQuery $query) {
+                function (FindProductViewQuery $query) use ($productView) {
+                    $query->setProductView($productView->reveal());
+
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willReturn($productView->reveal())->shouldBeCalled();
+        )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
         $this->assertTrue($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }
@@ -146,11 +151,13 @@ class ProductRouteDefaultsProviderTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function (FindProductViewQuery $query) {
+                function (FindProductViewQuery $query) use ($productView) {
+                    $query->setProductView($productView->reveal());
+
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willReturn($productView->reveal())->shouldBeCalled();
+        )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
         $this->assertFalse($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }

@@ -65,8 +65,9 @@ class FindProductViewQueryHandlerTest extends TestCase
             ->shouldBeCalled()
             ->willReturn($productView->reveal());
 
-        $result = $handler->__invoke($message->reveal());
-        $this->assertEquals($productView->reveal(), $result);
+        $message->setProductView($productView->reveal())->shouldBeCalled()->willReturn($message->reveal());
+
+        $handler->__invoke($message->reveal());
     }
 
     public function testInvokeProductNotFound(): void

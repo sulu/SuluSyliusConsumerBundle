@@ -62,9 +62,9 @@ abstract class ContentController implements ClassResourceInterface
     public function getAction(Request $request, string $resourceId): Response
     {
         try {
-            $content = $this->messageBus->dispatch(
-                new FindContentQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'))
-            );
+            $message = new FindContentQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $this->messageBus->dispatch($message);
+            $content = $message->getContent();
         } catch (ContentNotFoundException $exception) {
             $content = [
                 'template' => $this->defaultType,
@@ -84,9 +84,9 @@ abstract class ContentController implements ClassResourceInterface
         ];
 
         $locale = $request->query->get('locale');
-        $content = $this->messageBus->dispatch(
-            new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload)
-        );
+        $message = new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload);
+        $this->messageBus->dispatch($message);
+        $content = $message->getContent();
 
         $action = $request->query->get('action');
         if ($action) {

@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+
 class CreateCustomerMessage
 {
     /**
@@ -44,6 +47,11 @@ class CreateCustomerMessage
      * @var bool
      */
     private $enabled;
+
+    /**
+     * @var Customer|null
+     */
+    private $customer;
 
     public function __construct(
         string $email,
@@ -89,5 +97,21 @@ class CreateCustomerMessage
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function getCustomer(): Customer
+    {
+        if (!$this->customer) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->customer;
+    }
+
+    public function setCustomer(Customer $customer): self
+    {
+        $this->customer = $customer;
+
+        return $this;
     }
 }

@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\ModifyContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
@@ -57,7 +56,7 @@ class ModifyContentMessageHandler
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function __invoke(ModifyContentMessage $message): ContentViewInterface
+    public function __invoke(ModifyContentMessage $message): void
     {
         $draftDimension = $this->dimensionRepository->findOrCreateByAttributes(
             [DimensionInterface::ATTRIBUTE_KEY_STAGE => DimensionInterface::ATTRIBUTE_VALUE_DRAFT]
@@ -91,7 +90,7 @@ class ModifyContentMessageHandler
             throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
 
-        return $contentView;
+        $message->setContent($contentView);
     }
 
     private function setData(

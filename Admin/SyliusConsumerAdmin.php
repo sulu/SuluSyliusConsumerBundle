@@ -68,6 +68,7 @@ class SyliusConsumerAdmin extends Admin
                 ->setOption('title', 'sulu_sylius_product.products')
                 ->setOption('adapters', ['table'])
                 ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
+                ->setOption('listKey', ProductInterface::LIST_KEY)
                 ->setOption('editRoute', 'sulu_sylius_product.product_edit_form.detail')
                 ->setOption('locales', $locales)
                 ->setAttributeDefault('locale', $locales[0]),

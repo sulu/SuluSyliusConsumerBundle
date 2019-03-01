@@ -14,7 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Middleware;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
+use Symfony\Component\Messenger\Middleware\StackInterface;
 
 class EventMiddleware implements MiddlewareInterface
 {
@@ -34,9 +36,9 @@ class EventMiddleware implements MiddlewareInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function handle($message, callable $next)
+    public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
-        $result = $next($message);
+        $envelope = $stack->next()->handle($envelope, $stack);
 
         foreach ($this->eventCollector->release() as $name => $events) {
             foreach ($events as $event) {
@@ -44,6 +46,6 @@ class EventMiddleware implements MiddlewareInterface
             }
         }
 
-        return $result;
+        return $envelope;
     }
 }

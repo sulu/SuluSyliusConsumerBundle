@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event\CustomerCreatedEvent;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\CreateCustomerMessage;
 
@@ -39,7 +38,7 @@ class CreateCustomerMessageHandler
         $this->eventCollector = $eventCollector;
     }
 
-    public function __invoke(CreateCustomerMessage $message): Customer
+    public function __invoke(CreateCustomerMessage $message): void
     {
         $customer = $this->customerGateway->create(
             $message->getEmail(),
@@ -53,6 +52,6 @@ class CreateCustomerMessageHandler
         $event = new CustomerCreatedEvent($customer);
         $this->eventCollector->push($event::NAME, $event);
 
-        return $customer;
+        $message->setCustomer($customer);
     }
 }

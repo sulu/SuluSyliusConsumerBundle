@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Query;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
@@ -40,7 +39,7 @@ class FindContentQueryHandler
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function __invoke(FindContentQuery $query): ContentViewInterface
+    public function __invoke(FindContentQuery $query): void
     {
         $dimensions = [
             $this->dimensionRepository->findOrCreateByAttributes(
@@ -59,10 +58,11 @@ class FindContentQueryHandler
             $query->getResourceId(),
             $dimensions
         );
+
         if (!$content) {
             throw new ContentNotFoundException($query->getResourceKey(), $query->getResourceId());
         }
 
-        return $content;
+        $query->setContent($content);
     }
 }

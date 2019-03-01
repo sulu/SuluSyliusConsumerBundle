@@ -43,29 +43,30 @@ class ProductController implements ClassResourceInterface
     {
         $locale = $request->query->get('locale');
 
-        $this->messageBus->dispatch(new ModifyProductMessage($id, $locale, $request->request->all()));
+        $message = new ModifyProductMessage($id, $locale, $request->request->all());
+        $this->messageBus->dispatch($message);
 
-        $product = $this->messageBus->dispatch(new FindProductQuery($id, $request->query->get('locale')));
+        $message = new FindProductQuery($id, $request->query->get('locale'));
+        $this->messageBus->dispatch($message);
+        $product = $message->getProduct();
 
         return $this->handleView($this->view($product));
     }
 
     public function cgetAction(Request $request): Response
     {
-        $listResult = $this->messageBus->dispatch(
-            new ListProductsQuery(
-                $request->query->get('locale'),
-                $request->get('_route'),
-                $request->query->all()
-            )
-        );
+        $query = new ListProductsQuery($request->query->get('locale'), $request->get('_route'), $request->query->all());
+        $this->messageBus->dispatch($query);
+        $products = $query->getProducts();
 
-        return $this->handleView($this->view($listResult));
+        return $this->handleView($this->view($products));
     }
 
     public function getAction(Request $request, string $id): Response
     {
-        $product = $this->messageBus->dispatch(new FindProductQuery($id, $request->query->get('locale')));
+        $message = new FindProductQuery($id, $request->query->get('locale'));
+        $this->messageBus->dispatch($message);
+        $product = $message->getProduct();
 
         return $this->handleView($this->view($product));
     }

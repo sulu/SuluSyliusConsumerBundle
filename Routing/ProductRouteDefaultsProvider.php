@@ -105,10 +105,10 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
 
     private function loadProduct(string $id, string $locale): ProductViewInterface
     {
-        /** @var ProductViewInterface $product */
-        $product = $this->messagBus->dispatch(new FindProductViewQuery($id, $locale));
+        $message = new FindProductViewQuery($id, $locale);
+        $this->messagBus->dispatch($message);
 
-        return $product;
+        return $message->getProductView();
     }
 
     private function getCacheLifetime(StructureMetadata $metadata): ?int

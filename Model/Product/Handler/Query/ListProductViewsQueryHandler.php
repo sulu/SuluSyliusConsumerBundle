@@ -19,7 +19,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterfac
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewListInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -68,7 +67,7 @@ class ListProductViewsQueryHandler
         $this->productViewFactory = $productViewFactory;
     }
 
-    public function __invoke(ListProductViewsQuery $query): ProductViewListInterface
+    public function __invoke(ListProductViewsQuery $query): void
     {
         $locale = $query->getLocale();
 
@@ -122,18 +121,19 @@ class ListProductViewsQueryHandler
 
         $productAttributeTranslations = [];
         if ($query->loadAttributeTranslations() && $attributeCodes) {
-            $productAttributeTranslations = $this->messageBus->dispatch(
-                new FindAttributeTranslationsByCodesQuery($locale, $attributeCodes)
-            );
+            $message = new FindAttributeTranslationsByCodesQuery($locale, $attributeCodes);
+            $this->messageBus->dispatch($message);
+            $productAttributeTranslations = $message->getProductAttributeTranslations();
         }
 
-        return new ProductViewList(
+        $productViewList = new ProductViewList(
             $page,
             $limit,
             $total,
             $productViews,
             $productAttributeTranslations
         );
+        $query->setProductViewList($productViewList);
     }
 
     private function getAttributeFilters(ListProductViewsQuery $query): array
