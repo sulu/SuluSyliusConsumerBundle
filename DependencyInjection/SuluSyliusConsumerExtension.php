@@ -129,7 +129,6 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                         ],
                         'resources' => [
                             ProductInterface::CONTENT_RESOURCE_KEY => [
-                                'datagrid' => Product::class,
                                 'types' => [ProductInterface::CONTENT_RESOURCE_KEY],
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
@@ -196,7 +195,6 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                 ],
                 'resources' => [
                     ProductInterface::RESOURCE_KEY => [
-                        'datagrid' => Product::class,
                         'endpoint' => 'sulu_sylius_product.get_products',
                     ],
                 ],

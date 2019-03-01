@@ -40,7 +40,7 @@ class SyliusConsumerAdmin extends Admin
         $products = new NavigationItem('sulu_sylius_product.products');
         $products->setPosition(45);
         $products->setIcon('fa-cube');
-        $products->setMainRoute('sulu_sylius_product.products_datagrid');
+        $products->setMainRoute('sulu_sylius_product.products_list');
 
         $rootNavigationItem->addChild($products);
 
@@ -64,7 +64,7 @@ class SyliusConsumerAdmin extends Admin
         ];
 
         return [
-            (new Route('sulu_sylius_product.products_datagrid', '/products/:locale', 'sulu_admin.datagrid'))
+            (new Route('sulu_sylius_product.products_list', '/products/:locale', 'sulu_admin.list'))
                 ->setOption('title', 'sulu_sylius_product.products')
                 ->setOption('adapters', ['table'])
                 ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
@@ -73,20 +73,20 @@ class SyliusConsumerAdmin extends Admin
                 ->setAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form', '/products/:locale/:id', 'sulu_admin.resource_tabs'))
                 ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
+                ->setOption('formKey', ProductInterface::FORM_KEY)
                 ->setOption('toolbarActions', [])
                 ->setOption('locales', $locales)
                 ->setAttributeDefault('locale', $locales[0]),
             (new Route('sulu_sylius_product.product_edit_form.detail', '/details', 'sulu_admin.form'))
                 ->setOption('tabTitle', 'sulu_sylius_product.details')
-                ->setOption('backRoute', 'sulu_sylius_product.products_datagrid')
-                ->setOption('formKey', 'product_details')
+                ->setOption('backRoute', 'sulu_sylius_product.products_list')
                 ->setOption('toolbarActions', ['sulu_admin.save'])
                 ->setParent('sulu_sylius_product.product_edit_form'),
             (new Route('sulu_sylius_product.product_edit_form.content', '/content', 'sulu_admin.form'))
                 ->setOption('tabTitle', 'sulu_sylius_product.content')
-                ->setOption('backRoute', 'sulu_sylius_product.products_datagrid')
+                ->setOption('backRoute', 'sulu_sylius_product.products_list')
                 ->setOption('resourceKey', ProductInterface::CONTENT_RESOURCE_KEY)
-                ->setOption('formKey', ProductInterface::CONTENT_RESOURCE_KEY)
+                ->setOption('formKey', ProductInterface::CONTENT_FORM_KEY)
                 ->setOption('toolbarActions', $formToolbarActions)
                 ->setParent('sulu_sylius_product.product_edit_form'),
         ];
