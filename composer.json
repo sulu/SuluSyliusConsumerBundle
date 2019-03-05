@@ -13,10 +13,10 @@
     "require": {
         "php": "^7.1.3",
         "sainsburys/guzzle-oauth2-plugin": "^3.0",
-        "sulu/sulu": "dev-develop#9dc579c57f3c4d965fdefcb4ddb9577b204ef848",
+        "sulu/sulu": "2.0.0-alpha5",
         "symfony/config": "^4.1",
         "symfony/http-kernel": "^3.4|^4.1",
-        "symfony/messenger": "^4.1",
+        "symfony/messenger": "^4.2",
         "webmozart/assert": "^1.3"
     },
     "require-dev": {
@@ -35,10 +35,7 @@
         "zendframework/zendsearch": "@dev"
     },
     "conflict": {
-        "symfony/dependency-injection": "4.1.8",
-        "symfony/doctrine-bridge": ">=4.2.0",
-        "symfony/framework-bundle": ">=4.2.0",
-        "symfony/messenger": ">=4.2.0"
+        "symfony/dependency-injection": "4.1.8"
     },
     "config": {
         "sort-packages": true

@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
+
 class FindProductViewQuery
 {
     /**
@@ -24,6 +27,11 @@ class FindProductViewQuery
      * @var string
      */
     private $locale;
+
+    /**
+     * @var ProductViewInterface|null
+     */
+    private $productView;
 
     public function __construct(string $id, string $locale)
     {
@@ -39,5 +47,21 @@ class FindProductViewQuery
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    public function getProductView(): ProductViewInterface
+    {
+        if (!$this->productView) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->productView;
+    }
+
+    public function setProductView(ProductViewInterface $productView): self
+    {
+        $this->productView = $productView;
+
+        return $this;
     }
 }

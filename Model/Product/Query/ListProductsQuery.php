@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+use Sulu\Component\Rest\ListBuilder\ListRepresentation;
+
 class ListProductsQuery
 {
     /**
@@ -29,6 +32,11 @@ class ListProductsQuery
      * @var array
      */
     private $query;
+
+    /**
+     * @var ListRepresentation|null
+     */
+    private $products;
 
     public function __construct(string $locale, string $route, array $query)
     {
@@ -50,5 +58,21 @@ class ListProductsQuery
     public function getQuery(): array
     {
         return $this->query;
+    }
+
+    public function getProducts(): ListRepresentation
+    {
+        if (!$this->products) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->products;
+    }
+
+    public function setProducts(ListRepresentation $products): self
+    {
+        $this->products = $products;
+
+        return $this;
     }
 }

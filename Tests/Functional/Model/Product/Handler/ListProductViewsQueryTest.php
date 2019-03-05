@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\PublishProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
@@ -44,9 +43,8 @@ class ListProductViewsQueryTest extends SuluTestCase
         $product5 = $this->create('product-5', 'Product Five', 'en');
 
         $query = new ListProductViewsQuery('en');
-
-        /** @var ProductViewList $result */
-        $result = $this->getMessageBus()->dispatch($query);
+        $this->getMessageBus()->dispatch($query);
+        $result = $query->getProductViewList();
 
         $this->assertCount(4, $result->getProductViews());
         $this->assertEquals(10, $result->getLimit());
@@ -64,7 +62,8 @@ class ListProductViewsQueryTest extends SuluTestCase
         $product5 = $this->create('product-5', 'Product Five', 'en');
 
         $query = new ListProductViewsQuery('en', 2, 2);
-        $result = $this->getMessageBus()->dispatch($query);
+        $this->getMessageBus()->dispatch($query);
+        $result = $query->getProductViewList();
 
         $this->assertCount(2, $result->getProductViews());
         $this->assertEquals(2, $result->getLimit());
@@ -82,7 +81,8 @@ class ListProductViewsQueryTest extends SuluTestCase
         $product5 = $this->create('product-5', 'Product Five', 'en');
 
         $query = new ListProductViewsQuery('en', null, null, 'four');
-        $result = $this->getMessageBus()->dispatch($query);
+        $this->getMessageBus()->dispatch($query);
+        $result = $query->getProductViewList();
 
         $this->assertCount(1, $result->getProductViews());
         $this->assertEquals(10, $result->getLimit());

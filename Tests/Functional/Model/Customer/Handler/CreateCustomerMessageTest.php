@@ -77,7 +77,8 @@ class CreateCustomerMessageTest extends SuluTestCase
         );
 
         // send message
-        $result = $this->getMessageBus()->dispatch($message);
+        $this->getMessageBus()->dispatch($message);
+        $result = $message->getCustomer();
 
         // check result
         $this->assertInstanceOf(Customer::class, $result);

@@ -28,6 +28,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
+use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandlerTest extends TestCase
@@ -71,7 +72,7 @@ class PublishProductMessageHandlerTest extends TestCase
                         && 'en' === $message->getLocale();
                 }
             )
-        )->shouldBeCalled();
+        )->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
 
         $messageBus->dispatch(
             Argument::that(
@@ -83,7 +84,7 @@ class PublishProductMessageHandlerTest extends TestCase
                         && '/products/product-1' === $message->getRoutePath();
                 }
             )
-        )->shouldBeCalled();
+        )->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
 
         $liveDimension = $this->prophesize(DimensionInterface::class);
         $draftDimension = $this->prophesize(DimensionInterface::class);
@@ -182,7 +183,7 @@ class PublishProductMessageHandlerTest extends TestCase
                         && 'en' === $message->getLocale();
                 }
             )
-        )->shouldBeCalled();
+        )->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
 
         $messageBus->dispatch(
             Argument::that(
@@ -194,7 +195,7 @@ class PublishProductMessageHandlerTest extends TestCase
                         && '/products/product-1' === $message->getRoutePath();
                 }
             )
-        )->shouldBeCalled();
+        )->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
 
         $liveDimension = $this->prophesize(DimensionInterface::class);
         $draftDimension = $this->prophesize(DimensionInterface::class);

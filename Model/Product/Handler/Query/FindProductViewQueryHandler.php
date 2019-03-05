@@ -17,7 +17,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 
@@ -48,7 +47,7 @@ class FindProductViewQueryHandler
         $this->productViewFactory = $productViewFactory;
     }
 
-    public function __invoke(FindProductViewQuery $query): ProductViewInterface
+    public function __invoke(FindProductViewQuery $query): void
     {
         $product = $this->productRepository->findById($query->getId());
         if (!$product) {
@@ -65,6 +64,7 @@ class FindProductViewQueryHandler
             ]
         );
 
-        return $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+        $productView = $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+        $query->setProductView($productView);
     }
 }

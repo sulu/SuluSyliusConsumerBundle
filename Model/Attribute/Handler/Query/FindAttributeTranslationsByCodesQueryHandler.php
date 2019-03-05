@@ -28,7 +28,7 @@ class FindAttributeTranslationsByCodesQueryHandler
         $this->attributeGateway = $attributeGateway;
     }
 
-    public function __invoke(FindAttributeTranslationsByCodesQuery $message): array
+    public function __invoke(FindAttributeTranslationsByCodesQuery $message): void
     {
         $result = [];
         foreach ($this->attributeGateway->findByCodes($message->getCodes()) as $attributeData) {
@@ -39,6 +39,6 @@ class FindAttributeTranslationsByCodesQueryHandler
             $result[$attributeData['code']] = $attributeData['translations'][$message->getLocale()]['name'];
         }
 
-        return $result;
+        $message->setProductAttributeTranslations($result);
     }
 }

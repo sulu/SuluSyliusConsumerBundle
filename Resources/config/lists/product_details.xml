@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<list xmlns="http://schemas.sulu.io/list-builder/list">
+    <key>product_details</key>
+    
+    <properties>
+        <concatenation-property name="identifier" visibility="never">
+            <field property-ref="id"/>
+            <field property-ref="locale"/>
+        </concatenation-property>
+
+        <property
+            name="id"
+            visibility="never"
+        >
+            <field-name>id</field-name>
+            <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product</entity-name>
+        </property>
+
+        <property
+            name="code"
+            visibility="always"
+            searchability="yes"
+        >
+            <field-name>code</field-name>
+            <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product</entity-name>
+        </property>
+
+        <property
+            name="name"
+            visibility="always"
+            searchability="yes"
+        >
+            <field-name>name</field-name>
+            <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</entity-name>
+
+            <joins>
+                <join>
+                    <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product.productInformations</field-name>
+                </join>
+            </joins>
+        </property>
+
+        <property
+                name="locale"
+                visibility="never"
+                searchability="no"
+        >
+            <field-name>value</field-name>
+            <entity-name>attribute_locale</entity-name>
+
+            <joins>
+                <join>
+                    <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product.productInformations</field-name>
+                </join>
+                <join>
+                    <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation.dimension</field-name>
+                </join>
+                <join>
+                    <entity-name>attribute_locale</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension.attributes</field-name>
+                    <condition>attribute_locale.key = :keyLocale</condition>
+                </join>
+            </joins>
+        </property>
+
+        <property
+                name="stage"
+                visibility="never"
+                searchability="no"
+        >
+            <field-name>value</field-name>
+            <entity-name>attribute_stage</entity-name>
+
+            <joins>
+                <join>
+                    <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product.productInformations</field-name>
+                </join>
+                <join>
+                    <entity-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation.dimension</field-name>
+                </join>
+                <join>
+                    <entity-name>attribute_stage</entity-name>
+                    <field-name>Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\Dimension.attributes</field-name>
+                    <condition>attribute_stage.key = :keyStage</condition>
+                </join>
+            </joins>
+        </property>
+    </properties>
+</list>

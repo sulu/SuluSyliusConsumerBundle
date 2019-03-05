@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -40,17 +39,17 @@ class SynchronizeProductTest extends SuluTestCase
         /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getContainer()->get('sulu_sylius_consumer_test.messenger.bus.default');
 
-        /** @var ProductInterface $product */
-        $product = $messageBus->dispatch($message);
+        $messageBus->dispatch($message);
 
-        $result = $this->findProductInformation($product->getId(), 'de');
+        $result = $this->findProductInformationByCode(ExampleSynchronizeProductMessage::getCode(), 'de');
         $this->assertNotNull($result);
 
         if (!$result) {
             return;
         }
 
-        $this->assertEquals($product->getId(), $result->getProductId());
+        $this->assertTrue(is_string($result->getProductId()));
+        $this->assertEquals(ExampleSynchronizeProductMessage::getCode(), $result->getProductCode());
         $this->assertEquals('SB verpackt zu je 1', $result->getName());
     }
 }

@@ -51,12 +51,14 @@ class ListProductsQueryHandler
         $this->fieldDescriptorsFactory = $fieldDescriptorsFactory;
     }
 
-    public function __invoke(ListProductsQuery $query): ListRepresentation
+    public function __invoke(ListProductsQuery $query): void
     {
-        $fieldDescriptors = $this->getFieldDescriptors(Product::class, $query->getLocale());
+        $fieldDescriptors = $this->getFieldDescriptors(Product::LIST_KEY);
 
         /** @var DoctrineListBuilder $listBuilder */
         $listBuilder = $this->listBuilderFactory->create(Product::class);
+        $listBuilder->setParameter('keyLocale', DimensionInterface::ATTRIBUTE_KEY_LOCALE);
+        $listBuilder->setParameter('keyStage', DimensionInterface::ATTRIBUTE_KEY_STAGE);
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
         $listBuilder->setIdField($fieldDescriptors['identifier']);
 
@@ -67,12 +69,15 @@ class ListProductsQueryHandler
             $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_STAGE],
             DimensionInterface::ATTRIBUTE_VALUE_DRAFT
         );
-        $listBuilder->where($fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_LOCALE], $query->getLocale());
+        $listBuilder->where(
+            $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_LOCALE],
+            $query->getLocale()
+        );
         $listBuilder->distinct();
 
         $listResponse = $listBuilder->execute();
 
-        return new ListRepresentation(
+        $products = new ListRepresentation(
             $listResponse,
             ProductInterface::RESOURCE_KEY,
             $query->getRoute(),
@@ -81,18 +86,16 @@ class ListProductsQueryHandler
             $listBuilder->getLimit(),
             $listBuilder->count()
         );
+        $query->setProducts($products);
     }
 
     /**
      * @return FieldDescriptor[]
      */
-    protected function getFieldDescriptors(string $entityClass, string $locale): array
+    protected function getFieldDescriptors(string $formKey): array
     {
         /** @var FieldDescriptor[] $fieldDescriptors */
-        $fieldDescriptors = $this->fieldDescriptorsFactory->getFieldDescriptorForClass(
-            $entityClass,
-            ['locale' => $locale]
-        );
+        $fieldDescriptors = $this->fieldDescriptorsFactory->getFieldDescriptors($formKey);
 
         return $fieldDescriptors;
     }

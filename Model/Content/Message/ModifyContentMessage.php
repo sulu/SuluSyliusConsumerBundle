@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
 class ModifyContentMessage
@@ -33,6 +35,11 @@ class ModifyContentMessage
      * @var string
      */
     private $locale;
+
+    /**
+     * @var ContentViewInterface|null
+     */
+    private $content;
 
     public function __construct(string $resourceKey, string $resourceId, string $locale, array $payload)
     {
@@ -66,5 +73,21 @@ class ModifyContentMessage
     public function getData(): array
     {
         return $this->getArrayValue('data');
+    }
+
+    public function getContent(): ContentViewInterface
+    {
+        if (!$this->content) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->content;
+    }
+
+    public function setContent(ContentViewInterface $content): self
+    {
+        $this->content = $content;
+
+        return $this;
     }
 }

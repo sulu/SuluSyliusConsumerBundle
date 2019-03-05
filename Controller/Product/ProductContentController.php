@@ -30,6 +30,7 @@ class ProductContentController extends ContentController
 
     protected function handlePublish(string $resourceId, string $locale): void
     {
-        $this->messageBus->dispatch(new PublishProductMessage($resourceId, $locale));
+        $message = new PublishProductMessage($resourceId, $locale);
+        $this->messageBus->dispatch($message);
     }
 }

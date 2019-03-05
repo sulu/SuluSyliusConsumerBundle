@@ -16,7 +16,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductQuery;
 
@@ -40,7 +39,7 @@ class FindProductQueryHandler
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(FindProductQuery $query): ProductInformationInterface
+    public function __invoke(FindProductQuery $query): void
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -54,6 +53,6 @@ class FindProductQueryHandler
             throw new ProductInformationNotFoundException($query->getId());
         }
 
-        return $product;
+        $query->setProduct($product);
     }
 }

@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
 use Sulu\Bundle\PersistenceBundle\DependencyInjection\PersistenceExtensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Category\Category;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Repository\Category\CategoryRepository;
 use Sulu\Component\Content\Compat\Structure\StructureBridge;
@@ -129,7 +128,6 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                         ],
                         'resources' => [
                             ProductInterface::CONTENT_RESOURCE_KEY => [
-                                'datagrid' => Product::class,
                                 'types' => [ProductInterface::CONTENT_RESOURCE_KEY],
                                 'endpoint' => 'sulu_sylius_product.get_product-contents',
                             ],
@@ -189,6 +187,11 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
         $container->prependExtensionConfig(
             'sulu_admin',
             [
+                'lists' => [
+                    'directories' => [
+                        __DIR__ . '/../Resources/config/lists',
+                    ],
+                ],
                 'forms' => [
                     'directories' => [
                         __DIR__ . '/../Resources/config/forms',
@@ -196,7 +199,6 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                 ],
                 'resources' => [
                     ProductInterface::RESOURCE_KEY => [
-                        'datagrid' => Product::class,
                         'endpoint' => 'sulu_sylius_product.get_products',
                     ],
                 ],
