@@ -28,8 +28,8 @@ class RemoveCartMessageHandler
         $this->cartGateway = $cartGateway;
     }
 
-    public function __invoke(AddItemToCartMessage $message): array
+    public function __invoke(AddItemToCartMessage $message): void
     {
-        return $this->cartGateway->remove($message->getCartId());
+        $this->cartGateway->remove($message->getCartId());
     }
 }

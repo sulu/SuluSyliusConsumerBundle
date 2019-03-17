@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class CreateCartMessage
 {
@@ -31,6 +32,11 @@ class CreateCartMessage
      * @var string|null
      */
     private $channel;
+
+    /**
+     * @var array|null
+     */
+    private $cart;
 
     public function __construct(
         ?Customer $customer,
@@ -55,5 +61,21 @@ class CreateCartMessage
     public function getChannel(): ?string
     {
         return $this->channel;
+    }
+
+    public function getCart(): array
+    {
+        if (null === $this->cart) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->cart;
+    }
+
+    public function setCart(array $cart): self
+    {
+        $this->cart = $cart;
+
+        return $this;
     }
 }

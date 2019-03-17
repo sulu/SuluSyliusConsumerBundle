@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Exception\ContentNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\View\ContentViewFactoryInterface;
@@ -49,7 +48,7 @@ class PublishContentMessageHandler
         $this->contentViewFactory = $contentViewFactory;
     }
 
-    public function __invoke(PublishContentMessage $message): ?ContentViewInterface
+    public function __invoke(PublishContentMessage $message): void
     {
         $contents = array_filter([
             $this->publishDimension($message->getResourceKey(), $message->getResourceId(), $message->getMandatory()),
@@ -57,7 +56,7 @@ class PublishContentMessageHandler
         ]);
 
         if (!$contents) {
-            return null;
+            return;
         }
 
         $contentView = $this->contentViewFactory->create($contents);
@@ -65,7 +64,7 @@ class PublishContentMessageHandler
             throw new ContentNotFoundException($message->getResourceKey(), $message->getResourceId());
         }
 
-        return $contentView;
+        $message->setContentView($contentView);
     }
 
     protected function publishDimension(

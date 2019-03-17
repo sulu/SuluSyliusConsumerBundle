@@ -13,11 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductAttributeValueValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductImageValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTaxonValueObject;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ValueObject\ProductTranslationValueObject;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 class SynchronizeProductMessage
 {
@@ -27,6 +29,11 @@ class SynchronizeProductMessage
      * @var string
      */
     private $code;
+
+    /**
+     * @var ProductInterface|null
+     */
+    private $product;
 
     public function __construct(string $code, array $payload)
     {
@@ -115,5 +122,21 @@ class SynchronizeProductMessage
     public function getCustomData(): array
     {
         return $this->getArrayValueWithDefault('customData');
+    }
+
+    public function getProduct(): ProductInterface
+    {
+        if (!$this->product) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->product;
+    }
+
+    public function setProduct(ProductInterface $product): self
+    {
+        $this->product = $product;
+
+        return $this;
     }
 }

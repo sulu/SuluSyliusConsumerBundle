@@ -34,7 +34,7 @@ class CreateCartMessageHandler
         $this->defaultChannel = $defaultChannel;
     }
 
-    public function __invoke(CreateCartMessage $message): array
+    public function __invoke(CreateCartMessage $message): void
     {
         $customer = $message->getCustomer();
         if (!$customer) {
@@ -42,10 +42,12 @@ class CreateCartMessageHandler
             throw new \Exception('not implemented');
         }
 
-        return $this->cartGateway->create(
+        $cart = $this->cartGateway->create(
             $customer->getEmail(),
             $message->getChannel() ?: $this->defaultChannel,
             $message->getLocale()
         );
+
+        $message->setCart($cart);
     }
 }

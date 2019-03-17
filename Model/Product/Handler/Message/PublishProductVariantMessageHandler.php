@@ -49,7 +49,7 @@ class PublishProductVariantMessageHandler
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(PublishProductVariantMessage $message): ProductVariantInterface
+    public function __invoke(PublishProductVariantMessage $message): void
     {
         $productVariant = $this->productVariantRepository->findById($message->getId());
         if (!$productVariant) {
@@ -62,7 +62,7 @@ class PublishProductVariantMessageHandler
             throw new ProductVariantNotFoundException($message->getId(), 0, $exception);
         }
 
-        return $productVariant;
+        $message->setProductVariant($productVariant);
     }
 
     private function publishInformation(ProductVariantInterface $productVariant, string $locale, bool $mandatory): void

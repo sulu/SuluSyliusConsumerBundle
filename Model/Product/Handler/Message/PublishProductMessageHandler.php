@@ -77,7 +77,7 @@ class PublishProductMessageHandler
         $this->slugifier = $slugifier;
     }
 
-    public function __invoke(PublishProductMessage $message): ProductInterface
+    public function __invoke(PublishProductMessage $message): void
     {
         $product = $this->productRepository->findById($message->getId());
         if (!$product) {
@@ -114,7 +114,7 @@ class PublishProductMessageHandler
             );
         }
 
-        return $product;
+        $message->setProduct($product);
     }
 
     private function publishProductInformation(ProductInterface $product, string $locale): void

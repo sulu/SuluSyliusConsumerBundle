@@ -136,7 +136,7 @@ class SynchronizeProductMessageHandler
         $this->logger = $logger ?: new NullLogger();
     }
 
-    public function __invoke(SynchronizeProductMessage $message): ProductInterface
+    public function __invoke(SynchronizeProductMessage $message): void
     {
         $product = $this->productRepository->findByCode($message->getCode());
         if (!$product) {
@@ -146,7 +146,7 @@ class SynchronizeProductMessageHandler
         $this->synchronizeProduct($message, $product);
         $this->publishProduct($message, $product);
 
-        return $product;
+        $message->setProduct($product);
     }
 
     protected function publishProduct(SynchronizeProductMessage $message, ProductInterface $product): void

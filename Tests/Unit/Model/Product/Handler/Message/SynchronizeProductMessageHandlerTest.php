@@ -239,6 +239,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
             return true;
         }))->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
 
+        $message->setProduct($product->reveal())->shouldBeCalled();
+
         $handler->__invoke($message->reveal());
     }
 
@@ -426,6 +428,8 @@ class SynchronizeProductMessageHandlerTest extends TestCase
         $attributeValue2Live->setValue('value2')->shouldBeCalled()->willReturn($attributeValue2Live->reveal());
         $productInformationAttributeValueRepository->create($productInformationLive->reveal(), 'av_2', 'text')
             ->willReturn($attributeValue2Live->reveal());
+
+        $message->setProduct($product->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }

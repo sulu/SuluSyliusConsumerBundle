@@ -56,7 +56,7 @@ class SynchronizeProductVariantMessageHandler
         $this->dimensionRepository = $dimensionRepository;
     }
 
-    public function __invoke(SynchronizeProductVariantMessage $message): ProductVariantInterface
+    public function __invoke(SynchronizeProductVariantMessage $message): void
     {
         $product = $this->productRepository->findByCode($message->getProductCode());
         if (!$product) {
@@ -70,7 +70,7 @@ class SynchronizeProductVariantMessageHandler
 
         $this->synchronizeProductVariant($message, $productVariant);
 
-        return $productVariant;
+        $message->setProductVariant($productVariant);
     }
 
     protected function synchronizeProductVariant(

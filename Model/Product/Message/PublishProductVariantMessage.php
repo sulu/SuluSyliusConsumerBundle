@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
+
 class PublishProductVariantMessage
 {
     /**
@@ -29,6 +32,11 @@ class PublishProductVariantMessage
      * @var bool
      */
     private $mandatory;
+
+    /**
+     * @var ProductVariantInterface|null
+     */
+    private $productVariant;
 
     public function __construct(string $id, string $locale, bool $mandatory = true)
     {
@@ -50,5 +58,21 @@ class PublishProductVariantMessage
     public function getMandatory(): bool
     {
         return $this->mandatory;
+    }
+
+    public function getProductVariant(): ProductVariantInterface
+    {
+        if (!$this->productVariant) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->productVariant;
+    }
+
+    public function setProductVariant(ProductVariantInterface $productVariant): self
+    {
+        $this->productVariant = $productVariant;
+
+        return $this;
     }
 }

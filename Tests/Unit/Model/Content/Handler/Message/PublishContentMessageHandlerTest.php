@@ -104,8 +104,8 @@ class PublishContentMessageHandlerTest extends TestCase
         $contentViewFactory->create([$liveContent->reveal(), $localizedLiveContent->reveal()])
             ->willReturn($contentView->reveal());
 
-        $result = $handler->__invoke($message->reveal());
+        $message->setContentView($contentView->reveal())->shouldBeCalled();
 
-        $this->assertEquals($contentView->reveal(), $result);
+        $handler->__invoke($message->reveal());
     }
 }

@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+
 class PublishContentMessage
 {
     /**
@@ -34,6 +37,11 @@ class PublishContentMessage
      * @var bool
      */
     private $mandatory;
+
+    /**
+     * @var ContentViewInterface|null
+     */
+    private $contentView;
 
     public function __construct(string $resourceKey, string $resourceId, string $locale, bool $mandatory = true)
     {
@@ -61,5 +69,21 @@ class PublishContentMessage
     public function getMandatory(): bool
     {
         return $this->mandatory;
+    }
+
+    public function getContentView(): ContentViewInterface
+    {
+        if (!$this->contentView) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->contentView;
+    }
+
+    public function setContentView(ContentViewInterface $contentView): self
+    {
+        $this->contentView = $contentView;
+
+        return $this;
     }
 }
