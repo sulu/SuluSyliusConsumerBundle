@@ -13,22 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
 
-class OrderGateway implements OrderGatewayInterface
+class OrderGateway extends AbstractGateway implements OrderGatewayInterface
 {
     const URI = '/api/v1/orders';
-
-    /**
-     * @var ClientInterface
-     */
-    private $gatewayClient;
-
-    public function __construct(ClientInterface $gatewayClient)
-    {
-        $this->gatewayClient = $gatewayClient;
-    }
 
     public function findByCustomer(
         int $customerId,
@@ -74,7 +63,7 @@ class OrderGateway implements OrderGatewayInterface
             'criteria' => $criteria,
         ];
 
-        $response = $this->gatewayClient->request(
+        $response = $this->sendRequest(
             'GET',
             self::URI . '/',
             [
@@ -82,6 +71,10 @@ class OrderGateway implements OrderGatewayInterface
             ]
         );
 
-        return json_decode($response->getBody()->getContents(), true);
+        if (200 !== $response->getStatusCode()) {
+            $this->handleErrors($response);
+        }
+
+        return $this->getData($response);
     }
 }

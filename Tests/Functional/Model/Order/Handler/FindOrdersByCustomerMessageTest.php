@@ -42,6 +42,22 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
     {
         $this->getGatewayClient()->setHandleRequestCallable(
             function ($method, $uri, array $options = []) {
+                $this->assertEquals('GET', $method);
+                $this->assertEquals('/api/v1/orders/', $uri);
+                $this->assertEquals(
+                    [
+                        'limit' => 10,
+                        'page' => 1,
+                        'criteria' => [
+                            'customer' => [
+                                'type' => 'equal',
+                                'value' => 99,
+                            ],
+                        ],
+                    ],
+                    $options['query']
+                );
+
                 return new Response(
                     200,
                     [],
@@ -53,10 +69,10 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
                         "_embedded": {
                             "items": [
                                 {
-                                    "id": 5,
+                                    "id": 5
                                 },
                                 {
-                                    "id": 6,
+                                    "id": 6
                                 }
                             ]
                         }
@@ -65,9 +81,86 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
             }
         );
 
-        $customer = new Customer(1, 'test@test.com', 'test@test.com', 'm');
+        $customer = new Customer(99, 'test@test.com', 'test@test.com', 'm');
 
         $message = new FindOrdersByCustomerMessage($customer);
+
+        // send message
+        $this->getMessageBus()->dispatch($message);
+        $orderList = $message->getOrderList();
+
+        $this->assertSame(1, $orderList->getPage());
+        $this->assertSame(10, $orderList->getLimit());
+        $this->assertSame(1, $orderList->getPages());
+        $this->assertSame(1, $orderList->getTotal());
+        $this->assertSame([['id' => 5], ['id' => 6]], $orderList->getOrders());
+    }
+
+    public function testMax(): void
+    {
+        $this->getGatewayClient()->setHandleRequestCallable(
+            function ($method, $uri, array $options = []) {
+                $this->assertEquals('GET', $method);
+                $this->assertEquals('/api/v1/orders/', $uri);
+                $this->assertEquals(
+                    [
+                        'limit' => 5,
+                        'page' => 2,
+                        'criteria' => [
+                            'customer' => [
+                                'type' => 'equal',
+                                'value' => 99,
+                            ],
+                            'date' => [
+                                'from' => [
+                                    'date' => '2018-05-05',
+                                    'time' => '17:10:00',
+                                    'inclusive_from' => true,
+                                ],
+                                'to' => [
+                                    'date' => '2018-10-01',
+                                    'time' => '08:00:00',
+                                    'inclusive_to' => false,
+                                ],
+                            ]
+                        ],
+                    ],
+                    $options['query']
+                );
+
+                return new Response(
+                    200,
+                    [],
+                    '{
+                        "page": 1,
+                        "limit": 10,
+                        "pages": 1,
+                        "total": 1,
+                        "_embedded": {
+                            "items": [
+                                {
+                                    "id": 5
+                                },
+                                {
+                                    "id": 6
+                                }
+                            ]
+                        }
+                    }'
+                );
+            }
+        );
+
+        $customer = new Customer(99, 'test@test.com', 'test@test.com', 'm');
+
+
+        $message = new FindOrdersByCustomerMessage(
+            $customer,
+            2,
+            5,
+            new \DateTime('2018-05-05 17:10:00'),
+            new \DateTime('2018-10-01 08:00:00')
+        );
 
         // send message
         $this->getMessageBus()->dispatch($message);
