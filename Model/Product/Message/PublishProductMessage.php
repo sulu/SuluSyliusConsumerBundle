@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
+
 class PublishProductMessage
 {
     /**
@@ -24,6 +27,11 @@ class PublishProductMessage
      * @var string
      */
     private $locale;
+
+    /**
+     * @var ProductInterface|null
+     */
+    private $product;
 
     public function __construct(string $id, string $locale)
     {
@@ -39,5 +47,21 @@ class PublishProductMessage
     public function getLocale(): string
     {
         return $this->locale;
+    }
+
+    public function getProduct(): ProductInterface
+    {
+        if (!$this->product) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->product;
+    }
+
+    public function setProduct(ProductInterface $product): self
+    {
+        $this->product = $product;
+
+        return $this;
     }
 }

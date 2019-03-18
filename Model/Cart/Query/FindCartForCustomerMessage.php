@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class FindCartForCustomerMessage
 {
@@ -21,6 +22,11 @@ class FindCartForCustomerMessage
      * @var Customer
      */
     private $customer;
+
+    /**
+     * @var array|null
+     */
+    private $cart;
 
     public function __construct(Customer $customer)
     {
@@ -30,5 +36,21 @@ class FindCartForCustomerMessage
     public function getCustomer(): Customer
     {
         return $this->customer;
+    }
+
+    public function getCart(): array
+    {
+        if (null === $this->cart) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->cart;
+    }
+
+    public function setCart(array $cart): self
+    {
+        $this->cart = $cart;
+
+        return $this;
     }
 }

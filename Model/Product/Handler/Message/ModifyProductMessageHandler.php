@@ -17,7 +17,6 @@ use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\ModifyProductMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductMediaReferenceRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 
@@ -48,7 +47,7 @@ class ModifyProductMessageHandler
         $this->productMediaReferenceRepository = $productMediaReferenceRepository;
     }
 
-    public function __invoke(ModifyProductMessage $message): ProductInterface
+    public function __invoke(ModifyProductMessage $message): void
     {
         $product = $this->productRepository->findById($message->getId());
         if (!$product) {
@@ -87,6 +86,6 @@ class ModifyProductMessageHandler
             $product->removeMediaReference($mediaReference);
         }
 
-        return $product;
+        $message->setProduct($product);
     }
 }

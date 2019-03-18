@@ -13,12 +13,20 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message;
 
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+
 class VerifyCustomerMessage
 {
     /**
      * @var string
      */
     private $token;
+
+    /**
+     * @var Customer|null
+     */
+    private $customer;
 
     public function __construct(string $token)
     {
@@ -28,5 +36,21 @@ class VerifyCustomerMessage
     public function getToken(): string
     {
         return $this->token;
+    }
+
+    public function getCustomer(): Customer
+    {
+        if (!$this->customer) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->customer;
+    }
+
+    public function setCustomer(Customer $customer): self
+    {
+        $this->customer = $customer;
+
+        return $this;
     }
 }

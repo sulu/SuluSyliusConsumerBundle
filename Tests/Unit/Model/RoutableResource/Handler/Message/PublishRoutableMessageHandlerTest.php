@@ -59,6 +59,8 @@ class PublishRoutableMessageHandlerTest extends TestCase
 
         $routeManager->update($routable->reveal(), '/products/product-1')->shouldBeCalled();
 
+        $message->setRoute($routable->reveal())->shouldBeCalled();
+
         $handler->__invoke($message->reveal());
     }
 
@@ -96,6 +98,8 @@ class PublishRoutableMessageHandlerTest extends TestCase
         $routable->getRoute()->willReturn(null);
 
         $routeManager->create($routable->reveal(), '/products/product-1')->shouldBeCalled();
+
+        $message->setRoute($routable->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }

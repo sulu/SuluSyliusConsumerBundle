@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Handler\Message;
 
 use Sulu\Bundle\RouteBundle\Manager\RouteManagerInterface;
-use Sulu\Bundle\RouteBundle\Model\RoutableInterface;
 use Sulu\Bundle\RouteBundle\Model\RouteInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -48,7 +47,7 @@ class PublishRoutableResourceMessageHandler
         $this->routeManager = $routeManager;
     }
 
-    public function __invoke(PublishRoutableResourceMessage $message): RoutableInterface
+    public function __invoke(PublishRoutableResourceMessage $message): void
     {
         $dimension = $this->dimensionRepository->findOrCreateByAttributes(
             [
@@ -68,11 +67,13 @@ class PublishRoutableResourceMessageHandler
         if ($route) {
             $this->routeManager->update($routableResource, $message->getRoutePath());
 
-            return $routableResource;
+            $message->setRoute($routableResource);
+
+            return;
         }
 
         $this->routeManager->create($routableResource, $message->getRoutePath());
 
-        return $routableResource;
+        $message->setRoute($routableResource);
     }
 }

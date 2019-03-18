@@ -141,6 +141,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $liveProductInformation->mapPublishProperties($draftProductInformation->reveal())->shouldBeCalled();
         $liveProductInformation->getAttributeValueCodes()->willReturn(['code1', 'code2']);
 
+        $message->setProduct($product->reveal())->shouldBeCalled();
+
         $handler->__invoke($message->reveal());
     }
 
@@ -251,6 +253,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $liveProductInformation->mapPublishProperties($draftProductInformation->reveal())->shouldBeCalled();
         $liveProductInformation->getAttributeValueCodes()->willReturn(['to_delete', 'code1', 'code2']);
         $liveProductInformation->removeAttributeValueByCode('to_delete')->shouldBeCalled();
+
+        $message->setProduct($product->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }

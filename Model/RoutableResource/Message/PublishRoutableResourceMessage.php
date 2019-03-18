@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message;
 
+use Sulu\Bundle\RouteBundle\Model\RoutableInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
+
 class PublishRoutableResourceMessage
 {
     /**
@@ -34,6 +37,11 @@ class PublishRoutableResourceMessage
      * @var string
      */
     private $routePath;
+
+    /**
+     * @var RoutableInterface|null
+     */
+    private $route;
 
     public function __construct(string $resourceKey, string $resourceId, string $locale, string $routePath)
     {
@@ -61,5 +69,21 @@ class PublishRoutableResourceMessage
     public function getRoutePath(): string
     {
         return $this->routePath;
+    }
+
+    public function getRoute(): RoutableInterface
+    {
+        if (!$this->route) {
+            throw new MissingResultException(__METHOD__);
+        }
+
+        return $this->route;
+    }
+
+    public function setRoute(RoutableInterface $route): self
+    {
+        $this->route = $route;
+
+        return $this;
     }
 }

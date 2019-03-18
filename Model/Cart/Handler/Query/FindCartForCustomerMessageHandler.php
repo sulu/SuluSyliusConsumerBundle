@@ -28,8 +28,10 @@ class FindCartForCustomerMessageHandler
         $this->cartGateway = $cartGateway;
     }
 
-    public function __invoke(FindCartForCustomerMessage $message): array
+    public function __invoke(FindCartForCustomerMessage $message): void
     {
-        return $this->cartGateway->findByCustomerEmail($message->getCustomer()->getEmail());
+        $cart = $this->cartGateway->findByCustomerEmail($message->getCustomer()->getEmail());
+
+        $message->setCart($cart);
     }
 }

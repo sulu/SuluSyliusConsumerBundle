@@ -28,8 +28,14 @@ class AddItemToCartMessageHandler
         $this->cartGateway = $cartGateway;
     }
 
-    public function __invoke(AddItemToCartMessage $message): array
+    public function __invoke(AddItemToCartMessage $message): void
     {
-        return $this->cartGateway->addItem($message->getCartId(), $message->getVariantCode(), $message->getQuantity());
+        $cartItem = $this->cartGateway->addItem(
+            $message->getCartId(),
+            $message->getVariantCode(),
+            $message->getQuantity()
+        );
+
+        $message->setCartItem($cartItem);
     }
 }
