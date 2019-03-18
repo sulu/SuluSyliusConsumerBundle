@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <!-- Query Handler -->
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerMessage">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGatewayInterface"/>
+            <argument>%sulu_sylius_consumer.sylius_api_default_limit%</argument>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+    </services>
+</container>

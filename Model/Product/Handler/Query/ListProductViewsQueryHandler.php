@@ -18,7 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationAttributeValueRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\OrderList;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewList;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\ListProductViewsQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\View\ProductViewFactoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -126,7 +126,7 @@ class ListProductViewsQueryHandler
             $productAttributeTranslations = $message->getProductAttributeTranslations();
         }
 
-        $productViewList = new OrderList(
+        $productViewList = new ProductViewList(
             $page,
             $limit,
             $total,

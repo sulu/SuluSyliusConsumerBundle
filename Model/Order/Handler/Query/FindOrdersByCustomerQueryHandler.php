@@ -24,17 +24,23 @@ class FindOrdersByCustomerQueryHandler
      */
     private $orderGateway;
 
-    public function __construct(OrderGatewayInterface $orderGateway)
+    /**
+     * @var int
+     */
+    private $defaultLimit;
+
+    public function __construct(OrderGatewayInterface $orderGateway, int $defaultLimit)
     {
         $this->orderGateway = $orderGateway;
+        $this->defaultLimit = $defaultLimit;
     }
 
     public function __invoke(FindOrdersByCustomerMessage $message): void
     {
         $gatewayResponse = $this->orderGateway->findByCustomer(
             $message->getCustomer()->getId(),
-            $message->getLimit(),
-            $message->getPage(),
+            $message->getLimit() ?? $this->defaultLimit,
+            $message->getPage() ?? 1,
             $message->getFrom(),
             $message->getTo()
         );

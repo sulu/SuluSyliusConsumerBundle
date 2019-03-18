@@ -43,13 +43,11 @@ class OrderGateway implements OrderGatewayInterface
             'customer' => [
                 'type' => 'equal',
                 'value' => $customerId,
-            ]
+            ],
         ];
 
         if ($from) {
-            if (!array_key_exists('date', $criteria)) {
-                $criteria['date'] = [];
-            }
+            $criteria['date'] = [];
 
             $criteria['date']['from'] = [
                 'date' => $from,

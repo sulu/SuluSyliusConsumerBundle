@@ -36,6 +36,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('sylius_base_url')->isRequired()->end()
                 ->scalarNode('sylius_default_channel')->isRequired()->end()
+                ->scalarNode('sylius_api_default_limit')->defaultValue(10)->end()
                 ->arrayNode('sylius_oauth_config')
                     ->isRequired()
                     ->children()
