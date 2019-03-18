@@ -122,7 +122,7 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
                                     'time' => '08:00:00',
                                     'inclusive_to' => false,
                                 ],
-                            ]
+                            ],
                         ],
                     ],
                     $options['query']
@@ -152,7 +152,6 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
         );
 
         $customer = new Customer(99, 'test@test.com', 'test@test.com', 'm');
-
 
         $message = new FindOrdersByCustomerMessage(
             $customer,
