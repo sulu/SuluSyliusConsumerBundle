@@ -50,8 +50,8 @@ class OrderGateway implements OrderGatewayInterface
             $criteria['date'] = [];
 
             $criteria['date']['from'] = [
-                'date' => $from,
-                'time' => $from,
+                'date' => $from->format('Y-m-d'),
+                'time' => $from->format('H:i:s'),
                 'inclusive_from' => $inclusiveFrom,
             ];
         }
@@ -62,8 +62,8 @@ class OrderGateway implements OrderGatewayInterface
             }
 
             $criteria['date']['to'] = [
-                'date' => $to,
-                'time' => $to,
+                'date' => $to->format('Y-m-d'),
+                'time' => $to->format('H:i:s'),
                 'inclusive_to' => $inclusiveTo,
             ];
         }
