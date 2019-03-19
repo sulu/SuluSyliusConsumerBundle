@@ -44,7 +44,7 @@ class CartGateway implements CartGatewayInterface
     {
         $response = $this->gatewayClient->request(
             'GET',
-            self::URI,
+            self::URI . '/',
             [
                 RequestOptions::QUERY => [
                     'criteria[customer][type]' => 'equal',

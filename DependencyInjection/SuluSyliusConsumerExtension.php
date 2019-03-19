@@ -38,6 +38,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
 
         $container->setParameter('sulu_sylius_consumer.sylius_base_url', $config['sylius_base_url']);
         $container->setParameter('sulu_sylius_consumer.sylius_default_channel', $config['sylius_default_channel']);
+        $container->setParameter('sulu_sylius_consumer.sylius_api_default_limit', $config['sylius_api_default_limit']);
         $container->setParameter('sulu_sylius_consumer.sylius_oauth_config', $config['sylius_oauth_config']);
         $container->setParameter('sulu_sylius_consumer.auto_publish', $config['auto_publish']);
         $container->setParameter(

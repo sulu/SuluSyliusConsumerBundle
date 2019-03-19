@@ -17,6 +17,10 @@
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactory"/>
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGateway">
+            <argument type="service" id="sulu_sylius_consumer.gateway_client" />
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductAttributeGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductAttributeGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
