@@ -12,6 +12,10 @@
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CheckoutGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\CheckoutGateway">
+            <argument type="service" id="sulu_sylius_consumer.gateway_client" />
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\CustomerGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactory"/>
