@@ -44,7 +44,7 @@ class CompleteOrderMessageTest extends SuluTestCase
                 $this->assertEquals('PUT', $method);
                 $this->assertEquals('/api/v1/checkouts/complete/21', $uri);
 
-                return new Response(204, []);
+                return new Response(204);
             }
         );
 
