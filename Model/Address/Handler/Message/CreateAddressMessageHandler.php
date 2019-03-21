@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\AddressGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message\CreateAddressMessage;
 
 class CreateAddressMessageHandler
@@ -25,11 +25,11 @@ class CreateAddressMessageHandler
     private $addressGateway;
 
     /**
-     * @var AddressFactory
+     * @var AddressFactoryInterface
      */
     private $addressFactory;
 
-    public function __construct(AddressGatewayInterface $addressGateway, AddressFactory $addressFactory)
+    public function __construct(AddressGatewayInterface $addressGateway, AddressFactoryInterface $addressFactory)
     {
         $this->addressGateway = $addressGateway;
         $this->addressFactory = $addressFactory;

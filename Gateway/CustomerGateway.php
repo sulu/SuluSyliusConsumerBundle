@@ -16,20 +16,20 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactoryInterface;
 
 class CustomerGateway extends AbstractGateway implements CustomerGatewayInterface
 {
     const URI = '/api/v1/customers';
 
     /**
-     * @var CustomerFactory
+     * @var CustomerFactoryInterface
      */
     private $customerFactory;
 
     public function __construct(
         ClientInterface $gatewayClient,
-        CustomerFactory $customerFactory
+        CustomerFactoryInterface $customerFactory
     ) {
         parent::__construct($gatewayClient);
         $this->customerFactory = $customerFactory;

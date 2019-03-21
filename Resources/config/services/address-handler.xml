@@ -4,12 +4,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <!-- Factories -->
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory" />
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactoryInterface" class="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory" />
 
         <!-- Message Handler -->
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Handler\Message\CreateAddressMessageHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AddressGatewayInterface"/>
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
@@ -29,14 +29,14 @@
         <!-- Query Handler -->
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Handler\Query\FindAddressQueryHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AddressGatewayInterface"/>
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Handler\Query\FindAddressesByCustomerQueryHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\AddressGatewayInterface"/>
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactoryInterface"/>
             <argument>%sulu_sylius_consumer.sylius_api_default_limit%</argument>
 
             <tag name="messenger.message_handler"/>

@@ -17,7 +17,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Address;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\AddressInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 
-class AddressFactory
+class AddressFactory implements AddressFactoryInterface
 {
     use PayloadTrait;
 

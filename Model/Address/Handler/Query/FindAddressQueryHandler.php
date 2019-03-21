@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\AddressGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Factory\AddressFactoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Query\FindAddressQuery;
 
 class FindAddressQueryHandler
@@ -25,13 +25,13 @@ class FindAddressQueryHandler
     private $addressGateway;
 
     /**
-     * @var AddressFactory
+     * @var AddressFactoryInterface
      */
     private $addressFactory;
 
     public function __construct(
         AddressGatewayInterface $addressGateway,
-        AddressFactory $addressFactory
+        AddressFactoryInterface $addressFactory
     ) {
         $this->addressGateway = $addressGateway;
         $this->addressFactory = $addressFactory;

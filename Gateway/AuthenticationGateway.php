@@ -15,18 +15,18 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactoryInterface;
 
 class AuthenticationGateway extends AbstractGateway implements AuthenticationGatewayInterface
 {
     const URI = '/api/v1/authenticate';
 
     /**
-     * @var CustomerFactory
+     * @var CustomerFactoryInterface
      */
     protected $customerFactory;
 
-    public function __construct(ClientInterface $gatewayClient, CustomerFactory $customerFactory)
+    public function __construct(ClientInterface $gatewayClient, CustomerFactoryInterface $customerFactory)
     {
         parent::__construct($gatewayClient);
 
