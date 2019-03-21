@@ -65,7 +65,7 @@ $this->getMessageBus()->dispatch($message);
 $address = $message->getAddress();
 ```
 
-### FindAddressesByCustomerQueryTest
+### FindAddressesByCustomerQuery
 
 Loads all addresses for given customer.
 Optional parameters are `page` (default `1`) and `limit` (default `10`).
@@ -81,8 +81,8 @@ $message = new FindAddressesByCustomerQuery(99);
 $this->getMessageBus()->dispatch($message);
 
 // get result
-$addressList->getAddresses());
 $addressList = $message->getAddressList();
+$addressList->getAddresses());
 $addressList->getPage());
 $addressList->getLimit());
 $addressList->getPages());
