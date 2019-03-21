@@ -22,4 +22,6 @@ interface CheckoutGatewayInterface
         AddressInterface $shippingAddress,
         ?AddressInterface $billingAddress = null
     ): void;
+
+    public function complete(int $orderId): void;
 }

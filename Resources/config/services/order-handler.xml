@@ -10,6 +10,12 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Message\CompleteOrderMessageHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CheckoutGatewayInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <!-- Query Handler -->
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Query\FindOrdersByCustomerQueryHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGatewayInterface"/>
