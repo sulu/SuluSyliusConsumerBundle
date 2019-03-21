@@ -15,13 +15,13 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Order\Handler;
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class FindOrdersByCustomerMessageTest extends SuluTestCase
+class FindOrdersByCustomerQueryTest extends SuluTestCase
 {
     public function setUp()
     {
@@ -83,7 +83,7 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
 
         $customer = new Customer(99, 'test@test.com', 'test@test.com', 'm');
 
-        $message = new FindOrdersByCustomerMessage($customer);
+        $message = new FindOrdersByCustomerQuery($customer);
 
         // send message
         $this->getMessageBus()->dispatch($message);
@@ -153,7 +153,7 @@ class FindOrdersByCustomerMessageTest extends SuluTestCase
 
         $customer = new Customer(99, 'test@test.com', 'test@test.com', 'm');
 
-        $message = new FindOrdersByCustomerMessage(
+        $message = new FindOrdersByCustomerQuery(
             $customer,
             2,
             5,

@@ -1,0 +1,81 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Sulu.
+ *
+ * (c) MASSIVE ART WebServices GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address;
+
+class AddressList implements AddressListInterface
+{
+    /**
+     * @var int
+     */
+    private $page;
+
+    /**
+     * @var int
+     */
+    private $limit;
+
+    /**
+     * @var int
+     */
+    private $pages;
+
+    /**
+     * @var int
+     */
+    private $total;
+
+    /**
+     * @var AddressInterface[]
+     */
+    private $addresses;
+
+    public function __construct(
+        int $page,
+        int $limit,
+        int $pages,
+        int $total,
+        array $addresses
+    ) {
+        $this->page = $page;
+        $this->limit = $limit;
+        $this->pages = $pages;
+        $this->total = $total;
+        $this->addresses = $addresses;
+    }
+
+    public function getPage(): int
+    {
+        return $this->page;
+    }
+
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    public function getPages(): int
+    {
+        return $this->pages;
+    }
+
+    public function getTotal(): int
+    {
+        return $this->total;
+    }
+
+    public function getAddresses(): array
+    {
+        return $this->addresses;
+    }
+}
