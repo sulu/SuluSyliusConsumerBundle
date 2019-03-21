@@ -15,6 +15,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address;
 
 interface AddressInterface
 {
+    public function getId(): ?int;
+
     public function getFirstName(): string;
 
     public function getLastName(): string;
@@ -28,6 +30,8 @@ interface AddressInterface
     public function getCountryCode(): string;
 
     public function getProvinceCode(): ?string;
+
+    public function getPhoneNumber(): ?string;
 
     public function toArray(): array;
 }

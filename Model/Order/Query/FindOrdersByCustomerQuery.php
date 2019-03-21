@@ -17,7 +17,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\OrderListInterface;
 
-class FindOrdersByCustomerMessage
+class FindOrdersByCustomerQuery
 {
     /**
      * @var Customer

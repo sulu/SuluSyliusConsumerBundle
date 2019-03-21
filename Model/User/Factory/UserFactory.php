@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\User\Factory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
 
-class UserFactory
+class UserFactory implements UserFactoryInterface
 {
     use PayloadTrait;
 

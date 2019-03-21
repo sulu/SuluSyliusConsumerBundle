@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGatewayInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\OrderList;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerQuery;
 
 class FindOrdersByCustomerQueryHandler
 {
@@ -35,7 +35,7 @@ class FindOrdersByCustomerQueryHandler
         $this->defaultLimit = $defaultLimit;
     }
 
-    public function __invoke(FindOrdersByCustomerMessage $message): void
+    public function __invoke(FindOrdersByCustomerQuery $message): void
     {
         $gatewayResponse = $this->orderGateway->findByCustomer(
             $message->getCustomer()->getId(),

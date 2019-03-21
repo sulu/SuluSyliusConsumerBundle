@@ -16,6 +16,11 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address;
 class Address implements AddressInterface
 {
     /**
+     * @var int|null
+     */
+    private $id;
+
+    /**
      * @var string
      */
     private $firstName;
@@ -56,6 +61,7 @@ class Address implements AddressInterface
     private $phoneNumber;
 
     public function __construct(
+        ?int $id,
         string $firstName,
         string $lastName,
         string $street,
@@ -65,6 +71,7 @@ class Address implements AddressInterface
         ?string $provinceCode = null,
         ?string $phoneNumber = null
     ) {
+        $this->id = $id;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
         $this->street = $street;
@@ -73,6 +80,11 @@ class Address implements AddressInterface
         $this->countryCode = $countryCode;
         $this->provinceCode = $provinceCode;
         $this->phoneNumber = $phoneNumber;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
     public function getFirstName(): string

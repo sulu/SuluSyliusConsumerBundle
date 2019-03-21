@@ -15,18 +15,18 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\PayloadTrait;
-use Sulu\Bundle\SyliusConsumerBundle\Model\User\Factory\UserFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Model\User\Factory\UserFactoryInterface;
 
-class CustomerFactory
+class CustomerFactory implements CustomerFactoryInterface
 {
     use PayloadTrait;
 
     /**
-     * @var UserFactory
+     * @var UserFactoryInterface
      */
     private $userFactory;
 
-    public function __construct(UserFactory $userFactory)
+    public function __construct(UserFactoryInterface $userFactory)
     {
         $this->userFactory = $userFactory;
     }

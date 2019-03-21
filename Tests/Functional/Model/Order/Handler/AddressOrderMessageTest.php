@@ -64,7 +64,7 @@ class AddressOrderMessageTest extends SuluTestCase
         );
 
         $orderId = 21;
-        $shippingAddress = new Address('Elon', 'Musk', '10941 Savona Rd', 'CA 900077', 'Los Angeles', 'US');
+        $shippingAddress = new Address(null, 'Elon', 'Musk', '10941 Savona Rd', 'CA 900077', 'Los Angeles', 'US');
 
         $message = new AddressOrderMessage($orderId, $shippingAddress);
 
@@ -106,8 +106,8 @@ class AddressOrderMessageTest extends SuluTestCase
         );
 
         $orderId = 21;
-        $shippingAddress = new Address('Elon', 'Musk', '10941 Savona Rd', 'CA 900077', 'Los Angeles', 'US');
-        $billingAddress = new Address('Elon', 'Musk', 'Tesla Street 123', 'CA 900077', 'Los Angeles', 'US');
+        $shippingAddress = new Address(null, 'Elon', 'Musk', '10941 Savona Rd', 'CA 900077', 'Los Angeles', 'US');
+        $billingAddress = new Address(null, 'Elon', 'Musk', 'Tesla Street 123', 'CA 900077', 'Los Angeles', 'US');
 
         $message = new AddressOrderMessage($orderId, $shippingAddress, $billingAddress);
 
