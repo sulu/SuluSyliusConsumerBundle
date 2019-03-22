@@ -51,7 +51,7 @@ class FindProductViewsQuery
 
     public function getProductViews(): array
     {
-        if (!$this->productViews) {
+        if (null === $this->productViews) {
             throw new MissingResultException(__METHOD__);
         }
 
