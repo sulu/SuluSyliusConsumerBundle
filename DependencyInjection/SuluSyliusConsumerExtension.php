@@ -203,6 +203,40 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                         'endpoint' => 'sulu_sylius_product.get_products',
                     ],
                 ],
+                'field_type_options' => [
+                    'selection' => [
+                        'product_selection' => [
+                            'default_type' => 'list_overlay',
+                            'resource_key' => ProductInterface::RESOURCE_KEY,
+                            'types' => [
+                                'list_overlay' => [
+                                    'adapter' => 'table',
+                                    'list_key' => ProductInterface::LIST_KEY,
+                                    'display_properties' => ['name'],
+                                    'icon' => 'su-document',
+                                    'label' => 'sulu_page.selection_label',
+                                    'overlay_title' => 'sulu_page.selection_overlay_title',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'single_selection' => [
+                        'single_product_selection' => [
+                            'default_type' => 'list_overlay',
+                            'resource_key' => ProductInterface::RESOURCE_KEY,
+                            'types' => [
+                                'list_overlay' => [
+                                    'adapter' => 'table',
+                                    'list_key' => ProductInterface::LIST_KEY,
+                                    'display_properties' => ['name'],
+                                    'icon' => 'su-plus',
+                                    'empty_text' => 'sulu_page.no_page_selected',
+                                    'overlay_title' => '',
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
             ]
         );
     }

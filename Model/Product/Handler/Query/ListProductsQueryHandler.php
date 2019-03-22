@@ -73,6 +73,12 @@ class ListProductsQueryHandler
             $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_LOCALE],
             $query->getLocale()
         );
+
+        if (array_key_exists('ids', $query->getQuery())) {
+            $ids = explode(',', $query->getQuery()['ids']);
+            $listBuilder->in($fieldDescriptors['id'], $ids);
+        }
+
         $listBuilder->distinct();
 
         $listResponse = $listBuilder->execute();

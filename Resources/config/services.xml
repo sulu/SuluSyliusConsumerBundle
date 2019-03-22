@@ -81,5 +81,26 @@
             <argument type="service" id="translator"/>
             <argument>%sulu_sylius_consumer.mail_sender%</argument>
         </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\SingleProductSelectionContentType">
+            <argument type="service" id="message_bus"/>
+            <argument type="service" id="jms_serializer"/>
+            <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
+
+            <tag name="sulu.content.type" alias="single_product_selection" />
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\ProductSelectionContentType">
+            <argument type="service" id="message_bus"/>
+            <argument type="service" id="jms_serializer"/>
+            <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
+
+            <tag name="sulu.content.type" alias="product_selection" />
+        </service>
+
+        <service id="sulu_sylius_consumer.reference_store.product"
+                 class="Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStore">
+            <tag name="sulu_website.reference_store" alias="product"/>
+        </service>
     </services>
 </container>
