@@ -91,5 +91,4 @@ class ProductSelectionContentType extends SimpleContentType
             $this->productReferenceStore->add($id);
         }
     }
-
 }

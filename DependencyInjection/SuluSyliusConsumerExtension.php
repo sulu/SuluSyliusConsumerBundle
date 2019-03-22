@@ -236,7 +236,7 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                             ],
                         ],
                     ],
-                ]
+                ],
             ]
         );
     }
