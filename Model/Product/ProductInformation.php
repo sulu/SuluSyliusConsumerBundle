@@ -240,6 +240,9 @@ class ProductInformation implements ProductInformationInterface
      */
     public function getAttributeValueCodes(): array
     {
-        return $this->attributeValues->getKeys();
+        /** @var string[] $keys */
+        $keys = $this->attributeValues->getKeys();
+
+        return $keys;
     }
 }
