@@ -74,8 +74,6 @@ class CachedOAuthMiddleware extends OAuthMiddleware
             ]
         );
 
-        $item->tag('oauth');
-
         $expires = $token->getExpires();
         if ($expires) {
             $item->expiresAt($expires->sub(\DateInterval::createFromDateString('1 minute')));
