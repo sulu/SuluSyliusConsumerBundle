@@ -65,12 +65,12 @@ class WebsiteProductController implements ContainerAwareInterface
             return [];
         }
 
-        $attributeTranslations = $this->getMessageBus()->dispatch(
-            new FindAttributeTranslationsByCodesQuery($locale, $attributeValueCodes)
-        );
+        $query = new FindAttributeTranslationsByCodesQuery($locale, $attributeValueCodes);
+
+        $this->getMessageBus()->dispatch($query);
 
         return [
-            'productAttributeTranslations' => $attributeTranslations,
+            'productAttributeTranslations' => $query->getProductAttributeTranslations(),
         ];
     }
 
