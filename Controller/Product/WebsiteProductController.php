@@ -66,7 +66,6 @@ class WebsiteProductController implements ContainerAwareInterface
         }
 
         $query = new FindAttributeTranslationsByCodesQuery($locale, $attributeValueCodes);
-
         $this->getMessageBus()->dispatch($query);
 
         return [
