@@ -23,7 +23,7 @@ class AddressGateway extends AbstractGateway implements AddressGatewayInterface
     public function findByCustomer(int $customerId, int $limit = 10, int $page = 1): array
     {
         $criteria = [
-            'customer' => [
+            'customerId' => [
                 'type' => 'equal',
                 'value' => $customerId,
             ],

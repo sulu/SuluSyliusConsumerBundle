@@ -52,7 +52,13 @@ abstract class AbstractGateway
 
     protected function getData(ResponseInterface $response): array
     {
-        return json_decode($response->getBody()->getContents(), true);
+        $jsonString = $response->getBody()->getContents();
+        $data = json_decode($jsonString, true);
+        if (!$data) {
+            throw new \RuntimeException('Invalid json given! Error: "' . json_last_error_msg() . '"');
+        }
+
+        return json_decode($jsonString, true);
     }
 
     protected function handleErrors(ResponseInterface $response)

@@ -121,10 +121,10 @@ class CreateCustomerMessageTest extends SuluTestCase
                             "token": "72FThg24HeesEPbM",
                             "hash": "afjkasd-jfkladf-123jkfasd-123"
                         },
-                        "customData": [
+                        "customData": {
                             "cd1": "cd1 test",
-                            "cd2": "cd2 test"                            
-                        ]
+                            "cd2": "cd2 test"
+                        }
                     }'
                 );
             }
