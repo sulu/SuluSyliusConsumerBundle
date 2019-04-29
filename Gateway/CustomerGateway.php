@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactoryInterface;
 
 class CustomerGateway extends AbstractGateway implements CustomerGatewayInterface
@@ -35,7 +35,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
         $this->customerFactory = $customerFactory;
     }
 
-    public function findById(int $id): Customer
+    public function findById(int $id): CustomerInterface
     {
         $response = $this->sendRequest(
             'GET',
@@ -56,7 +56,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
         string $lastName,
         string $gender,
         bool $enabled = false
-    ): Customer {
+    ): CustomerInterface {
         $response = $this->sendRequest(
             'POST',
             self::URI . '/',
@@ -129,7 +129,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
         }
     }
 
-    public function verify(string $token): Customer
+    public function verify(string $token): CustomerInterface
     {
         $response = $this->sendRequest('PUT', '/api/v1/verify/' . $token);
 

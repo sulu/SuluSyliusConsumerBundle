@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Mail;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -51,7 +51,7 @@ class MailFactory
         $this->sender = $sender;
     }
 
-    public function sendVerifyEmail(Customer $customer): void
+    public function sendVerifyEmail(CustomerInterface $customer): void
     {
         if (!$customer->getUser()->getToken()) {
             throw new \RuntimeException('No token given');

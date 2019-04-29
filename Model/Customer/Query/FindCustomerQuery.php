@@ -11,31 +11,31 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
-class VerifyCustomerMessage
+class FindCustomerQuery
 {
     /**
-     * @var string
+     * @var int
      */
-    private $token;
+    private $id;
 
     /**
      * @var CustomerInterface|null
      */
     private $customer;
 
-    public function __construct(string $token)
+    public function __construct(int $id)
     {
-        $this->token = $token;
+        $this->id = $id;
     }
 
-    public function getToken(): string
+    public function getId(): int
     {
-        return $this->token;
+        return $this->id;
     }
 
     public function getCustomer(): CustomerInterface

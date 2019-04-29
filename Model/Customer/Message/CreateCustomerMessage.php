@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class CreateCustomerMessage
@@ -49,7 +49,7 @@ class CreateCustomerMessage
     private $enabled;
 
     /**
-     * @var Customer|null
+     * @var CustomerInterface|null
      */
     private $customer;
 
@@ -99,7 +99,7 @@ class CreateCustomerMessage
         return $this->enabled;
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): CustomerInterface
     {
         if (!$this->customer) {
             throw new MissingResultException(__METHOD__);
@@ -108,7 +108,7 @@ class CreateCustomerMessage
         return $this->customer;
     }
 
-    public function setCustomer(Customer $customer): self
+    public function setCustomer(CustomerInterface $customer): self
     {
         $this->customer = $customer;
 

@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Message;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class CreateCartMessage
 {
     /**
-     * @var Customer|null
+     * @var CustomerInterface|null
      */
     private $customer;
 
@@ -39,7 +39,7 @@ class CreateCartMessage
     private $cart;
 
     public function __construct(
-        ?Customer $customer,
+        ?CustomerInterface $customer,
         string $locale,
         string $channel = null
     ) {
@@ -48,7 +48,7 @@ class CreateCartMessage
         $this->channel = $channel;
     }
 
-    public function getCustomer(): ?Customer
+    public function getCustomer(): ?CustomerInterface
     {
         return $this->customer;
     }

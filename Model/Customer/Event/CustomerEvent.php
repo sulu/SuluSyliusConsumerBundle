@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 abstract class CustomerEvent extends Event
@@ -21,16 +21,16 @@ abstract class CustomerEvent extends Event
     const NAME = self::NAME;
 
     /**
-     * @var Customer
+     * @var CustomerInterface
      */
     private $customer;
 
-    public function __construct(Customer $customer)
+    public function __construct(CustomerInterface $customer)
     {
         $this->customer = $customer;
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): CustomerInterface
     {
         return $this->customer;
     }

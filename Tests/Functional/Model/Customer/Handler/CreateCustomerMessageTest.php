@@ -98,6 +98,71 @@ class CreateCustomerMessageTest extends SuluTestCase
         );
     }
 
+    public function testMax(): void
+    {
+        $this->getGatewayClient()->setHandleRequestCallable(
+            function ($method, $uri, array $options = []) {
+                return new Response(
+                    201,
+                    [],
+                    '{
+                        "id": 564,
+                        "email": "test@test.com",
+                        "emailCanonical": "test@test.com",
+                        "firstName": "John",
+                        "lastName": "Diggle",
+                        "gender": "m",
+                        "user": {
+                            "id": 13619,
+                            "roles": [
+                                "ROLE_USER"
+                            ],
+                            "enabled": false,
+                            "token": "72FThg24HeesEPbM",
+                            "hash": "afjkasd-jfkladf-123jkfasd-123"
+                        },
+                        "customData": {
+                            "cd1": "cd1 test",
+                            "cd2": "cd2 test"
+                        }
+                    }'
+                );
+            }
+        );
+
+        $messageLogger = $this->createAndRegisterMessageLogger();
+
+        $message = new CreateCustomerMessage(
+            'test@test.com',
+            'super-password-123',
+            'John',
+            'Diggle',
+            'm'
+        );
+
+        // send message
+        $this->getMessageBus()->dispatch($message);
+        $result = $message->getCustomer();
+
+        // check result
+        $this->assertInstanceOf(Customer::class, $result);
+        $this->assertSame(['cd1' => 'cd1 test', 'cd2' => 'cd2 test'], $result->getCustomData());
+
+        // checks that an email was sent
+        $this->assertSame(1, $messageLogger->countMessages());
+        $message = $messageLogger->getMessages()[0];
+
+        // Asserting email data
+        $this->assertInstanceOf('Swift_Message', $message);
+        $this->assertSame('Verify your email address', $message->getSubject());
+        $this->assertSame('no-reply@example.com', key($message->getFrom()));
+        $this->assertSame('test@test.com', key($message->getTo()));
+        $this->assertContains(
+            'http://localhost/verify/72FThg24HeesEPbM',
+            $message->getBody()
+        );
+    }
+
     private function createAndRegisterMessageLogger(): \Swift_Plugins_MessageLogger
     {
         // register swiftmailer logger

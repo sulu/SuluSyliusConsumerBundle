@@ -17,6 +17,7 @@ use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Address;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message\CreateAddressMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBus;
@@ -59,7 +60,8 @@ class CreateAddressMessageTest extends SuluTestCase
             }
         );
 
-        $customer = new Customer(99, 'test@test.com', 'test@test.com', 'm');
+        $user = new User(99, 'test@test.com', ['r1'], true, 'hash-123-123', 'token-123-123');
+        $customer = new Customer($user, 99, 'test@test.com', 'test@test.com', 'm');
         $address = new Address(null, 'Elon', 'Musk', '10941 Savona Rd', 'CA 900077', 'Los Angeles', 'US');
 
         $message = new CreateAddressMessage($customer, $address);

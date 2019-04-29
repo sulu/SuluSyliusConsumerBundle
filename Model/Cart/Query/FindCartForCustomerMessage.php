@@ -13,13 +13,13 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Cart\Query;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class FindCartForCustomerMessage
 {
     /**
-     * @var Customer
+     * @var CustomerInterface
      */
     private $customer;
 
@@ -28,12 +28,12 @@ class FindCartForCustomerMessage
      */
     private $cart;
 
-    public function __construct(Customer $customer)
+    public function __construct(CustomerInterface $customer)
     {
         $this->customer = $customer;
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): CustomerInterface
     {
         return $this->customer;
     }

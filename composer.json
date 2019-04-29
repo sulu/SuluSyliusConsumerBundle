@@ -35,7 +35,9 @@
         "zendframework/zendsearch": "@dev"
     },
     "conflict": {
-        "symfony/dependency-injection": "4.1.8"
+        "symfony/dependency-injection": "4.1.8",
+        "symfony/symfony": "4.2.7",
+        "symfony/framework-bundle": "4.2.7"
     },
     "config": {
         "sort-packages": true

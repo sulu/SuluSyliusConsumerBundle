@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception\NotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\Exception\UnauthorizedException;
@@ -34,8 +35,16 @@ abstract class AbstractGateway
 
     protected function sendRequest(string $method, string $uri, array $options = []): ResponseInterface
     {
-        if (!array_key_exists('http_errors', $options)) {
-            $options['http_errors'] = false;
+        if (!array_key_exists(RequestOptions::HTTP_ERRORS, $options)) {
+            $options[RequestOptions::HTTP_ERRORS] = false;
+        }
+
+        if (!array_key_exists(RequestOptions::HEADERS, $options)) {
+            $options[RequestOptions::HEADERS] = [];
+        }
+
+        if (!array_key_exists('Accept', $options['headers'])) {
+            $options['headers']['Accept'] = 'groups=Default,Detailed,CustomData,No';
         }
 
         return $this->gatewayClient->request($method, $uri, $options);
@@ -43,7 +52,13 @@ abstract class AbstractGateway
 
     protected function getData(ResponseInterface $response): array
     {
-        return json_decode($response->getBody()->getContents(), true);
+        $jsonString = $response->getBody()->getContents();
+        $data = json_decode($jsonString, true);
+        if (!$data) {
+            throw new \RuntimeException('Invalid json given! Error: "' . json_last_error_msg() . '"');
+        }
+
+        return json_decode($jsonString, true);
     }
 
     protected function handleErrors(ResponseInterface $response)

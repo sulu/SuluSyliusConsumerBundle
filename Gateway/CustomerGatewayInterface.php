@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 
 interface CustomerGatewayInterface
 {
-    public function findById(int $id): Customer;
+    public function findById(int $id): CustomerInterface;
 
     public function create(
         string $email,
@@ -26,7 +26,7 @@ interface CustomerGatewayInterface
         string $lastName,
         string $gender,
         bool $enabled = false
-    ): Customer;
+    ): CustomerInterface;
 
     public function modify(
         string $email,
@@ -37,5 +37,5 @@ interface CustomerGatewayInterface
         ?bool $enabled = null
     ): void;
 
-    public function verify(string $token): Customer;
+    public function verify(string $token): CustomerInterface;
 }
