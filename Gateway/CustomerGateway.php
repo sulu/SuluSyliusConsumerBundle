@@ -57,8 +57,7 @@ class CustomerGateway extends AbstractGateway implements CustomerGatewayInterfac
         string $lastName,
         string $gender,
         bool $enabled = false
-    ): CustomerInterface
-    {
+    ): CustomerInterface {
         $response = $this->sendRequest(
             'POST',
             self::URI . '/',
