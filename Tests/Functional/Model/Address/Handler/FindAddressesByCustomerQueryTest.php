@@ -36,7 +36,7 @@ class FindAddressesByCustomerQueryTest extends SuluTestCase
                         'limit' => 10,
                         'page' => 1,
                         'criteria' => [
-                            'customer' => [
+                            'customerId' => [
                                 'type' => 'equal',
                                 'value' => 99,
                             ],
