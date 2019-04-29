@@ -163,7 +163,6 @@ class CreateCustomerMessageTest extends SuluTestCase
         );
     }
 
-
     private function createAndRegisterMessageLogger(): \Swift_Plugins_MessageLogger
     {
         // register swiftmailer logger

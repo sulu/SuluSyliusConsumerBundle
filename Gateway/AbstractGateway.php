@@ -43,8 +43,8 @@ abstract class AbstractGateway
             $options[RequestOptions::HEADERS] = [];
         }
 
-        if (!array_key_exists('accept', $options['headers'])) {
-            $options['headers']['accept'] = 'groups=Detailed,CustomData';
+        if (!array_key_exists('Accept', $options['headers'])) {
+            $options['headers']['Accept'] = 'groups=Default,Detailed,CustomData,No';
         }
 
         return $this->gatewayClient->request($method, $uri, $options);
