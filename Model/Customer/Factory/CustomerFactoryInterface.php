@@ -14,8 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 
 interface CustomerFactoryInterface
 {
-    public function createFromArray(array $data): Customer;
+    public function createFromArray(array $data): CustomerInterface;
 }

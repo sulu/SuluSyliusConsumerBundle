@@ -14,13 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\OrderListInterface;
 
 class FindOrdersByCustomerQuery
 {
     /**
-     * @var Customer
+     * @var CustomerInterface
      */
     private $customer;
 
@@ -50,7 +51,7 @@ class FindOrdersByCustomerQuery
     private $orderList;
 
     public function __construct(
-        Customer $customer,
+        CustomerInterface $customer,
         ?int $page = null,
         ?int $limit = null,
         \DateTime $from = null,
@@ -63,7 +64,7 @@ class FindOrdersByCustomerQuery
         $this->to = $to;
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): CustomerInterface
     {
         return $this->customer;
     }

@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
 
-class Customer
+class Customer implements CustomerInterface
 {
     /**
      * @var int
@@ -52,20 +52,29 @@ class Customer
      */
     private $user;
 
+    /**
+     * @var array
+     */
+    private $customData;
+
     public function __construct(
+        User $user,
         int $id,
         string $email,
         string $emailCanonical,
         string $gender,
         ?string $firstName = null,
-        ?string $lastName = null
+        ?string $lastName = null,
+        array $customData = []
     ) {
+        $this->user = $user;
         $this->id = $id;
         $this->email = $email;
         $this->emailCanonical = $emailCanonical;
         $this->gender = $gender;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+        $this->customData = $customData;
     }
 
     public function getId(): int
@@ -108,10 +117,8 @@ class Customer
         return $this->user;
     }
 
-    public function setUser(User $user): self
+    public function getCustomData(): array
     {
-        $this->user = $user;
-
-        return $this;
+        return $this->customData;
     }
 }

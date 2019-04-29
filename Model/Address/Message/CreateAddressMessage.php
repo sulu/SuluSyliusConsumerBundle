@@ -15,12 +15,13 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\AddressInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class CreateAddressMessage
 {
     /**
-     * @var Customer
+     * @var CustomerInterface
      */
     private $customer;
 
@@ -35,14 +36,14 @@ class CreateAddressMessage
     private $result;
 
     public function __construct(
-        Customer $customer,
+        CustomerInterface $customer,
         AddressInterface $address
     ) {
         $this->customer = $customer;
         $this->address = $address;
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): CustomerInterface
     {
         return $this->customer;
     }

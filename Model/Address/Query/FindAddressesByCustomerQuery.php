@@ -15,12 +15,13 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Address\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\AddressListInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\MissingResultException;
 
 class FindAddressesByCustomerQuery
 {
     /**
-     * @var Customer
+     * @var CustomerInterface
      */
     private $customer;
 
@@ -40,7 +41,7 @@ class FindAddressesByCustomerQuery
     private $addressList;
 
     public function __construct(
-        Customer $customer,
+        CustomerInterface $customer,
         ?int $page = null,
         ?int $limit = null
     ) {
@@ -49,7 +50,7 @@ class FindAddressesByCustomerQuery
         $this->limit = $limit;
     }
 
-    public function getCustomer(): Customer
+    public function getCustomer(): CustomerInterface
     {
         return $this->customer;
     }

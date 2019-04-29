@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 use GuzzleHttp\ClientInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactoryInterface;
 
 class AuthenticationGateway extends AbstractGateway implements AuthenticationGatewayInterface
@@ -33,7 +34,7 @@ class AuthenticationGateway extends AbstractGateway implements AuthenticationGat
         $this->customerFactory = $customerFactory;
     }
 
-    public function getCustomer(string $email, string $password): ?Customer
+    public function getCustomer(string $email, string $password): ?CustomerInterface
     {
         $response = $this->sendRequest(
             'GET',

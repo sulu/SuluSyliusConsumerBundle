@@ -38,6 +38,16 @@ abstract class AbstractGateway
             $options['http_errors'] = false;
         }
 
+        if (!array_key_exists('headers', $options)) {
+            $options['headers'] = [];
+        }
+
+        if (!array_key_exists('accept', $options['headers'])) {
+            $options['headers'] = [
+                'accept' => 'groups=Detailed,CustomData',
+            ];
+        }
+
         return $this->gatewayClient->request($method, $uri, $options);
     }
 
