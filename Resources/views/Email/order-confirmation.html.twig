@@ -1,0 +1,5 @@
+{% extends "SuluSyliusConsumerBundle:Email:master-email.html.twig" %}
+
+{% block content %}
+    {{ 'sulu_sylius.email_order-confirmation.body'|trans({'%orderId%': order.id})|raw }}
+{% endblock %}

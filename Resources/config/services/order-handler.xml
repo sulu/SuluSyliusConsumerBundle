@@ -12,11 +12,19 @@
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Message\CompleteOrderMessageHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\CheckoutGatewayInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector"/>
 
             <tag name="messenger.message_handler"/>
         </service>
 
         <!-- Query Handler -->
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Query\FindOrderQueryHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGatewayInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Factory\CustomerFactoryInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Query\FindOrdersByCustomerQueryHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\OrderGatewayInterface"/>
             <argument>%sulu_sylius_consumer.sylius_api_default_limit%</argument>

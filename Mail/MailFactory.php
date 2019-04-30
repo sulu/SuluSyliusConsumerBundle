@@ -68,6 +68,19 @@ class MailFactory
         );
     }
 
+    public function sendOrderConfirmationEmail(CustomerInterface $customer, array $order): void
+    {
+        $this->sendEmail(
+            [$customer->getEmail() => $customer->getFullName()],
+            'sulu_sylius.email_order-confirmation.subject',
+            'SuluSyliusConsumerBundle:Email:order-confirmation.html.twig',
+            [
+                'customer' => $customer,
+                'order' => $order,
+            ]
+        );
+    }
+
     /**
      * @param string|array $to
      */

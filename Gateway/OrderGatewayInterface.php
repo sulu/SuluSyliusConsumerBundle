@@ -15,6 +15,8 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
 interface OrderGatewayInterface
 {
+    public function findById(int $id): array;
+
     public function findByCustomer(
         int $customerId,
         int $limit = 10,
