@@ -20,13 +20,24 @@ class CompleteOrderMessage
      */
     private $orderId;
 
-    public function __construct(int $orderId)
+    /**
+     * @var string|null
+     */
+    private $notes;
+
+    public function __construct(int $orderId, ?string $notes = null)
     {
         $this->orderId = $orderId;
+        $this->notes = $notes;
     }
 
     public function getOrderId(): int
     {
         return $this->orderId;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
     }
 }

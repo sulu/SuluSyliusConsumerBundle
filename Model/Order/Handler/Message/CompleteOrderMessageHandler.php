@@ -30,6 +30,6 @@ class CompleteOrderMessageHandler
 
     public function __invoke(CompleteOrderMessage $message): void
     {
-        $this->checkoutGateway->complete($message->getOrderId());
+        $this->checkoutGateway->complete($message->getOrderId(), $message->getNotes());
     }
 }
