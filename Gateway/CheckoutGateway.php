@@ -48,11 +48,20 @@ class CheckoutGateway extends AbstractGateway implements CheckoutGatewayInterfac
         }
     }
 
-    public function complete(int $orderId): void
+    public function complete(int $orderId, ?string $notes = null): void
     {
+        $data = [];
+
+        if ($notes) {
+            $data['notes'] = $notes;
+        }
+
         $response = $this->sendRequest(
             'PUT',
-            self::URI . '/complete/' . $orderId
+            self::URI . '/complete/' . $orderId,
+            [
+                RequestOptions::JSON => $data,
+            ]
         );
 
         if (204 !== $response->getStatusCode()) {
