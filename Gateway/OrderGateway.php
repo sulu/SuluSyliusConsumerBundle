@@ -23,7 +23,7 @@ class OrderGateway extends AbstractGateway implements OrderGatewayInterface
     {
         $response = $this->sendRequest(
             'GET',
-            self::URI . '/' . $id
+            self::URI . '/' . $id . '/'
         );
 
         if (200 !== $response->getStatusCode()) {
