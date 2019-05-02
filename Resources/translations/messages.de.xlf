@@ -6,6 +6,16 @@
                 <source>sulu_sylius.email_customer_verify.subject</source>
                 <target>Verifiziere deine E-Mail Adresse</target>
             </trans-unit>
+
+            <trans-unit id="email-order-confirmation-1">
+                <source>sulu_sylius.email_order-confirmation.subject</source>
+                <target>Bestellbestätigung</target>
+            </trans-unit>
+
+            <trans-unit id="email-order-confirmation-2">
+                <source>sulu_sylius.email_order-confirmation.body</source>
+                <target><![CDATA[Deine Bestellung Nr. %orderId% wurde erfolgreich aufgegeben.<br/>Vielen Dank für ihren Einkauf!</target>]]></target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

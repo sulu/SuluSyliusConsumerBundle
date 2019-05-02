@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Order\Handler\Message;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\CheckoutGatewayInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Middleware\EventCollector;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Event\OrderCompletedEvent;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Message\CompleteOrderMessage;
 
 class CompleteOrderMessageHandler
@@ -23,13 +25,22 @@ class CompleteOrderMessageHandler
      */
     private $checkoutGateway;
 
-    public function __construct(CheckoutGatewayInterface $checkoutGateway)
+    /**
+     * @var EventCollector
+     */
+    private $eventCollector;
+
+    public function __construct(CheckoutGatewayInterface $checkoutGateway, EventCollector $eventCollector)
     {
         $this->checkoutGateway = $checkoutGateway;
+        $this->eventCollector = $eventCollector;
     }
 
     public function __invoke(CompleteOrderMessage $message): void
     {
         $this->checkoutGateway->complete($message->getOrderId(), $message->getNotes());
+
+        $event = new OrderCompletedEvent($message->getOrderId());
+        $this->eventCollector->push($event::NAME, $event);
     }
 }

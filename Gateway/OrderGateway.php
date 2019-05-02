@@ -19,6 +19,20 @@ class OrderGateway extends AbstractGateway implements OrderGatewayInterface
 {
     const URI = '/api/v1/orders';
 
+    public function findById(int $id): array
+    {
+        $response = $this->sendRequest(
+            'GET',
+            self::URI . '/' . $id . '/'
+        );
+
+        if (200 !== $response->getStatusCode()) {
+            $this->handleErrors($response);
+        }
+
+        return $this->getData($response);
+    }
+
     public function findByCustomer(
         int $customerId,
         int $limit = 10,
