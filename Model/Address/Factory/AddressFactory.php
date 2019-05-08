@@ -34,7 +34,8 @@ class AddressFactory implements AddressFactoryInterface
             $this->getStringValue('city'),
             $this->getStringValue('countryCode'),
             $this->keyExists('provinceCode') ? $this->getStringValue('provinceCode') : null,
-            $this->keyExists('phoneNumber') ? $this->getStringValue('phoneNumber') : null
+            $this->keyExists('phoneNumber') ? $this->getStringValue('phoneNumber') : null,
+            $this->keyExists('company') ? $this->getStringValue('company') : null
         );
 
         return $address;
