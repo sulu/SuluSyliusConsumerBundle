@@ -33,5 +33,7 @@ interface AddressInterface
 
     public function getPhoneNumber(): ?string;
 
+    public function getCompany(): ?string;
+
     public function toArray(): array;
 }

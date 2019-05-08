@@ -60,6 +60,11 @@ class Address implements AddressInterface
      */
     private $phoneNumber;
 
+    /**
+     * @var string|null
+     */
+    private $company;
+
     public function __construct(
         ?int $id,
         string $firstName,
@@ -69,7 +74,8 @@ class Address implements AddressInterface
         string $city,
         string $countryCode,
         ?string $provinceCode = null,
-        ?string $phoneNumber = null
+        ?string $phoneNumber = null,
+        ?string $company = null
     ) {
         $this->id = $id;
         $this->firstName = $firstName;
@@ -80,6 +86,7 @@ class Address implements AddressInterface
         $this->countryCode = $countryCode;
         $this->provinceCode = $provinceCode;
         $this->phoneNumber = $phoneNumber;
+        $this->company = $company;
     }
 
     public function getId(): ?int
@@ -127,6 +134,11 @@ class Address implements AddressInterface
         return $this->phoneNumber;
     }
 
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
     public function toArray(): array
     {
         $data = [
@@ -144,6 +156,10 @@ class Address implements AddressInterface
 
         if ($this->phoneNumber) {
             $data['phoneNumber'] = $this->phoneNumber;
+        }
+
+        if ($this->company) {
+            $data['company'] = $this->company;
         }
 
         return $data;
