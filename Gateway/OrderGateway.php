@@ -43,7 +43,7 @@ class OrderGateway extends AbstractGateway implements OrderGatewayInterface
         bool $inclusiveTo = false
     ): array {
         $criteria = [
-            'customer' => [
+            'customerId' => [
                 'type' => 'equal',
                 'value' => $customerId,
             ],
