@@ -50,7 +50,7 @@ class FindOrdersByCustomerQueryTest extends SuluTestCase
                         'limit' => 10,
                         'page' => 1,
                         'criteria' => [
-                            'customer' => [
+                            'customerId' => [
                                 'type' => 'equal',
                                 'value' => 99,
                             ],
@@ -109,7 +109,7 @@ class FindOrdersByCustomerQueryTest extends SuluTestCase
                         'limit' => 5,
                         'page' => 2,
                         'criteria' => [
-                            'customer' => [
+                            'customerId' => [
                                 'type' => 'equal',
                                 'value' => 99,
                             ],
