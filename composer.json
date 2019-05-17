@@ -13,7 +13,7 @@
     "require": {
         "php": "^7.1.3",
         "sainsburys/guzzle-oauth2-plugin": "^3.0",
-        "sulu/sulu": "2.0.0-alpha5|2.0.0-alpha6|dev-develop",
+        "sulu/sulu": "2.0.0-alpha6|dev-develop",
         "symfony/config": "^4.1",
         "symfony/http-kernel": "^3.4|^4.1",
         "symfony/messenger": "^4.2",

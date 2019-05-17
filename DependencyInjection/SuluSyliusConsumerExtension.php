@@ -127,12 +127,6 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                                 'type' => ProductInterface::CONTENT_RESOURCE_KEY,
                             ],
                         ],
-                        'resources' => [
-                            ProductInterface::CONTENT_RESOURCE_KEY => [
-                                'types' => [ProductInterface::CONTENT_RESOURCE_KEY],
-                                'endpoint' => 'sulu_sylius_product.get_product-contents',
-                            ],
-                        ],
                     ],
                 ],
             ]
