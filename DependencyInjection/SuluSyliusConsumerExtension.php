@@ -192,6 +192,14 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                         __DIR__ . '/../Resources/config/forms',
                     ],
                 ],
+                'resources' => [
+                    ProductInterface::RESOURCE_KEY => [
+                        'routes' => [
+                            'list' => 'sulu_sylius_product.products_list',
+                            'detail' => 'sulu_sylius_product.product_edit_form',
+                        ]
+                    ],
+                ],
                 'field_type_options' => [
                     'selection' => [
                         'product_selection' => [
