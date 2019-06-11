@@ -22,6 +22,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Query\FindContentQuery;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 abstract class ContentController implements ClassResourceInterface
@@ -54,21 +55,18 @@ abstract class ContentController implements ClassResourceInterface
         $this->setViewHandler($viewHandler);
     }
 
-    public function cgetAction(): Response
-    {
-        throw new NotFoundHttpException();
-    }
-
-    public function getAction(Request $request, string $resourceId): Response
+    public function getAction(Request $request, string $id): Response
     {
         try {
-            $message = new FindContentQuery($this->getResourceKey(), $resourceId, $request->query->get('locale'));
+            $message = new FindContentQuery($this->getResourceKey(), $id, $request->query->get('locale'));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
-        } catch (ContentNotFoundException $exception) {
-            $content = [
-                'template' => $this->defaultType,
-            ];
+        } catch (HandlerFailedException $exception) {
+            if ($exception->getPrevious() instanceof ContentNotFoundException) {
+                $content = [
+                    'template' => $this->defaultType,
+                ];
+            }
         }
 
         return $this->handleView($this->view($content));
