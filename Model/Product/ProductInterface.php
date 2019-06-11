@@ -21,8 +21,8 @@ interface ProductInterface
     const RESOURCE_KEY = 'products';
     const FORM_KEY = 'product_details';
     const LIST_KEY = 'product_details';
-    const CONTENT_RESOURCE_KEY = 'product_contents';
-    const CONTENT_FORM_KEY = 'product_contents';
+    const CONTENT_RESOURCE_KEY = 'product_content';
+    const CONTENT_FORM_KEY = 'product_content';
 
     public function getId(): string;
 
