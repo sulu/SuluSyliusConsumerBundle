@@ -60,7 +60,7 @@ class ListProductsQueryHandler
         $listBuilder->setParameter('keyLocale', DimensionInterface::ATTRIBUTE_KEY_LOCALE);
         $listBuilder->setParameter('keyStage', DimensionInterface::ATTRIBUTE_KEY_STAGE);
         $this->restHelper->initializeListBuilder($listBuilder, $fieldDescriptors);
-        $listBuilder->setIdField($fieldDescriptors['identifier']);
+        $listBuilder->setIdField($fieldDescriptors['id']);
 
         $listBuilder->addSelectField($fieldDescriptors['id']);
         $listBuilder->sort($fieldDescriptors['id']);
