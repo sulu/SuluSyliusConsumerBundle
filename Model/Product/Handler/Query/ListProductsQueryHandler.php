@@ -65,14 +65,11 @@ class ListProductsQueryHandler
         $listBuilder->addSelectField($fieldDescriptors['id']);
         $listBuilder->sort($fieldDescriptors['id']);
 
-        $listBuilder->where(
-            $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_STAGE],
-            DimensionInterface::ATTRIBUTE_VALUE_DRAFT
-        );
-        $listBuilder->where(
-            $fieldDescriptors[DimensionInterface::ATTRIBUTE_KEY_LOCALE],
-            $query->getLocale()
-        );
+        $listBuilder->addSelectField($fieldDescriptors['locale']);
+        $listBuilder->setParameter('locale', $query->getLocale());
+
+        $listBuilder->addSelectField($fieldDescriptors['stage']);
+        $listBuilder->setParameter('stage', DimensionInterface::ATTRIBUTE_VALUE_DRAFT);
 
         if (array_key_exists('ids', $query->getQuery())) {
             $ids = explode(',', $query->getQuery()['ids']);
