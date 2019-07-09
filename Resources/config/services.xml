@@ -51,7 +51,7 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\AutoLoginSubscriber">
-            <argument type="service" id="security.csrf.token_storage"/>
+            <argument type="service" id="security.token_storage"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="event_dispatcher"/>
             <argument>%sulu_sylius_consumer.firewall_provider_key%</argument>

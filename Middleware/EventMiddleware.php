@@ -42,7 +42,7 @@ class EventMiddleware implements MiddlewareInterface
 
         foreach ($this->eventCollector->release() as $name => $events) {
             foreach ($events as $event) {
-                $this->eventDispatcher->dispatch($event);
+                $this->eventDispatcher->dispatch($name, $event);
             }
         }
 
