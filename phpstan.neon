@@ -9,6 +9,8 @@ parameters:
         - .
     excludes_analyse:
         - %currentWorkingDirectory%/DependencyInjection/Configuration.php
+        - %currentWorkingDirectory%/EventSubscriber/AutoLoginSubscriber.php
+        - %currentWorkingDirectory%/Middleware/EventMiddleware.php
         - %currentWorkingDirectory%/vendor/*
         - %currentWorkingDirectory%/Tests/app/AppKernel.php
         - %currentWorkingDirectory%/Tests/app/cache/*
