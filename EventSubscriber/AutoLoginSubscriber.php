@@ -26,7 +26,7 @@ use Symfony\Component\Security\Http\SecurityEvents;
 final class AutoLoginSubscriber implements EventSubscriberInterface
 {
     /**
-     * @var TokenStorageInterface
+     * @var TokenStorageInterface|null
      */
     private $tokenStorage;
 
@@ -46,7 +46,7 @@ final class AutoLoginSubscriber implements EventSubscriberInterface
     private $firewallProviderKey;
 
     public function __construct(
-        TokenStorageInterface $tokenStorage,
+        ?TokenStorageInterface $tokenStorage,
         RequestStack $requestStack,
         EventDispatcherInterface $dispatcher,
         string $firewallProviderKey
@@ -67,7 +67,7 @@ final class AutoLoginSubscriber implements EventSubscriberInterface
     public function handleCustomerVerified(CustomerVerifiedEvent $event): void
     {
         $customer = $event->getCustomer();
-        if (!$customer->getUser()->isEnabled()) {
+        if (!$customer->getUser()->isEnabled() || !$this->tokenStorage) {
             return;
         }
 

@@ -195,8 +195,13 @@ class SuluSyliusConsumerExtension extends Extension implements PrependExtensionI
                 'resources' => [
                     ProductInterface::RESOURCE_KEY => [
                         'routes' => [
-                            'list' => 'sulu_sylius_product.products_list',
-                            'detail' => 'sulu_sylius_product.product_edit_form',
+                            'list' => 'get_products',
+                            'detail' => 'get_product',
+                        ],
+                    ],
+                    ProductInterface::CONTENT_RESOURCE_KEY => [
+                        'routes' => [
+                            'detail' => 'get_product-content',
                         ],
                     ],
                 ],

@@ -6,7 +6,7 @@ import equals from 'fast-deep-equal';
 import {MultiItemSelection} from 'sulu-admin-bundle/components';
 import {translate} from 'sulu-admin-bundle/utils';
 import type {IObservableValue} from 'mobx';
-import MultiMediaSelectionStore from 'sulu-media-bundle/stores/MultiMediaSelectionStore';
+import {MultiSelectionStore} from 'sulu-admin-bundle/stores';
 import MultiMediaSelectionOverlay from 'sulu-media-bundle/containers/MultiMediaSelectionOverlay';
 import MultiItemSelectionItem from './MultiItemSelectionItem';
 import type {MediaReference} from './types';
@@ -25,7 +25,7 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
         value: [],
     };
 
-    mediaSelectionStore: MultiMediaSelectionStore;
+    mediaSelectionStore: MultiSelectionStore;
     changeDisposer: () => void;
     changeAutorunInitialized: boolean = false;
 
@@ -52,10 +52,10 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
         const {locale, value} = this.props;
         const selectedMediaIds = value.map((mediaReference) => mediaReference.mediaId);
 
-        this.mediaSelectionStore = new MultiMediaSelectionStore(selectedMediaIds, locale);
+        this.mediaSelectionStore = new MultiSelectionStore('media', selectedMediaIds, locale);
         this.changeDisposer = autorun(() => {
             const {onChange, value} = untracked(() => this.props);
-            const loadedMediaIds = this.mediaSelectionStore.selectedMediaIds;
+            const loadedMediaIds = (this.mediaSelectionStore.items.map((item) => item.id));
             const selectedMediaIds = value.map((mediaReference) => mediaReference.mediaId);
 
             if (!this.changeAutorunInitialized) {
@@ -82,12 +82,12 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
         } = this.props;
 
         const newSelectedIds = value.map((mediaReference) => mediaReference.mediaId);
-        const loadedSelectedIds = toJS(this.mediaSelectionStore.selectedMediaIds);
+        const loadedSelectedIds = toJS(this.mediaSelectionStore.items.map((item) => item.id));
 
         newSelectedIds.sort();
         loadedSelectedIds.sort();
         if (!equals(newSelectedIds, loadedSelectedIds)) {
-            this.mediaSelectionStore.loadSelectedMedia(newSelectedIds, locale);
+            this.mediaSelectionStore.loadItems(newSelectedIds);
         }
     }
 
@@ -130,7 +130,7 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
     };
 
     handleOverlayConfirm = (selectedMedia: Array<Object>) => {
-        selectedMedia.forEach((media) => this.mediaSelectionStore.add(media));
+        this.mediaSelectionStore.set([...this.mediaSelectionStore.items, ...selectedMedia]);
         this.closeMediaOverlay();
     };
 
@@ -152,10 +152,9 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
 
         const {
             loading,
-            selectedMedia,
-            selectedMediaIds,
+            items,
         } = this.mediaSelectionStore;
-        const label = (loading) ? '' : this.getLabel(selectedMedia.length);
+        const label = (loading) ? '' : this.getLabel(items.length);
 
         return (
             <Fragment>
@@ -169,7 +168,7 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
                     loading={loading}
                     onItemsSorted={this.handleSorted}
                 >
-                    {selectedMedia.map((media, index) => {
+                    {items.map((media, index) => {
                         return (
                             <MultiItemSelection.Item
                                 id={media.id}
@@ -187,7 +186,7 @@ export default class SyliusMultiMediaSelection extends React.Component<Props> {
                     })}
                 </MultiItemSelection>
                 <MultiMediaSelectionOverlay
-                    excludedIds={selectedMediaIds}
+                    excludedIds={(items.map((item) => item.id))}
                     locale={locale}
                     onClose={this.handleOverlayClose}
                     onConfirm={this.handleOverlayConfirm}

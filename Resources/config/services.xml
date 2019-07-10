@@ -23,6 +23,7 @@
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Admin\SyliusConsumerAdmin">
             <argument type="service" id="sulu_core.webspace.webspace_manager"/>
+            <argument type="service" id="Sulu\Bundle\AdminBundle\Admin\Routing\RouteBuilderFactoryInterface"/>
 
             <tag name="sulu.admin"/>
         </service>
@@ -50,7 +51,7 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\AutoLoginSubscriber">
-            <argument type="service" id="security.token_storage"/>
+            <argument type="service" id="security.token_storage" on-invalid="null"/>
             <argument type="service" id="request_stack"/>
             <argument type="service" id="event_dispatcher"/>
             <argument>%sulu_sylius_consumer.firewall_provider_key%</argument>

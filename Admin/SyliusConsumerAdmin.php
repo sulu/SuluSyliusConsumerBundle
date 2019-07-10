@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Admin;
 
 use Sulu\Bundle\AdminBundle\Admin\Admin;
-use Sulu\Bundle\AdminBundle\Admin\Routing\Route;
+use Sulu\Bundle\AdminBundle\Admin\Routing\RouteBuilderFactoryInterface;
 use Sulu\Bundle\AdminBundle\Navigation\Navigation;
 use Sulu\Bundle\AdminBundle\Navigation\NavigationItem;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -28,9 +28,17 @@ class SyliusConsumerAdmin extends Admin
      */
     private $webspaceManager;
 
-    public function __construct(WebspaceManagerInterface $webspaceManager)
-    {
+    /**
+     * @var RouteBuilderFactoryInterface
+     */
+    private $routeBuilderFactory;
+
+    public function __construct(
+        WebspaceManagerInterface $webspaceManager,
+        RouteBuilderFactoryInterface $routeBuilderFactory
+    ) {
         $this->webspaceManager = $webspaceManager;
+        $this->routeBuilderFactory = $routeBuilderFactory;
     }
 
     public function getNavigation(): Navigation
@@ -64,32 +72,35 @@ class SyliusConsumerAdmin extends Admin
         ];
 
         return [
-            (new Route('sulu_sylius_product.products_list', '/products/:locale', 'sulu_admin.list'))
-                ->setOption('title', 'sulu_sylius_product.products')
-                ->setOption('adapters', ['table'])
-                ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
-                ->setOption('listKey', ProductInterface::LIST_KEY)
-                ->setOption('editRoute', 'sulu_sylius_product.product_edit_form.detail')
-                ->setOption('locales', $locales)
-                ->setAttributeDefault('locale', $locales[0]),
-            (new Route('sulu_sylius_product.product_edit_form', '/products/:locale/:id', 'sulu_admin.resource_tabs'))
-                ->setOption('resourceKey', ProductInterface::RESOURCE_KEY)
-                ->setOption('formKey', ProductInterface::FORM_KEY)
-                ->setOption('toolbarActions', [])
-                ->setOption('locales', $locales)
-                ->setAttributeDefault('locale', $locales[0]),
-            (new Route('sulu_sylius_product.product_edit_form.detail', '/details', 'sulu_admin.form'))
-                ->setOption('tabTitle', 'sulu_sylius_product.details')
-                ->setOption('backRoute', 'sulu_sylius_product.products_list')
-                ->setOption('toolbarActions', ['sulu_admin.save'])
-                ->setParent('sulu_sylius_product.product_edit_form'),
-            (new Route('sulu_sylius_product.product_edit_form.content', '/content', 'sulu_admin.form'))
-                ->setOption('tabTitle', 'sulu_sylius_product.content')
-                ->setOption('backRoute', 'sulu_sylius_product.products_list')
-                ->setOption('resourceKey', ProductInterface::CONTENT_RESOURCE_KEY)
-                ->setOption('formKey', ProductInterface::CONTENT_FORM_KEY)
-                ->setOption('toolbarActions', $formToolbarActions)
-                ->setParent('sulu_sylius_product.product_edit_form'),
+            $this->routeBuilderFactory->createListRouteBuilder('sulu_sylius_product.products_list', '/products/:locale')
+                ->setResourceKey(ProductInterface::RESOURCE_KEY)
+                ->setListKey(ProductInterface::LIST_KEY)
+                ->setTitle('sulu_sylius_product.products')
+                ->addListAdapters(['table'])
+                ->setEditRoute('sulu_sylius_product.product_edit_form.detail')
+                ->addLocales($locales)
+                ->setDefaultLocale($locales[0])
+                ->getRoute(),
+            $this->routeBuilderFactory->createResourceTabRouteBuilder('sulu_sylius_product.product_edit_form', '/products/:locale/:id')
+                ->setResourceKey(ProductInterface::RESOURCE_KEY)
+                ->setBackRoute('sulu_sylius_product.products_list')
+                ->setTitleProperty('name')
+                ->addLocales($locales)
+                ->getRoute(),
+            $this->routeBuilderFactory->createFormRouteBuilder('sulu_sylius_product.product_edit_form.detail', '/details')
+                ->setResourceKey(ProductInterface::RESOURCE_KEY)
+                ->setFormKey(ProductInterface::FORM_KEY)
+                ->setTabTitle('sulu_sylius_product.details')
+                ->addToolbarActions(['sulu_admin.save'])
+                ->setParent('sulu_sylius_product.product_edit_form')
+                ->getRoute(),
+            $this->routeBuilderFactory->createFormRouteBuilder('sulu_sylius_product.product_edit_form.content', '/content')
+                ->setResourceKey(ProductInterface::CONTENT_RESOURCE_KEY)
+                ->setFormKey(ProductInterface::CONTENT_FORM_KEY)
+                ->setTabTitle('sulu_sylius_product.content')
+                ->addToolbarActions($formToolbarActions)
+                ->setParent('sulu_sylius_product.product_edit_form')
+                ->getRoute(),
         ];
     }
 }
