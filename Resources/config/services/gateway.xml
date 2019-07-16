@@ -32,5 +32,9 @@
         <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductAttributeGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductAttributeGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductPriceGatewayInterface" class="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductPriceGateway">
+            <argument type="service" id="sulu_sylius_consumer.gateway_client" />
+        </service>
     </services>
 </container>
