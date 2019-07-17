@@ -25,16 +25,22 @@ class LoadProductVariantChannelPricingQuery
     /**
      * @var string
      */
+    private $variant;
+
+    /**
+     * @var string
+     */
     private $channel;
 
     /**
-     * @var ProductVariantChannelPricing
+     * @var int
      */
-    private $channelPricing;
+    private $price;
 
-    public function __construct(string $code, string $channel)
+    public function __construct(string $code, string $variant, string $channel)
     {
         $this->code = $code;
+        $this->variant = $variant;
         $this->channel = $channel;
     }
 
@@ -43,27 +49,24 @@ class LoadProductVariantChannelPricingQuery
         return $this->code;
     }
 
+    public function getVariant(): string
+    {
+        return $this->variant;
+    }
+
     public function getChannel(): string
     {
         return $this->channel;
     }
 
-    /**
-     * @return ProductVariantChannelPricing
-     */
-    public function getChannelPricing(): ChannelPricing
+    public function getPrice(): int
     {
-        return $this->channelPricing;
+        return $this->price;
     }
 
-    /**
-     * @param ProductVariantChannelPricing $channelPricing
-     *
-     * @return self
-     */
-    public function setChannelPricing(ProductVariantChannelPricing $channelPricing): self
+    public function setPrice(int $price): self
     {
-        $this->channelPricing = $channelPricing;
+        $this->price = $price;
 
         return $this;
     }

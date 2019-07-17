@@ -19,25 +19,20 @@ use GuzzleHttp\RequestOptions;
 class ProductVariantChannelPricingGateway extends AbstractGateway
     implements ProductVariantChannelPricingGatewayInterface
 {
-    const URI = '/api/v1/product/{PRODUCE_ID}/variants';
+    const URI = '/api/v1/products/{PRODUCE_ID}/variants/';
 
-    public function findByCode(string $code): array
+    public function findByCodeAndVariant(string $code, string $variantCode): array
     {
         $response = $this->gatewayClient->request(
             'GET',
-            str_replace('{PRODUCE_ID}', $code, self::URI)
+            str_replace('{PRODUCE_ID}', $code, self::URI) . $variantCode
         );
 
         if (200 !== $response->getStatusCode()) {
             $this->handleErrors($response);
         }
-
         $data = json_decode($response->getBody()->getContents(), true);
 
-        throw new \Exception($response->getBody()->getContents());
-
-        if (!$data['_embedded']['items'] || count($data['_embedded']['items']) < 1) {
-            return [];
-        }
+        return $data['channelPricings'];
     }
 }
