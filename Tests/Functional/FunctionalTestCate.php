@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional;
 
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class FunctionalTestCate extends SuluTestCase
 {
@@ -28,7 +30,7 @@ class FunctionalTestCate extends SuluTestCase
 
     protected function getMessageBus(): MessageBusInterface
     {
-        /** @var MessageBus $messageBus */
+        /** @var MessageBusInterface $messageBus */
         $messageBus = $this->getContainer()->get('message_bus');
 
         return $messageBus;

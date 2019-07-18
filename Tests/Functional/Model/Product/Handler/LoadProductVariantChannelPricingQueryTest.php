@@ -12,6 +12,7 @@ declare(strict_types=1);
  */
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
+use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\LoadProductVariantChannelPricingQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
 
@@ -61,6 +62,6 @@ class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCate
         $this->getMessageBus()->dispatch($query);
 
         $channelPrice = $query->getPrice();
-        $this->assertEquals('666', $query);
+        $this->assertEquals('1995', $channelPrice);
     }
 }
