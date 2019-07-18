@@ -40,6 +40,6 @@ class LoadProductVariantChannelPricingQueryHandler
             }
         }
 
-        $query->getPrice(0);
+        $query->getPrice();
     }
 }
