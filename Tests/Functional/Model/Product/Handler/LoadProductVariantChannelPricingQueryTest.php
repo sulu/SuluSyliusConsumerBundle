@@ -61,6 +61,6 @@ class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCate
         $this->getMessageBus()->dispatch($query);
 
         $channelPrice = $query->getPrice();
-        $this->assertEquals('1995', $query);
+        $this->assertEquals('666', $query);
     }
 }
