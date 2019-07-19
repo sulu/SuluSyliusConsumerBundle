@@ -19,7 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
 
 class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCate
 {
-    public function testFindByCodeAndVariant()
+    public function testFindByCodeAndVariantCode()
     {
         $this->getGatewayClient()->setHandleRequestCallable(
             function ($method, $uri, array $options = []) {

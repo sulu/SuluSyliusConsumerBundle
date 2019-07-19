@@ -30,7 +30,7 @@ class LoadProductVariantChannelPricingQueryHandler
 
     public function __invoke(LoadProductVariantChannelPricingQuery $query): void
     {
-        $channelPricings = $this->gateway->findByCodeAndVariant($query->getCode(), $query->getVariantCode());
+        $channelPricings = $this->gateway->findByCodeAndVariantCode($query->getCode(), $query->getVariantCode());
 
         foreach ($channelPricings as $channelPricing) {
             if ($query->getChannel() === $channelPricing['channelCode']) {
