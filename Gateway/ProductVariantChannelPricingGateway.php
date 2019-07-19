@@ -17,7 +17,7 @@ class ProductVariantChannelPricingGateway extends AbstractGateway implements Pro
 {
     const URI = '/api/v1/products/{PRODUCT_ID}/variants/';
 
-    public function findByCodeAndVariant(string $code, string $variantCode): array
+    public function findByCodeAndVariantCode(string $code, string $variantCode): array
     {
         $response = $this->gatewayClient->request(
             'GET',

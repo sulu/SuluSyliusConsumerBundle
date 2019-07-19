@@ -23,7 +23,7 @@ class LoadProductVariantChannelPricingQuery
     /**
      * @var string
      */
-    private $variant;
+    private $variantCode;
 
     /**
      * @var string
@@ -35,10 +35,10 @@ class LoadProductVariantChannelPricingQuery
      */
     private $price;
 
-    public function __construct(string $code, string $variant, string $channel)
+    public function __construct(string $code, string $variantCode, string $channel)
     {
         $this->code = $code;
-        $this->variant = $variant;
+        $this->variantCode = $variantCode;
         $this->channel = $channel;
     }
 
@@ -47,9 +47,9 @@ class LoadProductVariantChannelPricingQuery
         return $this->code;
     }
 
-    public function getVariant(): string
+    public function getVariantCode(): string
     {
-        return $this->variant;
+        return $this->variantCode;
     }
 
     public function getChannel(): string
