@@ -19,7 +19,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class FunctionalTestCate extends SuluTestCase
 {
-
     protected function getGatewayClient(): GatewayClient
     {
         /** @var GatewayClient $gatewayClient */

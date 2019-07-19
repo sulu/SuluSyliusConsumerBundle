@@ -15,7 +15,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantChannelPricingGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantChannelPricing;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\LoadProductVariantChannelPricingQuery;
 
 class LoadProductVariantChannelPricingQueryHandler

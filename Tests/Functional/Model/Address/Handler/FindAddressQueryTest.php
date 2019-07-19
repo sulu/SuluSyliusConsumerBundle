@@ -16,9 +16,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Address\Handle
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Query\FindAddressQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class FindAddressQueryTest extends FunctionalTestCate
 {

@@ -17,9 +17,6 @@ use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\CreateCustomerMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class CreateCustomerMessageTest extends FunctionalTestCate
 {

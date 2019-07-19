@@ -18,9 +18,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
 
 class FindOrdersByCustomerQueryTest extends FunctionalTestCate
 {

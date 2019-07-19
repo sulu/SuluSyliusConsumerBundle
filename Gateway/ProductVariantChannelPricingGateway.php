@@ -13,11 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\RequestOptions;
-
-class ProductVariantChannelPricingGateway extends AbstractGateway
-    implements ProductVariantChannelPricingGatewayInterface
+class ProductVariantChannelPricingGateway extends AbstractGateway implements ProductVariantChannelPricingGatewayInterface
 {
     const URI = '/api/v1/products/{PRODUCT_ID}/variants/';
 

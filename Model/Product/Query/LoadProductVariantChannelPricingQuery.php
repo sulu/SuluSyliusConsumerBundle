@@ -13,8 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query;
 
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantChannelPricing;
-
 class LoadProductVariantChannelPricingQuery
 {
     /**
