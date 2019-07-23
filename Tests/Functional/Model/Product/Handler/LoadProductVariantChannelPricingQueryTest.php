@@ -15,9 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\LoadProductVariantChannelPricingQuery;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
 
-class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCate
+class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCase
 {
     public function testFindByCodeAndVariantCode()
     {
@@ -63,6 +63,6 @@ class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCate
         $this->getMessageBus()->dispatch($query);
 
         $channelPrice = $query->getPrice();
-        $this->assertEquals('1995', $channelPrice);
+        $this->assertSame('1995', $channelPrice);
     }
 }

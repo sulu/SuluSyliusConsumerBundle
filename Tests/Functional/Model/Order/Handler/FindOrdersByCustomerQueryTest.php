@@ -17,9 +17,9 @@ use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
 
-class FindOrdersByCustomerQueryTest extends FunctionalTestCate
+class FindOrdersByCustomerQueryTest extends FunctionalTestCase
 {
     public function setUp()
     {

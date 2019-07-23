@@ -18,9 +18,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Address;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message\CreateAddressMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
 
-class CreateAddressMessageTest extends FunctionalTestCate
+class CreateAddressMessageTest extends FunctionalTestCase
 {
     public function testMessage(): void
     {

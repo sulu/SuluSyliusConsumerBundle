@@ -17,7 +17,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class FunctionalTestCate extends SuluTestCase
+class FunctionalTestCase extends SuluTestCase
 {
     protected function getGatewayClient(): GatewayClient
     {

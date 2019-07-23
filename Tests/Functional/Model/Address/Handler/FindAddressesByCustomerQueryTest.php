@@ -18,9 +18,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Address\AddressInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Query\FindAddressesByCustomerQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCate;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
 
-class FindAddressesByCustomerQueryTest extends FunctionalTestCate
+class FindAddressesByCustomerQueryTest extends FunctionalTestCase
 {
     public function testMessage(): void
     {
