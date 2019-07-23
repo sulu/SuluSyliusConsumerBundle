@@ -15,9 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Order\Handler;
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Message\CompleteOrderMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class CompleteOrderMessageTest extends FunctionalTestCase
+class CompleteOrderMessageTest extends GatewayClientTestCase
 {
     public function setUp()
     {

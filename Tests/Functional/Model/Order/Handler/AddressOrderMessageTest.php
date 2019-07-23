@@ -16,9 +16,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Order\Handler;
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Address;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Message\AddressOrderMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class AddressOrderMessageTest extends FunctionalTestCase
+class AddressOrderMessageTest extends GatewayClientTestCase
 {
     public function setUp()
     {

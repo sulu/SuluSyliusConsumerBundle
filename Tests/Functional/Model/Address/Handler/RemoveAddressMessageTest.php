@@ -15,9 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Address\Handle
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message\RemoveAddressMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class RemoveAddressMessageTest extends FunctionalTestCase
+class RemoveAddressMessageTest extends GatewayClientTestCase
 {
     public function testMessage(): void
     {

@@ -15,9 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handle
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\LoadProductVariantChannelPricingQuery;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\FunctionalTestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class LoadProductVariantChannelPricingQueryTest extends FunctionalTestCase
+class LoadProductVariantChannelPricingQueryTest extends GatewayClientTestCase
 {
     public function testFindByCodeAndVariantCode()
     {
