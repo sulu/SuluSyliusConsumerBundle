@@ -63,6 +63,6 @@ class LoadProductVariantChannelPricingQueryTest extends GatewayClientTestCase
         $this->getMessageBus()->dispatch($query);
 
         $channelPrice = $query->getPrice();
-        $this->assertSame('1995', $channelPrice);
+        $this->assertSame(1995, $channelPrice);
     }
 }
