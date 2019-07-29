@@ -15,12 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Address\Handle
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Query\FindAddressQuery;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class FindAddressQueryTest extends SuluTestCase
+class FindAddressQueryTest extends GatewayClientTestCase
 {
     public function testMessage(): void
     {
@@ -60,21 +57,5 @@ class FindAddressQueryTest extends SuluTestCase
         $this->assertEquals('US', $address->getCountryCode());
         $this->assertNull($address->getProvinceCode());
         $this->assertNull($address->getPhoneNumber());
-    }
-
-    private function getGatewayClient(): GatewayClient
-    {
-        /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $this->getContainer()->get('sulu_sylius_consumer.gateway_client');
-
-        return $gatewayClient;
-    }
-
-    private function getMessageBus(): MessageBusInterface
-    {
-        /** @var MessageBus $messageBus */
-        $messageBus = $this->getContainer()->get('message_bus');
-
-        return $messageBus;
     }
 }

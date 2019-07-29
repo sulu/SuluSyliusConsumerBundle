@@ -15,12 +15,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Order\Handler;
 
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Message\CompleteOrderMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class CompleteOrderMessageTest extends SuluTestCase
+class CompleteOrderMessageTest extends GatewayClientTestCase
 {
     public function setUp()
     {
@@ -121,21 +118,5 @@ class CompleteOrderMessageTest extends SuluTestCase
         $mailer->registerPlugin($logger);
 
         return $logger;
-    }
-
-    private function getGatewayClient(): GatewayClient
-    {
-        /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $this->getContainer()->get('sulu_sylius_consumer.gateway_client');
-
-        return $gatewayClient;
-    }
-
-    private function getMessageBus(): MessageBusInterface
-    {
-        /** @var MessageBus $messageBus */
-        $messageBus = $this->getContainer()->get('message_bus');
-
-        return $messageBus;
     }
 }

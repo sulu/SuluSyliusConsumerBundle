@@ -16,12 +16,9 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Address\Handle
 use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Address;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message\ModifyAddressMessage;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class ModifyAddressMessageTest extends SuluTestCase
+class ModifyAddressMessageTest extends GatewayClientTestCase
 {
     public function testMessage(): void
     {
@@ -51,21 +48,5 @@ class ModifyAddressMessageTest extends SuluTestCase
 
         // send message
         $this->getMessageBus()->dispatch($message);
-    }
-
-    private function getGatewayClient(): GatewayClient
-    {
-        /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $this->getContainer()->get('sulu_sylius_consumer.gateway_client');
-
-        return $gatewayClient;
-    }
-
-    private function getMessageBus(): MessageBusInterface
-    {
-        /** @var MessageBus $messageBus */
-        $messageBus = $this->getContainer()->get('message_bus');
-
-        return $messageBus;
     }
 }

@@ -17,12 +17,9 @@ use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Order\Query\FindOrdersByCustomerQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class FindOrdersByCustomerQueryTest extends SuluTestCase
+class FindOrdersByCustomerQueryTest extends GatewayClientTestCase
 {
     public function setUp()
     {
@@ -173,21 +170,5 @@ class FindOrdersByCustomerQueryTest extends SuluTestCase
         $this->assertSame(1, $orderList->getPages());
         $this->assertSame(1, $orderList->getTotal());
         $this->assertSame([['id' => 5], ['id' => 6]], $orderList->getOrders());
-    }
-
-    private function getGatewayClient(): GatewayClient
-    {
-        /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $this->getContainer()->get('sulu_sylius_consumer.gateway_client');
-
-        return $gatewayClient;
-    }
-
-    private function getMessageBus(): MessageBusInterface
-    {
-        /** @var MessageBus $messageBus */
-        $messageBus = $this->getContainer()->get('message_bus');
-
-        return $messageBus;
     }
 }

@@ -18,12 +18,9 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Address;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Address\Message\CreateAddressMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Customer;
 use Sulu\Bundle\SyliusConsumerBundle\Model\User\User;
-use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
-use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Component\Messenger\MessageBus;
-use Symfony\Component\Messenger\MessageBusInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
-class CreateAddressMessageTest extends SuluTestCase
+class CreateAddressMessageTest extends GatewayClientTestCase
 {
     public function testMessage(): void
     {
@@ -79,21 +76,5 @@ class CreateAddressMessageTest extends SuluTestCase
         $this->assertEquals($address->getCountryCode(), $result->getCountryCode());
         $this->assertEquals($address->getProvinceCode(), $result->getProvinceCode());
         $this->assertEquals($address->getPhoneNumber(), $result->getPhoneNumber());
-    }
-
-    private function getGatewayClient(): GatewayClient
-    {
-        /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $this->getContainer()->get('sulu_sylius_consumer.gateway_client');
-
-        return $gatewayClient;
-    }
-
-    private function getMessageBus(): MessageBusInterface
-    {
-        /** @var MessageBus $messageBus */
-        $messageBus = $this->getContainer()->get('message_bus');
-
-        return $messageBus;
     }
 }
