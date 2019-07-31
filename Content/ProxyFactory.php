@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Content;
 
-use JMS\Serializer\Serializer;
+use JMS\Serializer\SerializerInterface;
 use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use ProxyManager\Proxy\LazyLoadingInterface;
 
@@ -29,7 +29,7 @@ class ProxyFactory
         $this->proxyFactory = $proxyFactory;
     }
 
-    public function createProxy(Serializer $serializer, $data)
+    public function createProxy(SerializerInterface $serializer, $data)
     {
         return $this->proxyFactory->createProxy(
             \ArrayObject::class,
