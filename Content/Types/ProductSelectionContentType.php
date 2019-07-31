@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Content\Types;
 
 use JMS\Serializer\SerializerInterface;
+use ProxyManager\Factory\LazyLoadingValueHolderFactory;
+use Sulu\Bundle\SyliusConsumerBundle\Content\ContentProxyFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewsQuery;
 use Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStoreInterface;
 use Sulu\Component\Content\Compat\PropertyInterface;
@@ -37,16 +39,23 @@ class ProductSelectionContentType extends SimpleContentType
      */
     private $productReferenceStore;
 
+    /**
+     * @var ContentProxyFactory
+     */
+    private $contentProxyFactory;
+
     public function __construct(
         MessageBusInterface $messageBus,
         SerializerInterface $serializer,
-        ReferenceStoreInterface $productReferenceStore
+        ReferenceStoreInterface $productReferenceStore,
+        ContentProxyFactory $contentProxyFactory
     ) {
         parent::__construct('ProductSelection');
 
         $this->messageBus = $messageBus;
         $this->serializer = $serializer;
         $this->productReferenceStore = $productReferenceStore;
+        $this->contentProxyFactory = $contentProxyFactory;
     }
 
     /**
@@ -54,7 +63,7 @@ class ProductSelectionContentType extends SimpleContentType
      *
      * @return array|null
      */
-    public function getContentData(PropertyInterface $property): ?array
+    public function getContentData(PropertyInterface $property)
     {
         $ids = $property->getValue();
         if (!$ids) {
@@ -64,17 +73,14 @@ class ProductSelectionContentType extends SimpleContentType
         return $this->findProducts($ids, $property->getStructure()->getLanguageCode());
     }
 
-    private function findProducts(array $ids, string $locale): ?array
+    private function findProducts(array $ids, string $locale)
     {
         $query = new FindProductViewsQuery($ids, $locale);
         $this->messageBus->dispatch($query);
 
         $productViews = $query->getProductViews();
 
-        /** @var array $productViewsData */
-        $productViewsData = $this->serializer->serialize($productViews, 'array');
-
-        return $productViewsData;
+        return $this->contentProxyFactory->createContentProxy($this->serializer, $productViews);
     }
 
     /**
