@@ -17,7 +17,7 @@ use JMS\Serializer\Serializer;
 use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use ProxyManager\Proxy\LazyLoadingInterface;
 
-class ContentProxyFactory
+class ProxyFactory
 {
     /**
      * @var LazyLoadingValueHolderFactory
@@ -29,7 +29,7 @@ class ContentProxyFactory
         $this->proxyFactory = $proxyFactory;
     }
 
-    public function createContentProxy(Serializer $serializer, $data)
+    public function createProxy(Serializer $serializer, $data)
     {
         return $this->proxyFactory->createProxy(
             \ArrayObject::class,
