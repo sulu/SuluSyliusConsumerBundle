@@ -6,5 +6,6 @@
             table="ca_categories"
             repository-class="Sulu\Bundle\SyliusConsumerBundle\Repository\Category\CategoryRepository">
         <field name="syliusId" column="syliusId" type="integer" nullable="true" />
+        <field name="syliusCode" column="syliusCode" type="string" nullable="true" />
     </mapped-superclass>
 </doctrine-mapping>

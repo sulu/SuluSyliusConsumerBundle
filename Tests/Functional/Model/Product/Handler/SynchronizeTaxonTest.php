@@ -49,7 +49,7 @@ class SynchronizeTaxonTest extends SuluTestCase
             return;
         }
 
-        $this->assertEquals('category', $category->getKey());
+        $this->assertEquals('category', $category->getSyliusCode());
         $this->assertEquals(0, $category->getDepth());
         $this->assertEquals(1, $category->getLft());
         $this->assertEquals(14, $category->getRgt());

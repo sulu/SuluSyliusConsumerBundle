@@ -20,4 +20,8 @@ interface CategoryInterface extends BaseCategoryInterface
     public function getSyliusId(): ?int;
 
     public function setSyliusId(?int $syliusId): self;
+
+    public function getSyliusCode(): ?string;
+
+    public function setSyliusCode(?string $syliusCode): self;
 }
