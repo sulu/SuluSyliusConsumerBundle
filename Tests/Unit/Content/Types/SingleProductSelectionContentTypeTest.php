@@ -61,10 +61,12 @@ class SingleProductSelectionContentTypeTest extends TestCase
             )
         )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
-        $serializer->serialize($productView, 'array')->willReturn(['serialized_data']);
+        $result = new \ArrayObject();
+        $proxyFactory->createProxy($serializer->reveal(), $productView)->willReturn($result)->shouldBeCalled();
 
         $contentData = $contentType->getContentData($property->reveal());
-        $this->assertEquals(['serialized_data'], $contentData);
+
+        $this->assertEquals($result, $contentData);
     }
 
     public function testPreResolve(): void

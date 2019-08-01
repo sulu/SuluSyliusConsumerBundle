@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Content\Types;
 use JMS\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Content\Types\ProductSelectionContentType;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
@@ -64,10 +65,12 @@ class ProductSelectionContentTypeTest extends TestCase
             )
         )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
-        $serializer->serialize($productViews, 'array')->willReturn(['serialized_data']);
+        $result = new \ArrayObject();
+        $proxyFactory->createProxy($serializer->reveal(), $productViews)->willReturn($result)->shouldBeCalled();
 
         $contentData = $contentType->getContentData($property->reveal());
-        $this->assertEquals(['serialized_data'], $contentData);
+
+        $this->assertEquals($result, $contentData);
     }
 
     public function testPreResolve(): void

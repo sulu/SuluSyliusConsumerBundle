@@ -41,6 +41,7 @@ class ProxyFactory
                 &$initializer
             ) use ($serializer, $data) {
                 $initializer = null;
+                /** @var array $serializedData */
                 $serializedData = $serializer->serialize($data, 'array');
                 $wrappedObject = new \ArrayObject($serializedData);
 
