@@ -88,6 +88,7 @@
             <argument type="service" id="message_bus"/>
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
+            <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
 
             <tag name="sulu.content.type" alias="single_product_selection" />
         </service>
@@ -96,6 +97,7 @@
             <argument type="service" id="message_bus"/>
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
+            <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
 
             <tag name="sulu.content.type" alias="product_selection" />
         </service>
@@ -103,6 +105,16 @@
         <service id="sulu_sylius_consumer.reference_store.product"
                  class="Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStore">
             <tag name="sulu_website.reference_store" alias="product"/>
+        </service>
+
+        <service id="sulu_sylius_consumer.data_provider.proxy_factory"
+                 class="ProxyManager\Factory\LazyLoadingValueHolderFactory">
+            <argument type="service" id="sulu_core.proxy_manager.configuration"/>
+        </service>
+
+        <service id="sulu_sylius_consumer.content.proxy_factory"
+                 class="Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory">
+            <argument type="service" id="sulu_sylius_consumer.data_provider.proxy_factory"/>
         </service>
     </services>
 </container>

@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Content\Types;
 use JMS\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Content\Types\SingleProductSelectionContentType;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
@@ -32,11 +33,13 @@ class SingleProductSelectionContentTypeTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $serializer = $this->prophesize(SerializerInterface::class);
         $productReferenceStore = $this->prophesize(ReferenceStoreInterface::class);
+        $proxyFactory = $this->prophesize(ProxyFactory::class);
 
         $contentType = new SingleProductSelectionContentType(
             $messageBus->reveal(),
             $serializer->reveal(),
-            $productReferenceStore->reveal()
+            $productReferenceStore->reveal(),
+            $proxyFactory->reveal()
         );
 
         $structure = $this->prophesize(StructureInterface::class);
@@ -58,10 +61,12 @@ class SingleProductSelectionContentTypeTest extends TestCase
             )
         )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
-        $serializer->serialize($productView, 'array')->willReturn(['serialized_data']);
+        $result = new \ArrayObject();
+        $proxyFactory->createProxy($serializer->reveal(), $productView)->willReturn($result)->shouldBeCalled();
 
         $contentData = $contentType->getContentData($property->reveal());
-        $this->assertEquals(['serialized_data'], $contentData);
+
+        $this->assertEquals($result, $contentData);
     }
 
     public function testPreResolve(): void
@@ -69,11 +74,13 @@ class SingleProductSelectionContentTypeTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $serializer = $this->prophesize(SerializerInterface::class);
         $productReferenceStore = $this->prophesize(ReferenceStoreInterface::class);
+        $proxyFactory = $this->prophesize(ProxyFactory::class);
 
         $contentType = new SingleProductSelectionContentType(
             $messageBus->reveal(),
             $serializer->reveal(),
-            $productReferenceStore->reveal()
+            $productReferenceStore->reveal(),
+            $proxyFactory->reveal()
         );
 
         $structure = $this->prophesize(StructureInterface::class);

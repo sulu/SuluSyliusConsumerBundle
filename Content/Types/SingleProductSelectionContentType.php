@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Content\Types;
 
 use JMS\Serializer\SerializerInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStoreInterface;
@@ -38,16 +39,23 @@ class SingleProductSelectionContentType extends SimpleContentType
      */
     private $productReferenceStore;
 
+    /**
+     * @var ProxyFactory
+     */
+    private $proxyFactory;
+
     public function __construct(
         MessageBusInterface $messageBus,
         SerializerInterface $serializer,
-        ReferenceStoreInterface $productReferenceStore
+        ReferenceStoreInterface $productReferenceStore,
+        ProxyFactory $proxyFactory
     ) {
         parent::__construct('SingleProductSelection');
 
         $this->messageBus = $messageBus;
         $this->serializer = $serializer;
         $this->productReferenceStore = $productReferenceStore;
+        $this->proxyFactory = $proxyFactory;
     }
 
     /**
@@ -55,7 +63,7 @@ class SingleProductSelectionContentType extends SimpleContentType
      *
      * @return array|null
      */
-    public function getContentData(PropertyInterface $property): ?array
+    public function getContentData(PropertyInterface $property)
     {
         $id = $property->getValue();
         if (!$id) {
@@ -65,7 +73,7 @@ class SingleProductSelectionContentType extends SimpleContentType
         return $this->findProduct($id, $property->getStructure()->getLanguageCode());
     }
 
-    private function findProduct(string $id, string $locale): ?array
+    private function findProduct(string $id, string $locale)
     {
         try {
             $query = new FindProductViewQuery($id, $locale);
@@ -73,10 +81,7 @@ class SingleProductSelectionContentType extends SimpleContentType
 
             $productView = $query->getProductView();
 
-            /** @var array $productViewData */
-            $productViewData = $this->serializer->serialize($productView, 'array');
-
-            return $productViewData;
+            return $this->proxyFactory->createProxy($this->serializer, $productView);
         } catch (ProductInformationNotFoundException $exception) {
             return null;
         }
