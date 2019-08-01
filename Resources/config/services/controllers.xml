@@ -33,6 +33,7 @@
         >
             <argument type="service" id="message_bus"/>
             <argument type="service" id="fos_rest.view_handler.default"/>
+            <argument>%sulu.content.structure.default_type.product%</argument>
 
             <tag name="sulu.context" context="admin"/>
         </service>
