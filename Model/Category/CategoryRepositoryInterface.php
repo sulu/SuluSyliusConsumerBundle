@@ -19,5 +19,7 @@ interface CategoryRepositoryInterface extends BaseCategoryRepositoryInterface
 {
     public function findBySyliusId(int $syliusId): ?CategoryInterface;
 
+    public function findIdBySyliusId(int $syliusId): ?int;
+
     public function persist(CategoryInterface $category): void;
 }
