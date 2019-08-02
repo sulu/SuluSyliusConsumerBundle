@@ -81,7 +81,7 @@ class SynchronizeTaxonMessageHandler
             $category->setParent($parent);
         }
 
-        $category->setKey($message->getCode());
+        $category->setSyliusCode($message->getCode());
         $category->setDefaultLocale('de');
 
         foreach ($message->getTranslations() as $translationValueObject) {

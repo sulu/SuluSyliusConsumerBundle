@@ -22,6 +22,11 @@ class Category extends BaseCategory implements CategoryInterface
      */
     private $syliusId;
 
+    /**
+     * @var string|null
+     */
+    private $syliusCode;
+
     public function getSyliusId(): ?int
     {
         return $this->syliusId;
@@ -30,6 +35,18 @@ class Category extends BaseCategory implements CategoryInterface
     public function setSyliusId(?int $syliusId): CategoryInterface
     {
         $this->syliusId = $syliusId;
+
+        return $this;
+    }
+
+    public function getSyliusCode(): ?string
+    {
+        return $this->syliusCode;
+    }
+
+    public function setSyliusCode(?string $syliusCode): CategoryInterface
+    {
+        $this->syliusCode = $syliusCode;
 
         return $this;
     }
