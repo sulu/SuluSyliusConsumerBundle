@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message;
 
+use Sulu\Bundle\RouteBundle\Generator\RouteGenerator;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -26,6 +27,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryI
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -61,13 +63,25 @@ class PublishProductMessageHandler
      */
     private $slugifier;
 
+    /**
+     * @var RouteGenerator
+     */
+    private $routeGenerator;
+
+    /**
+     * @var array
+     */
+    private $routeMappings;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
         ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
-        SlugifierInterface $slugifier
+        SlugifierInterface $slugifier,
+        RouteGenerator $routeGenerator,
+        array $routeMappings
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
@@ -75,6 +89,8 @@ class PublishProductMessageHandler
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
         $this->slugifier = $slugifier;
+        $this->routeGenerator = $routeGenerator;
+        $this->routeMappings = $routeMappings;
     }
 
     public function __invoke(PublishProductMessage $message): void
@@ -94,8 +110,9 @@ class PublishProductMessageHandler
             new PublishContentMessage(ProductInterface::CONTENT_RESOURCE_KEY, $message->getId(), $message->getLocale(), false)
         );
 
-        // FIXME generate route by-schema
-        $routePath = '/products/' . $this->slugifier->slugify($product->getCode());
+        $mappings = $this->routeMappings[RoutableResource::class];
+        $routePath = $this->routeGenerator->generate($product, $mappings['options']);
+
         $this->messageBus->dispatch(
             new PublishRoutableResourceMessage(
                 ProductInterface::RESOURCE_KEY, $message->getId(),
