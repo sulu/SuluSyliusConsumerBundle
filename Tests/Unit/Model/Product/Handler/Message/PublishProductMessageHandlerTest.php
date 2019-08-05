@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Mess
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sulu\Bundle\RouteBundle\Generator\RouteGenerator;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -45,6 +46,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $slugifier = $this->prophesize(SlugifierInterface::class);
+        $routeGenerator = $this->prophesize(RouteGenerator::class);
+        $routeMappings = [];
 
         $handler = new PublishProductMessageHandler(
             $productRepository->reveal(),
@@ -52,7 +55,9 @@ class PublishProductMessageHandlerTest extends TestCase
             $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
-            $slugifier->reveal()
+            $slugifier->reveal(),
+            $routeGenerator->reveal(),
+            $routeMappings
         );
 
         $product = $this->prophesize(ProductInterface::class);
