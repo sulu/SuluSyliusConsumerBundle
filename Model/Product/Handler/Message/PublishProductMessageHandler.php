@@ -110,9 +110,6 @@ class PublishProductMessageHandler
             new PublishContentMessage(ProductInterface::CONTENT_RESOURCE_KEY, $message->getId(), $message->getLocale(), false)
         );
 
-        var_dump($this->routeMappings); exit;
-
-
         $mappings = $this->routeMappings[RoutableResource::class];
         $routePath = $this->routeGenerator->generate($product, $mappings['options']);
 
