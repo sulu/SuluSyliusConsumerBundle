@@ -25,8 +25,9 @@ sulu_route:
     mappings:
         Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource:
             generator: schema
+            resource_key: "products"
             options:
-                route_schema: ""
+                route_schema: "/products/{object.getCode()}"
 
 services:
     sulu_sylius_consumer_test.messenger.bus.default:

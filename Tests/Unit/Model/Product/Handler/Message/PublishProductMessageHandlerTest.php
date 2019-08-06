@@ -74,7 +74,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $product->getVariants()->willReturn([]);
         $productRepository->findById('123-123-123')->willReturn($product->reveal());
 
-//        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
+        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
@@ -181,7 +181,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 ],
             ]
         ];
-        
+
         $handler = new PublishProductMessageHandler(
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
@@ -199,7 +199,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $product->getVariants()->willReturn([]);
         $productRepository->findById('123-123-123')->willReturn($product->reveal());
 
-//        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
+        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
