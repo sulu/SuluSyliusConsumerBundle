@@ -28,7 +28,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
-use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandler
@@ -59,11 +58,6 @@ class PublishProductMessageHandler
     private $messageBus;
 
     /**
-     * @var SlugifierInterface
-     */
-    private $slugifier;
-
-    /**
      * @var RouteGenerator
      */
     private $routeGenerator;
@@ -79,7 +73,6 @@ class PublishProductMessageHandler
         ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
-        SlugifierInterface $slugifier,
         RouteGenerator $routeGenerator,
         array $routeMappings
     ) {
@@ -88,7 +81,6 @@ class PublishProductMessageHandler
         $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
-        $this->slugifier = $slugifier;
         $this->routeGenerator = $routeGenerator;
         $this->routeMappings = $routeMappings;
     }

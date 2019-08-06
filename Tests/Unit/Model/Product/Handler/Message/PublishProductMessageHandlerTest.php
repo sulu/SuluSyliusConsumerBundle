@@ -28,7 +28,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryI
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
-use Symfony\Cmf\Api\Slugifier\SlugifierInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -45,8 +44,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
-        $slugifier = $this->prophesize(SlugifierInterface::class);
         $routeGenerator = $this->prophesize(RouteGenerator::class);
+
         $routeMappings = [
             'Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource' => [
                 'generator' => 'schema',
@@ -63,7 +62,6 @@ class PublishProductMessageHandlerTest extends TestCase
             $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
-            $slugifier->reveal(),
             $routeGenerator->reveal(),
             $routeMappings
         );
@@ -74,7 +72,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $product->getVariants()->willReturn([]);
         $productRepository->findById('123-123-123')->willReturn($product->reveal());
 
-        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
+        $options = $routeMappings['Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource']['options'];
+        $routeGenerator->generate($product, $options)->willReturn('/my-products/product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
@@ -170,7 +169,6 @@ class PublishProductMessageHandlerTest extends TestCase
         $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
-        $slugifier = $this->prophesize(SlugifierInterface::class);
         $routeGenerator = $this->prophesize(RouteGenerator::class);
         $routeMappings = [
             'Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource' => [
@@ -188,7 +186,6 @@ class PublishProductMessageHandlerTest extends TestCase
             $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
-            $slugifier->reveal(),
             $routeGenerator->reveal(),
             $routeMappings
         );
@@ -199,7 +196,8 @@ class PublishProductMessageHandlerTest extends TestCase
         $product->getVariants()->willReturn([]);
         $productRepository->findById('123-123-123')->willReturn($product->reveal());
 
-        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
+        $options = $routeMappings['Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource']['options'];
+        $routeGenerator->generate($product, $options)->willReturn('/my-products/product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
