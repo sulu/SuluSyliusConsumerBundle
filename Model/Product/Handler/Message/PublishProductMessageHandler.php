@@ -28,10 +28,13 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
+use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandler
 {
+    const PRODUCT_PATH_FIELD_TAG = 'sulu_sylius_consumer.product_path';
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -58,6 +61,11 @@ class PublishProductMessageHandler
     private $messageBus;
 
     /**
+     * @var StructureMetadataFactoryInterface
+     */
+    private $factory;
+
+    /**
      * @var RouteGenerator
      */
     private $routeGenerator;
@@ -73,6 +81,7 @@ class PublishProductMessageHandler
         ProductInformationAttributeValueRepositoryInterface $productInformationAttributeValueRepository,
         DimensionRepositoryInterface $dimensionRepository,
         MessageBusInterface $messageBus,
+        StructureMetadataFactoryInterface $factory,
         RouteGenerator $routeGenerator,
         array $routeMappings
     ) {
@@ -81,6 +90,7 @@ class PublishProductMessageHandler
         $this->productInformationAttributeValueRepository = $productInformationAttributeValueRepository;
         $this->dimensionRepository = $dimensionRepository;
         $this->messageBus = $messageBus;
+        $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeMappings = $routeMappings;
     }
@@ -98,12 +108,18 @@ class PublishProductMessageHandler
             throw new ProductNotFoundException($message->getId(), 0, $exception);
         }
 
-        $this->messageBus->dispatch(
-            new PublishContentMessage(ProductInterface::CONTENT_RESOURCE_KEY, $message->getId(), $message->getLocale(), false)
+        $contentMessage = new PublishContentMessage(
+            ProductInterface::CONTENT_RESOURCE_KEY,
+            $message->getId(), $message->getLocale(),
+            false
         );
+        $this->messageBus->dispatch($contentMessage);
 
-        $mappings = $this->routeMappings[RoutableResource::class];
-        $routePath = $this->routeGenerator->generate($product, $mappings['options']);
+        $routePath = $this->getRoutePathFromContent($contentMessage);
+        if (empty($routePath)) {
+            $mappings = $this->routeMappings[RoutableResource::class];
+            $routePath = $this->routeGenerator->generate($product, $mappings['options']);
+        }
 
         $this->messageBus->dispatch(
             new PublishRoutableResourceMessage(
@@ -181,5 +197,13 @@ class PublishProductMessageHandler
         foreach (array_diff($liveProductInformation->getAttributeValueCodes(), $processedAttributeValueCodes) as $attributeValueCode) {
             $liveProductInformation->removeAttributeValueByCode($attributeValueCode);
         }
+    }
+
+    private function getRoutePathFromContent(PublishContentMessage $message): ?string
+    {
+        $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getContentView()->getType());
+        $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
+
+        return $message->getContentView()->getData()[$routePathField->getName()];
     }
 }
