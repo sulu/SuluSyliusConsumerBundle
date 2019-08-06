@@ -28,6 +28,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryI
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
+use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -44,6 +45,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $routeGenerator = $this->prophesize(RouteGenerator::class);
 
         $routeMappings = [
@@ -62,6 +64,7 @@ class PublishProductMessageHandlerTest extends TestCase
             $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
+            $factory->reveal(),
             $routeGenerator->reveal(),
             $routeMappings
         );
@@ -168,6 +171,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
         $productInformationAttributeValueRepository = $this->prophesize(ProductInformationAttributeValueRepositoryInterface::class);
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
+        $factory = $this->prophesize(StructureMetadataFactoryInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $routeGenerator = $this->prophesize(RouteGenerator::class);
         $routeMappings = [
@@ -186,6 +190,7 @@ class PublishProductMessageHandlerTest extends TestCase
             $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
+            $factory->reveal(),
             $routeGenerator->reveal(),
             $routeMappings
         );
