@@ -47,7 +47,15 @@ class PublishProductMessageHandlerTest extends TestCase
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $slugifier = $this->prophesize(SlugifierInterface::class);
         $routeGenerator = $this->prophesize(RouteGenerator::class);
-        $routeMappings = [];
+        $routeMappings = [
+            'Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource' => [
+                'generator' => 'schema',
+                'resource_key' => 'products',
+                'options' => [
+                    'route_schema' => '/my-products/{object.getCode()}',
+                ],
+            ]
+        ];
 
         $handler = new PublishProductMessageHandler(
             $productRepository->reveal(),
@@ -66,7 +74,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $product->getVariants()->willReturn([]);
         $productRepository->findById('123-123-123')->willReturn($product->reveal());
 
-        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
+//        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
@@ -86,7 +94,7 @@ class PublishProductMessageHandlerTest extends TestCase
                         && '123-123-123' === $message->getResourceId()
                         && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale()
-                        && '/products/product-1' === $message->getRoutePath();
+                        && '/my-products/product-1' === $message->getRoutePath();
                 }
             )
         )->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
@@ -181,7 +189,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $product->getVariants()->willReturn([]);
         $productRepository->findById('123-123-123')->willReturn($product->reveal());
 
-        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
+//        $slugifier->slugify('product-1')->willReturn('product-1')->shouldBeCalled();
 
         $messageBus->dispatch(
             Argument::that(
@@ -201,7 +209,7 @@ class PublishProductMessageHandlerTest extends TestCase
                         && '123-123-123' === $message->getResourceId()
                         && ProductInterface::RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale()
-                        && '/products/product-1' === $message->getRoutePath();
+                        && '/my-products/product-1' === $message->getRoutePath();
                 }
             )
         )->shouldBeCalled()->willReturn(new Envelope(new \stdClass()));
