@@ -115,8 +115,8 @@ class PublishProductMessageHandler
 
         $this->messageBus->dispatch(
             new PublishRoutableResourceMessage(
-                $mappings['resource_key'],
-                ProductInterface::RESOURCE_KEY, $message->getId(),
+                ProductInterface::RESOURCE_KEY,
+                $message->getId(),
                 $message->getLocale(),
                 $routePath
             )
