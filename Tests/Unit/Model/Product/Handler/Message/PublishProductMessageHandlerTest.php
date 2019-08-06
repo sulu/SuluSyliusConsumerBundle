@@ -171,7 +171,17 @@ class PublishProductMessageHandlerTest extends TestCase
         $dimensionRepository = $this->prophesize(DimensionRepositoryInterface::class);
         $messageBus = $this->prophesize(MessageBusInterface::class);
         $slugifier = $this->prophesize(SlugifierInterface::class);
-
+        $routeGenerator = $this->prophesize(RouteGenerator::class);
+        $routeMappings = [
+            'Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource' => [
+                'generator' => 'schema',
+                'resource_key' => 'products',
+                'options' => [
+                    'route_schema' => '/my-products/{object.getCode()}',
+                ],
+            ]
+        ];
+        
         $handler = new PublishProductMessageHandler(
             $productRepository->reveal(),
             $productInformationRepository->reveal(),
