@@ -53,7 +53,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 'options' => [
                     'route_schema' => '/my-products/{object.getCode()}',
                 ],
-            ]
+            ],
         ];
 
         $handler = new PublishProductMessageHandler(
@@ -177,7 +177,7 @@ class PublishProductMessageHandlerTest extends TestCase
                 'options' => [
                     'route_schema' => '/my-products/{object.getCode()}',
                 ],
-            ]
+            ],
         ];
 
         $handler = new PublishProductMessageHandler(
