@@ -170,7 +170,9 @@ class PublishProductMessageHandlerTest extends TestCase
             $productInformationAttributeValueRepository->reveal(),
             $dimensionRepository->reveal(),
             $messageBus->reveal(),
-            $slugifier->reveal()
+            $slugifier->reveal(),
+            $routeGenerator->reveal(),
+            $routeMappings
         );
 
         $product = $this->prophesize(ProductInterface::class);
