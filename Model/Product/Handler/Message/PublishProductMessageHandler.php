@@ -204,7 +204,7 @@ class PublishProductMessageHandler
     {
         /** @var StructureMetadata $metadata */
         $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getContentView()->getType());
-        if ($metadata && $metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
+        if (isset($metadata) && $metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
             $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
 
             return $message->getContentView()->getData()[$routePathField->getName()];
