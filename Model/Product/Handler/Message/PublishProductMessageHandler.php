@@ -202,7 +202,7 @@ class PublishProductMessageHandler
 
     private function getRoutePathFromContent(PublishContentMessage $message): string
     {
-        if (!$message->hasContentView()){
+        if (!$message->hasContentView()) {
             return '';
         }
 
