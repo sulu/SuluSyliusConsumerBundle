@@ -19,6 +19,7 @@ use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\AdminBundle\Metadata\SchemaMetadata\PropertyMetadata;
 use Sulu\Bundle\RouteBundle\Generator\RouteGenerator;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentView;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -89,7 +90,10 @@ class PublishProductMessageHandlerTest extends TestCase
                     if(!$message instanceof PublishContentMessage){
                         return false;
                     }
-                    $message->setContentView($contentView->reveal());
+
+                    /** @var ContentViewInterface $contentViewReveal */
+                    $contentViewReveal = $contentView->reveal();
+                    $message->setContentView($contentViewReveal);
 
                     return '123-123-123' === $message->getResourceId()
                         && ProductInterface::CONTENT_RESOURCE_KEY === $message->getResourceKey()
@@ -216,11 +220,14 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $messageBus->dispatch(
             Argument::that(
-                function ($message) use($contentView) {
+                function ($message) use ($contentView) {
                     if(!$message instanceof PublishContentMessage){
                         return false;
                     }
-                    $message->setContentView($contentView->reveal());
+
+                    /** @var ContentViewInterface $contentViewReveal */
+                    $contentViewReveal = $contentView->reveal();
+                    $message->setContentView($contentViewReveal);
 
                     return '123-123-123' === $message->getResourceId()
                         && ProductInterface::CONTENT_RESOURCE_KEY === $message->getResourceKey()

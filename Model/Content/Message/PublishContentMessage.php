@@ -71,6 +71,11 @@ class PublishContentMessage
         return $this->mandatory;
     }
 
+    public function hasContentView(): bool
+    {
+        return null !== $this->contentView;
+    }
+
     public function getContentView(): ContentViewInterface
     {
         if (!$this->contentView) {

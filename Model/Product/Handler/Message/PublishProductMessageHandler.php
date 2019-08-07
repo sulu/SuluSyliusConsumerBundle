@@ -202,9 +202,12 @@ class PublishProductMessageHandler
 
     private function getRoutePathFromContent(PublishContentMessage $message): string
     {
-        /** @var StructureMetadata $metadata */
+        if (!$message->hasContentView()){
+            return '';
+        }
+
         $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getContentView()->getType());
-        if ($metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
+        if ($metadata && $metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
             $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
 
             return $message->getContentView()->getData()[$routePathField->getName()];
