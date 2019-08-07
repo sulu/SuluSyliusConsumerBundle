@@ -85,7 +85,7 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\SingleProductSelectionContentType">
-            <argument type="service" id="message_bus"/>
+            <argument type="service" id="query_bus"/>
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
             <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
@@ -94,7 +94,7 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\ProductSelectionContentType">
-            <argument type="service" id="message_bus"/>
+            <argument type="service" id="query_bus"/>
             <argument type="service" id="jms_serializer"/>
             <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
             <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
