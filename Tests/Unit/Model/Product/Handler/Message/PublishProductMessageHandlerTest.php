@@ -15,7 +15,10 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Model\Product\Handler\Mess
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
+use Sulu\Bundle\AdminBundle\Metadata\SchemaMetadata\PropertyMetadata;
 use Sulu\Bundle\RouteBundle\Generator\RouteGenerator;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentView;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\Message\PublishContentMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface;
@@ -29,6 +32,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
+use Sulu\Component\Content\Metadata\StructureMetadata;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -77,12 +81,17 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $options = $routeMappings['Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource']['options'];
         $routeGenerator->generate($product, $options)->willReturn('/my-products/product-1')->shouldBeCalled();
+        $contentView = $this->mockContentView($factory);
 
         $messageBus->dispatch(
             Argument::that(
-                function ($message) {
-                    return $message instanceof PublishContentMessage
-                        && '123-123-123' === $message->getResourceId()
+                function ($message) use($contentView) {
+                    if(!$message instanceof PublishContentMessage){
+                        return false;
+                    }
+                    $message->setContentView($contentView->reveal());
+
+                    return '123-123-123' === $message->getResourceId()
                         && ProductInterface::CONTENT_RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale();
                 }
@@ -203,12 +212,17 @@ class PublishProductMessageHandlerTest extends TestCase
 
         $options = $routeMappings['Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource']['options'];
         $routeGenerator->generate($product, $options)->willReturn('/my-products/product-1')->shouldBeCalled();
+        $contentView = $this->mockContentView($factory);
 
         $messageBus->dispatch(
             Argument::that(
-                function ($message) {
-                    return $message instanceof PublishContentMessage
-                        && '123-123-123' === $message->getResourceId()
+                function ($message) use($contentView) {
+                    if(!$message instanceof PublishContentMessage){
+                        return false;
+                    }
+                    $message->setContentView($contentView->reveal());
+
+                    return '123-123-123' === $message->getResourceId()
                         && ProductInterface::CONTENT_RESOURCE_KEY === $message->getResourceKey()
                         && 'en' === $message->getLocale();
                 }
@@ -285,5 +299,26 @@ class PublishProductMessageHandlerTest extends TestCase
         $message->setProduct($product->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
+    }
+
+    private function mockContentView(ObjectProphecy $factory): ObjectProphecy
+    {
+        $contentView = $this->prophesize(ContentView::class);
+        $contentView->getType()->willReturn('product')->shouldBeCalled();
+        $contentView->getData()->willReturn(['routePath' => ''])->shouldBeCalled();
+
+        $propertyMetadata = $this->prophesize(PropertyMetadata::class);
+        $propertyMetadata->getName()->willReturn('routePath')->shouldBeCalled();
+
+        $structureMetadata = $this->prophesize(StructureMetadata::class);
+        $structureMetadata->hasPropertyWithTagName(PublishProductMessageHandler::PRODUCT_PATH_FIELD_TAG)
+            ->willReturn(true)->shouldBeCalled();
+        $structureMetadata->getPropertyByTagName(PublishProductMessageHandler::PRODUCT_PATH_FIELD_TAG)
+            ->willReturn($propertyMetadata->reveal())->shouldBeCalled();
+
+        $factory->getStructureMetadata('product_content', 'product')->willReturn($structureMetadata->reveal())
+            ->shouldBeCalled();
+
+        return $contentView;
     }
 }

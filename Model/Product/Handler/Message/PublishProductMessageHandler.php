@@ -199,11 +199,15 @@ class PublishProductMessageHandler
         }
     }
 
-    private function getRoutePathFromContent(PublishContentMessage $message): ?string
+    private function getRoutePathFromContent(PublishContentMessage $message): string
     {
         $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getContentView()->getType());
-        $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
+        if ($metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
+            $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
 
-        return $message->getContentView()->getData()[$routePathField->getName()];
+            return $message->getContentView()->getData()[$routePathField->getName()];
+        }
+
+        return '';
     }
 }
