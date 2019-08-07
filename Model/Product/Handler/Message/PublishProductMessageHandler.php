@@ -29,6 +29,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
+use Sulu\Component\Content\Metadata\StructureMetadata;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandler
@@ -201,6 +202,7 @@ class PublishProductMessageHandler
 
     private function getRoutePathFromContent(PublishContentMessage $message): string
     {
+        /** @var StructureMetadata $metadata */
         $metadata = $this->factory->getStructureMetadata($message->getResourceKey(), $message->getContentView()->getType());
         if ($metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
             $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
