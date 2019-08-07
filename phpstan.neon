@@ -16,6 +16,5 @@ parameters:
         - %currentWorkingDirectory%/Tests/app/cache/*
         - %currentWorkingDirectory%/Tests/app/var/*
         - %currentWorkingDirectory%/Tests/var/*
-        - %currentWorkingDirectory%/Tests/Unit/Model/Product/Handler/Message/PublishProductMessageHandlerTest.php*
     symfony:
         container_xml_path: %rootDir%/../../../Tests/app/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml
