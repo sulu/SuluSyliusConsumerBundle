@@ -209,7 +209,7 @@ class PublishProductMessageHandler
         if ($metadata && $metadata->hasPropertyWithTagName(self::PRODUCT_PATH_FIELD_TAG)) {
             $routePathField = $metadata->getPropertyByTagName(self::PRODUCT_PATH_FIELD_TAG);
 
-            return $message->getContentView()->getData()[$routePathField->getName()];
+            return (string) $message->getContentView()->getData()[$routePathField->getName()];
         }
 
         return '';
