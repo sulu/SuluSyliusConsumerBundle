@@ -29,7 +29,6 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\Message\PublishRoutableResourceMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
-use Sulu\Component\Content\Metadata\StructureMetadata;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class PublishProductMessageHandler

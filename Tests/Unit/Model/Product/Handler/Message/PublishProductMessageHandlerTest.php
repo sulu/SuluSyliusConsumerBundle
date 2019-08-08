@@ -87,7 +87,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function ($message) use ($contentView) {
-                    if (!$message instanceof PublishContentMessage){
+                    if (!$message instanceof PublishContentMessage) {
                         return false;
                     }
 
@@ -221,7 +221,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $messageBus->dispatch(
             Argument::that(
                 function ($message) use ($contentView) {
-                    if (!$message instanceof PublishContentMessage){
+                    if (!$message instanceof PublishContentMessage) {
                         return false;
                     }
 
