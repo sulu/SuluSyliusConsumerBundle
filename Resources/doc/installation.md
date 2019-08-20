@@ -9,7 +9,7 @@ sulu_route:
     mappings:
         Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource:
             generator: schema
-            resource_key: products
+            resource_key: product_content
             options:
                 route_schema: "/products/{object.getCode()}"
 ```

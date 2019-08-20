@@ -56,7 +56,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $routeMappings = [
             'Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource' => [
                 'generator' => 'schema',
-                'resource_key' => 'products',
+                'resource_key' => 'product_content',
                 'options' => [
                     'route_schema' => '/my-products/{object.getCode()}',
                 ],
@@ -190,7 +190,7 @@ class PublishProductMessageHandlerTest extends TestCase
         $routeMappings = [
             'Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource' => [
                 'generator' => 'schema',
-                'resource_key' => 'products',
+                'resource_key' => 'product_content',
                 'options' => [
                     'route_schema' => '/my-products/{object.getCode()}',
                 ],
