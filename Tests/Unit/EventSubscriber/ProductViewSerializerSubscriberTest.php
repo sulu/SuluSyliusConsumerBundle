@@ -19,6 +19,7 @@ use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\CategoryBundle\Api\Category;
 use Sulu\Bundle\MediaBundle\Api\Media;
+use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ProductViewSerializerSubscriber;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
@@ -30,6 +31,8 @@ use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
 use Sulu\Component\Serializer\ArraySerializationVisitor;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProductViewSerializerSubscriberTest extends TestCase
 {
@@ -37,8 +40,16 @@ class ProductViewSerializerSubscriberTest extends TestCase
     {
         $structureManager = $this->prophesize(StructureManagerInterface::class);
         $contentTypeManager = $this->prophesize(ContentTypeManagerInterface::class);
+        $requestStack = $this->prophesize(RequestStack::class);
+        $requestStack->getCurrentRequest()->willReturn(new Request());
+        $routeRepository = $this->prophesize(RouteRepositoryInterface::class);
 
-        $eventSubscriber = new ProductViewSerializerSubscriber($structureManager->reveal(), $contentTypeManager->reveal());
+        $eventSubscriber = new ProductViewSerializerSubscriber(
+            $structureManager->reveal(),
+            $contentTypeManager->reveal(),
+            $requestStack->reveal(),
+            $routeRepository->reveal()
+        );
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
