@@ -84,12 +84,15 @@ abstract class ContentController implements ClassResourceInterface
         $locale = $request->query->get('locale');
         $message = new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload);
         $this->messageBus->dispatch($message);
-        $content = $message->getContent();
 
         $action = $request->query->get('action');
         if ($action) {
             $this->handleAction($resourceId, $locale, $action);
         }
+
+        $query = new FindContentQuery($this->getResourceKey(), $resourceId, $locale);
+        $this->messageBus->dispatch($query);
+        $content = $query->getContent();
 
         return $this->handleView($this->view($content));
     }
