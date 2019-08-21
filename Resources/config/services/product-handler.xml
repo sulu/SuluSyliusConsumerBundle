@@ -65,6 +65,7 @@
             <argument type="service" id="sulu_page.structure.factory"/>
             <argument type="service" id="sulu_route.generator.route_generator"/>
             <argument>%sulu_route.mappings%</argument>
+            <argument>%sulu.content.structure.default_type.product%</argument>
 
             <tag name="messenger.message_handler"/>
         </service>

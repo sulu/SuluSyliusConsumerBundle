@@ -77,6 +77,11 @@ class PublishProductMessageHandler
      */
     private $routeMappings;
 
+    /**
+     * @var string
+     */
+    private $defaultType;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductInformationRepositoryInterface $productInformationRepository,
@@ -85,7 +90,8 @@ class PublishProductMessageHandler
         MessageBusInterface $messageBus,
         StructureMetadataFactoryInterface $factory,
         RouteGenerator $routeGenerator,
-        array $routeMappings
+        array $routeMappings,
+        string $defaultType
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
@@ -95,6 +101,7 @@ class PublishProductMessageHandler
         $this->factory = $factory;
         $this->routeGenerator = $routeGenerator;
         $this->routeMappings = $routeMappings;
+        $this->defaultType = $defaultType;
     }
 
     public function __invoke(PublishProductMessage $message): void
@@ -134,14 +141,19 @@ class PublishProductMessageHandler
 
         $routePathFieldName = $this->getRoutePathFieldNameFromContent($publishContentMessage);
         $payloadData = array_merge(
-            $publishContentMessage->getContentView()->getData(),
+            $publishContentMessage->hasContentView() ? $publishContentMessage->getContentView()->getData() : [],
             [$routePathFieldName => $publishRoutableResourceMessage->getRoute()->getRoute()->getPath()]
         );
+
+        $type = $this->defaultType;
+        if ($publishContentMessage->hasContentView()) {
+            $type = $publishContentMessage->getContentView()->getType();
+        }
         $modifyContentMessage = new ModifyContentMessage(
             ProductInterface::CONTENT_RESOURCE_KEY,
             $message->getId(),
             $message->getLocale(),
-            ['type' => $publishContentMessage->getContentView()->getType(), 'data' => $payloadData]
+            ['type' => $type, 'data' => $payloadData]
         );
         $this->messageBus->dispatch($modifyContentMessage);
 
@@ -232,7 +244,7 @@ class PublishProductMessageHandler
         return '';
     }
 
-    private function getRoutePathFieldNameFromContent(PublishContentMessage $message): string
+    private function getRoutePathFieldNameFromContent(PublishContentMessage $message)
     {
         $routePathProperty = $this->getRoutePathPropertyFromContent($message);
         if ($routePathProperty) {

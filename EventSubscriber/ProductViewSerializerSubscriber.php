@@ -17,6 +17,7 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use Sulu\Bundle\RouteBundle\Entity\Route;
 use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
@@ -170,14 +171,17 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
     {
         $urls = [];
         $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return $urls;
+        }
 
-        /** @var RequestAttributes $attributes */
+        /** @var ?RequestAttributes $attributes */
         $attributes = $request->get('_sulu');
         if (!$attributes) {
             return $urls;
         }
 
-        /** @var Webspace $webspace */
+        /** @var ?Webspace $webspace */
         $webspace = $attributes->getAttribute('webspace');
         if (!$webspace) {
             return $urls;
@@ -186,6 +190,7 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         foreach ($webspace->getAllLocalizations() as $localization) {
             $locale = $localization->getLocale();
 
+            /** @var ?Route $route */
             $route = $this->routeRepository->findByEntity(RoutableResource::class, $productView->getId(), $locale);
 
             $urls[$locale] = '/';
