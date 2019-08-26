@@ -17,13 +17,19 @@ use JMS\Serializer\Context;
 use JMS\Serializer\EventDispatcher\Events;
 use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
 use JMS\Serializer\EventDispatcher\ObjectEvent;
+use Sulu\Bundle\RouteBundle\Entity\Route;
+use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Sulu\Component\Content\Compat\StructureInterface;
 use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
 use Sulu\Component\Serializer\ArraySerializationVisitor;
+use Sulu\Component\Webspace\Analyzer\Attributes\RequestAttributes;
+use Sulu\Component\Webspace\Webspace;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class ProductViewSerializerSubscriber implements EventSubscriberInterface
 {
@@ -48,12 +54,26 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
      */
     private $contentTypeManager;
 
+    /**
+     * @var RouteRepositoryInterface
+     */
+    private $routeRepository;
+
+    /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
     public function __construct(
         StructureManagerInterface $structureManager,
-        ContentTypeManagerInterface $contentTypeManager
+        ContentTypeManagerInterface $contentTypeManager,
+        RequestStack $requestStack,
+        RouteRepositoryInterface $routeRepository
     ) {
         $this->structureManager = $structureManager;
         $this->contentTypeManager = $contentTypeManager;
+        $this->requestStack = $requestStack;
+        $this->routeRepository = $routeRepository;
     }
 
     public function onPostSerialize(ObjectEvent $event): void
@@ -71,7 +91,7 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         $visitor = $event->getVisitor();
         $visitor->setData('product', $this->getProductData($productView, $event->getContext()));
         $visitor->setData('extension', [/* TODO seo and excerpt */]);
-        $visitor->setData('urls', [/* TODO localized urls */]);
+        $visitor->setData('urls', $this->getUrls($productView));
         $visitor->setData('content', $structure ? $this->resolveContent($structure, $data) : null);
         $visitor->setData('view', $structure ? $this->resolveView($structure, $data) : null);
         $visitor->setData('template', $structure ? $structure->getKey() : null);
@@ -145,5 +165,40 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         }
 
         return $content;
+    }
+
+    private function getUrls(ProductViewInterface $productView): array
+    {
+        $urls = [];
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return $urls;
+        }
+
+        /** @var ?RequestAttributes $attributes */
+        $attributes = $request->get('_sulu');
+        if (!$attributes) {
+            return $urls;
+        }
+
+        /** @var ?Webspace $webspace */
+        $webspace = $attributes->getAttribute('webspace');
+        if (!$webspace) {
+            return $urls;
+        }
+
+        foreach ($webspace->getAllLocalizations() as $localization) {
+            $locale = $localization->getLocale();
+
+            /** @var ?Route $route */
+            $route = $this->routeRepository->findByEntity(RoutableResource::class, $productView->getId(), $locale);
+
+            $urls[$locale] = '/';
+            if ($route) {
+                $urls[$locale] = $route->getPath();
+            }
+        }
+
+        return $urls;
     }
 }

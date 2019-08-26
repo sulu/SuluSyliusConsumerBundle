@@ -37,7 +37,5 @@ class LoadProductVariantChannelPricingQueryHandler
                 $query->setPrice($channelPricing['price']);
             }
         }
-
-        $query->getPrice();
     }
 }
