@@ -39,7 +39,7 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=en');
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals(
@@ -55,7 +55,7 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=de');
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals(
@@ -73,7 +73,7 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $product->getId() . '?locale=en&action=draft', $data);
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals($data, $response);
@@ -94,7 +94,7 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $content->getResourceId() . '?locale=en&action=draft', $data);
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals($data, $response);
@@ -110,7 +110,7 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $product->getId() . '?locale=en&action=publish', $data);
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals($data, $response);
@@ -135,7 +135,7 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $content->getResourceId() . '?locale=en&action=publish', $data);
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals($data, $response);
