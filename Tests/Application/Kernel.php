@@ -11,10 +11,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
+namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Application;
+
 use Sulu\Bundle\TestBundle\Kernel\SuluTestKernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
-class AppKernel extends SuluTestKernel
+class Kernel extends SuluTestKernel
 {
     public function registerBundles()
     {

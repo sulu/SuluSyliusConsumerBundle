@@ -18,17 +18,14 @@ use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUser;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CustomerControllerTest extends SuluTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     public function testVerify(): void
     {
+        /** @var Client $client */
         $client = $this->createWebsiteClient();
 
         $this->getGatewayClient($client)->setHandleRequestCallable(
@@ -59,7 +56,10 @@ class CustomerControllerTest extends SuluTestCase
 
         $client->request('GET', '/verify/123-123-123');
 
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        /** @var SymfonyResponse $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(SymfonyResponse::class, $response);
+        $this->assertEquals(302, $response->getStatusCode());
 
         $token = $this->getToken($client);
         $this->assertNotNull($token);

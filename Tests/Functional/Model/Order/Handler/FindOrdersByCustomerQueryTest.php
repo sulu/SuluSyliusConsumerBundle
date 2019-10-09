@@ -21,19 +21,14 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
 class FindOrdersByCustomerQueryTest extends GatewayClientTestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }
 
-    public function tearDown()
+    protected static function getKernelConfiguration(): array
     {
-        parent::tearDown();
-    }
-
-    public function getKernelConfiguration()
-    {
-        return ['sulu_context' => 'website'];
+        return ['sulu.context' => 'website'];
     }
 
     public function testMin(): void

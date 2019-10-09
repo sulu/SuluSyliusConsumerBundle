@@ -11,12 +11,8 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\EventSubscriber;
+namespace Sulu\Bundle\SyliusConsumerBundle\Resolver;
 
-use JMS\Serializer\Context;
-use JMS\Serializer\EventDispatcher\Events;
-use JMS\Serializer\EventDispatcher\EventSubscriberInterface;
-use JMS\Serializer\EventDispatcher\ObjectEvent;
 use Sulu\Bundle\RouteBundle\Entity\Route;
 use Sulu\Bundle\RouteBundle\Entity\RouteRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Content\ContentViewInterface;
@@ -26,33 +22,22 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource;
 use Sulu\Component\Content\Compat\StructureInterface;
 use Sulu\Component\Content\Compat\StructureManagerInterface;
 use Sulu\Component\Content\ContentTypeManagerInterface;
-use Sulu\Component\Serializer\ArraySerializationVisitor;
+use Sulu\Component\Serializer\ArraySerializerInterface;
 use Sulu\Component\Webspace\Analyzer\Attributes\RequestAttributes;
 use Sulu\Component\Webspace\Webspace;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class ProductViewSerializerSubscriber implements EventSubscriberInterface
+class ProductViewContentResolver implements ProductViewContentResolverInterface
 {
-    public static function getSubscribedEvents()
-    {
-        return [
-            [
-                'event' => Events::POST_SERIALIZE,
-                'format' => 'array',
-                'method' => 'onPostSerialize',
-            ],
-        ];
-    }
-
     /**
      * @var StructureManagerInterface
      */
     private $structureManager;
 
     /**
-     * @var ContentTypeManagerInterface
+     * @var ArraySerializerInterface
      */
-    private $contentTypeManager;
+    private $arraySerializer;
 
     /**
      * @var RouteRepositoryInterface
@@ -64,39 +49,42 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
      */
     private $requestStack;
 
+    /**
+     * @var ContentTypeManagerInterface
+     */
+    private $contentTypeManager;
+
     public function __construct(
         StructureManagerInterface $structureManager,
-        ContentTypeManagerInterface $contentTypeManager,
+        ArraySerializerInterface $arraySerializer,
+        RouteRepositoryInterface $routeRepository,
         RequestStack $requestStack,
-        RouteRepositoryInterface $routeRepository
+        ContentTypeManagerInterface $contentTypeManager
     ) {
         $this->structureManager = $structureManager;
-        $this->contentTypeManager = $contentTypeManager;
-        $this->requestStack = $requestStack;
+        $this->arraySerializer = $arraySerializer;
         $this->routeRepository = $routeRepository;
+        $this->requestStack = $requestStack;
+        $this->contentTypeManager = $contentTypeManager;
     }
 
-    public function onPostSerialize(ObjectEvent $event): void
+    public function resolve(ProductViewInterface $productView): array
     {
-        $productView = $event->getObject();
-        if (!$productView instanceof ProductViewInterface) {
-            return;
-        }
-
         $content = $productView->getContent();
         $structure = $content ? $this->getStructure($productView, $content) : null;
-        $data = $content ? $content->getData() : [];
+        $contentData = $content ? $content->getData() : [];
 
-        /** @var ArraySerializationVisitor $visitor */
-        $visitor = $event->getVisitor();
-        $visitor->setData('product', $this->getProductData($productView, $event->getContext()));
-        $visitor->setData('extension', [/* TODO seo and excerpt */]);
-        $visitor->setData('urls', $this->getUrls($productView));
-        $visitor->setData('content', $structure ? $this->resolveContent($structure, $data) : null);
-        $visitor->setData('view', $structure ? $this->resolveView($structure, $data) : null);
-        $visitor->setData('template', $structure ? $structure->getKey() : null);
-
-        // TODO creator, created, changer, changed
+        return [
+            'locale' => $productView->getLocale(),
+            'id' => $productView->getProduct()->getId(),
+            'product' => $this->getProductData($productView),
+            'extension' => [/* TODO seo and excerpt */],
+            'urls' => $this->getUrls($productView),
+            'content' => $structure ? $this->resolveContent($structure, $contentData) : null,
+            'view' => $structure ? $this->resolveView($structure, $contentData) : null,
+            'template' => $structure ? $structure->getKey() : null,
+            'routePath' => $productView->getRoutePath(),
+        ];
     }
 
     private function getStructure(ProductViewInterface $productView, ContentViewInterface $contentView): ?StructureInterface
@@ -112,14 +100,14 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $structure;
     }
 
-    protected function getProductData(ProductViewInterface $productView, Context $context): array
+    protected function getProductData(ProductViewInterface $productView): array
     {
-        $productData = $context->accept($productView->getProduct());
-        $productInformationData = $context->accept($productView->getProductInformation());
+        $productData = $this->arraySerializer->serialize($productView->getProduct());
+        $productInformationData = $this->arraySerializer->serialize($productView->getProductInformation());
 
         $data = array_merge(
-            $context->accept($productView->getProduct()),
-            $context->accept($productView->getProductInformation())
+            $productData,
+            $productInformationData
         );
 
         $data['mainCategory'] = $productView->getMainCategory();
@@ -137,19 +125,39 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $data;
     }
 
-    private function resolveView(StructureInterface $structure, array $data): array
+    private function getUrls(ProductViewInterface $productView): array
     {
-        $view = [];
-        foreach ($structure->getProperties(true) as $child) {
-            if (array_key_exists($child->getName(), $data)) {
-                $child->setValue($data[$child->getName()]);
-            }
-
-            $contentType = $this->contentTypeManager->get($child->getContentTypeName());
-            $view[$child->getName()] = $contentType->getViewData($child);
+        $urls = [];
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return $urls;
         }
 
-        return $view;
+        /** @var RequestAttributes|null $attributes */
+        $attributes = $request->get('_sulu');
+        if (!$attributes) {
+            return $urls;
+        }
+
+        /** @var Webspace|null $webspace */
+        $webspace = $attributes->getAttribute('webspace');
+        if (!$webspace) {
+            return $urls;
+        }
+
+        foreach ($webspace->getAllLocalizations() as $localization) {
+            $locale = $localization->getLocale();
+
+            /** @var Route|null $route */
+            $route = $this->routeRepository->findByEntity(RoutableResource::class, $productView->getId(), $locale);
+
+            $urls[$locale] = '/';
+            if ($route) {
+                $urls[$locale] = $route->getPath();
+            }
+        }
+
+        return $urls;
     }
 
     private function resolveContent(StructureInterface $structure, array $data)
@@ -167,38 +175,18 @@ class ProductViewSerializerSubscriber implements EventSubscriberInterface
         return $content;
     }
 
-    private function getUrls(ProductViewInterface $productView): array
+    private function resolveView(StructureInterface $structure, array $data): array
     {
-        $urls = [];
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return $urls;
-        }
-
-        /** @var ?RequestAttributes $attributes */
-        $attributes = $request->get('_sulu');
-        if (!$attributes) {
-            return $urls;
-        }
-
-        /** @var ?Webspace $webspace */
-        $webspace = $attributes->getAttribute('webspace');
-        if (!$webspace) {
-            return $urls;
-        }
-
-        foreach ($webspace->getAllLocalizations() as $localization) {
-            $locale = $localization->getLocale();
-
-            /** @var ?Route $route */
-            $route = $this->routeRepository->findByEntity(RoutableResource::class, $productView->getId(), $locale);
-
-            $urls[$locale] = '/';
-            if ($route) {
-                $urls[$locale] = $route->getPath();
+        $view = [];
+        foreach ($structure->getProperties(true) as $child) {
+            if (array_key_exists($child->getName(), $data)) {
+                $child->setValue($data[$child->getName()]);
             }
+
+            $contentType = $this->contentTypeManager->get($child->getContentTypeName());
+            $view[$child->getName()] = $contentType->getViewData($child);
         }
 
-        return $urls;
+        return $view;
     }
 }

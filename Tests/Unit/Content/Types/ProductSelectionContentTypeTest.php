@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Content\Types;
 
-use JMS\Serializer\SerializerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory;
@@ -31,13 +30,11 @@ class ProductSelectionContentTypeTest extends TestCase
     public function testGetContentData(): void
     {
         $messageBus = $this->prophesize(MessageBusInterface::class);
-        $serializer = $this->prophesize(SerializerInterface::class);
         $productReferenceStore = $this->prophesize(ReferenceStoreInterface::class);
         $proxyFactory = $this->prophesize(ProxyFactory::class);
 
         $contentType = new ProductSelectionContentType(
             $messageBus->reveal(),
-            $serializer->reveal(),
             $productReferenceStore->reveal(),
             $proxyFactory->reveal()
         );
@@ -65,7 +62,7 @@ class ProductSelectionContentTypeTest extends TestCase
         )->willReturn(new Envelope(new \stdClass()))->shouldBeCalled();
 
         $result = new \ArrayObject();
-        $proxyFactory->createProxy($serializer->reveal(), $productViews)->willReturn($result)->shouldBeCalled();
+        $proxyFactory->createProxies($productViews)->willReturn($result)->shouldBeCalled();
 
         $contentData = $contentType->getContentData($property->reveal());
 
@@ -75,13 +72,11 @@ class ProductSelectionContentTypeTest extends TestCase
     public function testPreResolve(): void
     {
         $messageBus = $this->prophesize(MessageBusInterface::class);
-        $serializer = $this->prophesize(SerializerInterface::class);
         $productReferenceStore = $this->prophesize(ReferenceStoreInterface::class);
         $proxyFactory = $this->prophesize(ProxyFactory::class);
 
         $contentType = new ProductSelectionContentType(
             $messageBus->reveal(),
-            $serializer->reveal(),
             $productReferenceStore->reveal(),
             $proxyFactory->reveal()
         );

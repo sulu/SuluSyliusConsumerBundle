@@ -6,6 +6,6 @@
         <virtual-property method="getMediaReferences" serialized-name="mediaReferences" expose="true"/>
         <property name="dimension" exclude="true" />
         <property name="product" exclude="true" />
-        <property name="attributeValues" type="array"/>
+        <property name="attributeValues"/>
     </class>
 </serializer>

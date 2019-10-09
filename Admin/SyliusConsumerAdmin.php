@@ -60,11 +60,11 @@ class SyliusConsumerAdmin extends Admin
     public function configureNavigationItems(NavigationItemCollection $navigationItemCollection): void
     {
         if ($this->securityChecker->hasPermission(static::PRODUCT_SECURITY_CONTEXT, PermissionTypes::EDIT)) {
-        $productItem = new NavigationItem('sulu_sylius_product.products');
-        $productItem->setPosition(45);
-        $productItem->setIcon('fa-cube');
-        $productItem->setView(self::LIST_VIEW);
-        $navigationItemCollection->add($productItem);
+            $productItem = new NavigationItem('sulu_sylius_product.products');
+            $productItem->setPosition(45);
+            $productItem->setIcon('fa-cube');
+            $productItem->setView(self::LIST_VIEW);
+            $navigationItemCollection->add($productItem);
         }
     }
 

@@ -13,12 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Product;
 
-use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\HttpCacheBundle\Cache\SuluHttpCache;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query\FindAttributeTranslationsByCodesQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Resolver\ProductViewContentResolverInterface;
 use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
-use Sulu\Component\Serializer\ArraySerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -54,7 +53,9 @@ class WebsiteProductController implements ContainerAwareInterface
 
     protected function getAttributes(array $attributes, ProductViewInterface $object, string $locale): array
     {
-        $attributes = $this->getAttributeResolver()->resolve(array_merge($this->serialize($object), $attributes));
+        $attributes = $this->getAttributeResolver()->resolve(
+            array_merge($this->resolveProductView($object), $attributes)
+        );
 
         return array_merge($attributes, $this->resolveProductAttributes($object, $locale));
     }
@@ -74,10 +75,10 @@ class WebsiteProductController implements ContainerAwareInterface
         ];
     }
 
-    protected function serialize(ProductViewInterface $object): array
+    protected function resolveProductView(ProductViewInterface $object): array
     {
         /** @var array $result */
-        $result = $this->getSerializer()->serialize($object);
+        $result = $this->getProductViewResolver()->resolve($object);
 
         return $result;
     }
@@ -108,12 +109,12 @@ class WebsiteProductController implements ContainerAwareInterface
         return $response;
     }
 
-    protected function getSerializer(): ArraySerializerInterface
+    protected function getProductViewResolver(): ProductViewContentResolverInterface
     {
-        /** @var ArraySerializerInterface $serializer */
-        $serializer = $this->get('sulu_core.array_serializer');
+        /** @var ProductViewContentResolverInterface $resolver */
+        $resolver = $this->get('sulu_sylius_consumer.content.product_view_resolver');
 
-        return $serializer;
+        return $resolver;
     }
 
     protected function getMessageBus(): MessageBusInterface

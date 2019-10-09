@@ -28,6 +28,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\StructureMetadata;
 use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProductRouteDefaultsProviderTest extends TestCase
@@ -180,13 +181,18 @@ class ProductRouteDefaultsProviderTest extends TestCase
             $routeDefaultsFallback
         );
 
+        $handlerException = new HandlerFailedException(
+            new Envelope(new \stdClass()),
+            [new ProductInformationNotFoundException('product-1')]
+        );
+
         $messageBus->dispatch(
             Argument::that(
                 function (FindProductViewQuery $query) {
                     return 'product-1' === $query->getId() && 'en' === $query->getLocale();
                 }
             )
-        )->willThrow(new ProductInformationNotFoundException('product-1'))->shouldBeCalled();
+        )->willThrow($handlerException)->shouldBeCalled();
 
         $this->assertFalse($provider->isPublished(RoutableResourceInterface::class, 'product-1', 'en'));
     }

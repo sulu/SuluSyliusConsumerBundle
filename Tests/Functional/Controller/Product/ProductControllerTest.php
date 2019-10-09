@@ -18,6 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductControllerTest extends SuluTestCase
 {
@@ -25,7 +26,7 @@ class ProductControllerTest extends SuluTestCase
     use ProductInformationTrait;
     use ProductTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }
@@ -40,11 +41,14 @@ class ProductControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/products/' . $productInformation->getProductId() . '?locale=en');
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals($productInformation->getProductId(), $response['id']);
-        $this->assertEquals($productInformation->getName(), $response['name']);
+        $this->assertEquals($productInformation->getProductId(), $result['id']);
+        $this->assertEquals($productInformation->getName(), $result['name']);
     }
 
     public function testCGetAction(): void
@@ -61,11 +65,14 @@ class ProductControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/products?locale=en');
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertCount(1, $response['_embedded'][ProductInterface::RESOURCE_KEY]);
-        $this->assertEquals($productInformation1->getProductId(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['id']);
-        $this->assertEquals($productInformation1->getName(), $response['_embedded'][ProductInterface::RESOURCE_KEY][0]['name']);
+        $this->assertCount(1, $result['_embedded'][ProductInterface::RESOURCE_KEY]);
+        $this->assertEquals($productInformation1->getProductId(), $result['_embedded'][ProductInterface::RESOURCE_KEY][0]['id']);
+        $this->assertEquals($productInformation1->getName(), $result['_embedded'][ProductInterface::RESOURCE_KEY][0]['name']);
     }
 }

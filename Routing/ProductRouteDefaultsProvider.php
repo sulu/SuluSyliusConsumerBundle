@@ -22,6 +22,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResourceInterface;
 use Sulu\Component\Content\Metadata\Factory\StructureMetadataFactoryInterface;
 use Sulu\Component\Content\Metadata\StructureMetadata;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
@@ -58,13 +59,17 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
         $this->routeDefaultsFallback = $routeDefaultsFallback;
     }
 
+    /**
+     * @param ProductViewInterface|null $object
+     */
     public function getByEntity($entityClass, $id, $locale, $object = null)
     {
         if (!$object) {
             $object = $this->loadProduct($id, $locale);
         }
 
-        if (!$object->getContent()) {
+        $content = $object->getContent();
+        if (!$content) {
             return array_merge(
                 [
                     'object' => $object,
@@ -76,7 +81,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
         /** @var StructureMetadata $metadata */
         $metadata = $this->structureMetadataFactory->getStructureMetadata(
             ProductInterface::CONTENT_RESOURCE_KEY,
-            $object->getContent()->getType()
+            $content->getType()
         );
 
         return [
@@ -93,8 +98,12 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
             $productView = $this->loadProduct($id, $locale);
 
             return $productView->getProduct()->isEnabled();
-        } catch (ProductInformationNotFoundException $exception) {
-            return false;
+        } catch (HandlerFailedException $exception) {
+            if (($exception->getNestedExceptions()[0] ?? null) instanceof ProductInformationNotFoundException) {
+                return false;
+            }
+
+            throw $exception;
         }
     }
 

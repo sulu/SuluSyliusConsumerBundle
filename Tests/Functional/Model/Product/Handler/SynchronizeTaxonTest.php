@@ -24,7 +24,7 @@ class SynchronizeTaxonTest extends SuluTestCase
     use DimensionTrait;
     use CategoryTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }

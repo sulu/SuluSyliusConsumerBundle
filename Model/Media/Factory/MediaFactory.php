@@ -142,7 +142,11 @@ class MediaFactory implements MediaFactoryInterface
     {
         $processedLocales = [];
         $latestFileVersion = $media->getFiles()[0]->getLatestFileVersion();
-        foreach ($media->getFiles()[0]->getLatestFileVersion()->getMeta() as $meta) {
+        if (!$latestFileVersion) {
+            return;
+        }
+
+        foreach ($latestFileVersion->getMeta() as $meta) {
             if (array_key_exists($meta->getLocale(), $titles)) {
                 $meta->setTitle($titles[$meta->getLocale()]);
             } else {

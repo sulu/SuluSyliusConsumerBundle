@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Content\Types;
 
-use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewsQuery;
 use Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStoreInterface;
@@ -23,11 +22,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class ProductSelectionContentType extends SimpleContentType
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
     /**
      * @var MessageBusInterface
      */
@@ -45,14 +39,12 @@ class ProductSelectionContentType extends SimpleContentType
 
     public function __construct(
         MessageBusInterface $messageBus,
-        SerializerInterface $serializer,
         ReferenceStoreInterface $productReferenceStore,
         ProxyFactory $proxyFactory
     ) {
         parent::__construct('ProductSelection');
 
         $this->messageBus = $messageBus;
-        $this->serializer = $serializer;
         $this->productReferenceStore = $productReferenceStore;
         $this->proxyFactory = $proxyFactory;
     }
@@ -79,7 +71,7 @@ class ProductSelectionContentType extends SimpleContentType
 
         $productViews = $query->getProductViews();
 
-        return $this->proxyFactory->createProxy($this->serializer, $productViews);
+        return $this->proxyFactory->createProxies($productViews);
     }
 
     /**

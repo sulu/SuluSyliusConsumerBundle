@@ -17,8 +17,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 abstract class OrderEvent extends Event
 {
-    const NAME = self::NAME;
-
     /**
      * @var int
      */
