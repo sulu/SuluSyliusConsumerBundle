@@ -19,10 +19,14 @@ use Sulu\Bundle\AdminBundle\Navigation\Navigation;
 use Sulu\Bundle\AdminBundle\Navigation\NavigationItem;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Component\Localization\Localization;
+use Sulu\Component\Security\Authorization\PermissionTypes;
+use Sulu\Component\Security\Authorization\SecurityCheckerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
 
 class SyliusConsumerAdmin extends Admin
 {
+    const PRODUCT_SECURITY_CONTEXT = 'sulu.global.products';
+
     /**
      * @var WebspaceManagerInterface
      */
@@ -33,24 +37,32 @@ class SyliusConsumerAdmin extends Admin
      */
     private $routeBuilderFactory;
 
+    /**
+     * @var SecurityCheckerInterface
+     */
+    private $securityChecker;
+
     public function __construct(
         WebspaceManagerInterface $webspaceManager,
-        RouteBuilderFactoryInterface $routeBuilderFactory
+        RouteBuilderFactoryInterface $routeBuilderFactory,
+        SecurityCheckerInterface $securityChecker
     ) {
         $this->webspaceManager = $webspaceManager;
         $this->routeBuilderFactory = $routeBuilderFactory;
+        $this->securityChecker = $securityChecker;
     }
 
     public function getNavigation(): Navigation
     {
         $rootNavigationItem = $this->getNavigationItemRoot();
 
-        $products = new NavigationItem('sulu_sylius_product.products');
-        $products->setPosition(45);
-        $products->setIcon('fa-cube');
-        $products->setMainRoute('sulu_sylius_product.products_list');
-
-        $rootNavigationItem->addChild($products);
+        if ($this->securityChecker->hasPermission(static::PRODUCT_SECURITY_CONTEXT, PermissionTypes::EDIT)) {
+            $products = new NavigationItem('sulu_sylius_product.products');
+            $products->setPosition(45);
+            $products->setIcon('fa-cube');
+            $products->setMainRoute('sulu_sylius_product.products_list');
+            $rootNavigationItem->addChild($products);
+        }
 
         return new Navigation($rootNavigationItem);
     }
@@ -66,10 +78,13 @@ class SyliusConsumerAdmin extends Admin
             )
         );
 
-        $formToolbarActions = [
-            'sulu_admin.save_with_publishing',
-            'sulu_admin.type',
-        ];
+        $contentFormToolbarActions = [];
+        $detailsFormToolbarActions = [];
+        if ($this->securityChecker->hasPermission(static::PRODUCT_SECURITY_CONTEXT, PermissionTypes::EDIT)) {
+            $contentFormToolbarActions[] = 'sulu_admin.save_with_publishing';
+            $contentFormToolbarActions[] = 'sulu_admin.type';
+            $detailsFormToolbarActions[] = 'sulu_admin.save';
+        }
 
         return [
             $this->routeBuilderFactory->createListRouteBuilder('sulu_sylius_product.products_list', '/products/:locale')
@@ -91,16 +106,30 @@ class SyliusConsumerAdmin extends Admin
                 ->setResourceKey(ProductInterface::RESOURCE_KEY)
                 ->setFormKey(ProductInterface::FORM_KEY)
                 ->setTabTitle('sulu_sylius_product.details')
-                ->addToolbarActions(['sulu_admin.save'])
+                ->addToolbarActions($detailsFormToolbarActions)
                 ->setParent('sulu_sylius_product.product_edit_form')
                 ->getRoute(),
             $this->routeBuilderFactory->createFormRouteBuilder('sulu_sylius_product.product_edit_form.content', '/content')
                 ->setResourceKey(ProductInterface::CONTENT_RESOURCE_KEY)
                 ->setFormKey(ProductInterface::CONTENT_FORM_KEY)
                 ->setTabTitle('sulu_sylius_product.content')
-                ->addToolbarActions($formToolbarActions)
+                ->addToolbarActions($contentFormToolbarActions)
                 ->setParent('sulu_sylius_product.product_edit_form')
                 ->getRoute(),
+        ];
+    }
+
+    public function getSecurityContexts()
+    {
+        return [
+            'Sulu' => [
+                'Global' => [
+                    static::PRODUCT_SECURITY_CONTEXT => [
+                        PermissionTypes::VIEW,
+                        PermissionTypes::EDIT,
+                    ],
+                ],
+            ],
         ];
     }
 }

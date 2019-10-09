@@ -40,7 +40,7 @@ class ProductControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/products/' . $productInformation->getProductId() . '?locale=en');
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertEquals($productInformation->getProductId(), $response['id']);
@@ -61,7 +61,7 @@ class ProductControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/products?locale=en');
 
-        $response = json_decode($client->getResponse()->getContent(), true);
+        $response = json_decode((string) $client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
 
         $this->assertCount(1, $response['_embedded'][ProductInterface::RESOURCE_KEY]);
