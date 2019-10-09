@@ -20,7 +20,6 @@ class AppKernel extends SuluTestKernel
     {
         $bundles = [
             new \Sulu\Bundle\SyliusConsumerBundle\SuluSyliusConsumerBundle(),
-            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
         ];
 
         if (self::CONTEXT_WEBSITE === $this->getContext()) {
