@@ -18,6 +18,7 @@ use Sulu\Bundle\HttpCacheBundle\Cache\SuluHttpCache;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query\FindAttributeTranslationsByCodesQuery;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
+use Sulu\Component\Serializer\ArraySerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -76,7 +77,7 @@ class WebsiteProductController implements ContainerAwareInterface
     protected function serialize(ProductViewInterface $object): array
     {
         /** @var array $result */
-        $result = $this->getSerializer()->serialize($object, 'array');
+        $result = $this->getSerializer()->serialize($object);
 
         return $result;
     }
@@ -107,10 +108,10 @@ class WebsiteProductController implements ContainerAwareInterface
         return $response;
     }
 
-    protected function getSerializer(): SerializerInterface
+    protected function getSerializer(): ArraySerializerInterface
     {
-        /** @var SerializerInterface $serializer */
-        $serializer = $this->get('jms_serializer');
+        /** @var ArraySerializerInterface $serializer */
+        $serializer = $this->get('sulu_core.array_serializer');
 
         return $serializer;
     }
