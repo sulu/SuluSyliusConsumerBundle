@@ -57,7 +57,7 @@ class LoadProductVariantChannelPricingQuery
         return $this->channel;
     }
 
-    public function getPrice(): int
+    public function getPrice(): ?int
     {
         return $this->price;
     }
