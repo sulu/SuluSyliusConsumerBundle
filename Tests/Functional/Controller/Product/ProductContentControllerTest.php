@@ -19,6 +19,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductContentControllerTest extends SuluTestCase
 {
@@ -27,7 +28,7 @@ class ProductContentControllerTest extends SuluTestCase
     use ProductInformationTrait;
     use ProductTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }
@@ -39,12 +40,15 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=en');
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
         $this->assertEquals(
             array_merge(['template' => $content->getType()], $content->getData()),
-            $response
+            $result
         );
     }
 
@@ -55,12 +59,15 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('GET', '/api/product-contents/' . $content->getResourceId() . '?locale=de');
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
         $this->assertEquals(
             ['template' => $content->getType()],
-            $response
+            $result
         );
     }
 
@@ -73,10 +80,13 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $product->getId() . '?locale=en&action=draft', $data);
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals($data, $response);
+        $this->assertEquals($data, $result);
     }
 
     public function testPutActionUpdate(): void
@@ -94,10 +104,13 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $content->getResourceId() . '?locale=en&action=draft', $data);
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals($data, $response);
+        $this->assertEquals($data, $result);
     }
 
     public function testPutActionCreateAndPublish(): void
@@ -110,10 +123,13 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $product->getId() . '?locale=en&action=publish', $data);
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals($data, $response);
+        $this->assertEquals($data, $result);
 
         // TODO check status of response as soon as available
     }
@@ -135,10 +151,13 @@ class ProductContentControllerTest extends SuluTestCase
         $client = $this->createAuthenticatedClient();
         $client->request('PUT', '/api/product-contents/' . $content->getResourceId() . '?locale=en&action=publish', $data);
 
-        $response = json_decode((string) $client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
 
-        $this->assertEquals($data, $response);
+        $this->assertEquals($data, $result);
 
         // TODO check status of response as soon as available
     }

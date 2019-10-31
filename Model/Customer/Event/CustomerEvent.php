@@ -18,8 +18,6 @@ use Symfony\Component\EventDispatcher\Event;
 
 abstract class CustomerEvent extends Event
 {
-    const NAME = self::NAME;
-
     /**
      * @var CustomerInterface
      */

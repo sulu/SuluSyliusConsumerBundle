@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Content\Types;
 
-use JMS\Serializer\SerializerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductInformationNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\FindProductViewQuery;
@@ -24,11 +23,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class SingleProductSelectionContentType extends SimpleContentType
 {
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
     /**
      * @var MessageBusInterface
      */
@@ -46,14 +40,12 @@ class SingleProductSelectionContentType extends SimpleContentType
 
     public function __construct(
         MessageBusInterface $messageBus,
-        SerializerInterface $serializer,
         ReferenceStoreInterface $productReferenceStore,
         ProxyFactory $proxyFactory
     ) {
         parent::__construct('SingleProductSelection');
 
         $this->messageBus = $messageBus;
-        $this->serializer = $serializer;
         $this->productReferenceStore = $productReferenceStore;
         $this->proxyFactory = $proxyFactory;
     }
@@ -81,7 +73,7 @@ class SingleProductSelectionContentType extends SimpleContentType
 
             $productView = $query->getProductView();
 
-            return $this->proxyFactory->createProxy($this->serializer, $productView);
+            return $this->proxyFactory->createProxy($productView);
         } catch (ProductInformationNotFoundException $exception) {
             return null;
         }

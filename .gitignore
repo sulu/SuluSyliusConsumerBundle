@@ -5,16 +5,14 @@ composer.lock
 # phpunit
 phpunit.phar
 phpunit.xml
+.phpunit.result.cache
 
 # php-cs
 .php_cs.cache
 
 # tests
 .env
-Tests/app/cache
-Tests/app/data
-Tests/app/var
-Tests/var
+Tests/Application/var
 
 # npm
 Resources/js/package-lock.json

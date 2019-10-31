@@ -26,7 +26,7 @@ class RemoveProductTest extends SuluTestCase
     use ProductTrait;
     use ProductInformationTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }

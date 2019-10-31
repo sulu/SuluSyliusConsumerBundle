@@ -29,7 +29,7 @@ class ListProductViewsQueryTest extends SuluTestCase
     use ProductInformationTrait;
     use ProductTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }

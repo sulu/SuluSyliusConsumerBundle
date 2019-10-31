@@ -24,7 +24,7 @@ class SynchronizeProductTest extends SuluTestCase
     use DimensionTrait;
     use ProductInformationTrait;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }

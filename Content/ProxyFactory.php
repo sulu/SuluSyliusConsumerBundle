@@ -13,9 +13,10 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Content;
 
-use JMS\Serializer\SerializerInterface;
 use ProxyManager\Factory\LazyLoadingValueHolderFactory;
 use ProxyManager\Proxy\LazyLoadingInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Resolver\ProductViewContentResolverInterface;
 
 class ProxyFactory
 {
@@ -24,12 +25,20 @@ class ProxyFactory
      */
     private $proxyFactory;
 
-    public function __construct(LazyLoadingValueHolderFactory $proxyFactory)
-    {
+    /**
+     * @var ProductViewContentResolverInterface
+     */
+    private $productViewContentResolver;
+
+    public function __construct(
+        LazyLoadingValueHolderFactory $proxyFactory,
+        ProductViewContentResolverInterface $productViewContentResolver
+    ) {
         $this->proxyFactory = $proxyFactory;
+        $this->productViewContentResolver = $productViewContentResolver;
     }
 
-    public function createProxy(SerializerInterface $serializer, $data)
+    public function createProxy(ProductViewInterface $productView)
     {
         return $this->proxyFactory->createProxy(
             \ArrayObject::class,
@@ -39,10 +48,37 @@ class ProxyFactory
                 $method,
                 array $parameters,
                 &$initializer
-            ) use ($serializer, $data) {
+            ) use ($productView) {
                 $initializer = null;
-                /** @var array $serializedData */
-                $serializedData = $serializer->serialize($data, 'array');
+
+                $serializedData = $this->productViewContentResolver->resolve($productView);
+                $wrappedObject = new \ArrayObject($serializedData);
+
+                return true;
+            }
+        );
+    }
+
+    /**
+     * @param ProductViewInterface[] $productViews
+     */
+    public function createProxies(array $productViews)
+    {
+        return $this->proxyFactory->createProxy(
+            \ArrayObject::class,
+            function (
+                &$wrappedObject,
+                LazyLoadingInterface $proxy,
+                $method,
+                array $parameters,
+                &$initializer
+            ) use ($productViews) {
+                $initializer = null;
+
+                $serializedData = [];
+                foreach ($productViews as $productView) {
+                    $serializedData[] = $this->productViewContentResolver->resolve($productView);
+                }
                 $wrappedObject = new \ArrayObject($serializedData);
 
                 return true;

@@ -23,7 +23,7 @@
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Admin\SyliusConsumerAdmin">
             <argument type="service" id="sulu_core.webspace.webspace_manager"/>
-            <argument type="service" id="Sulu\Bundle\AdminBundle\Admin\Routing\RouteBuilderFactoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface"/>
             <argument type="service" id="sulu_security.security_checker"/>
 
             <tag name="sulu.admin"/>
@@ -31,15 +31,6 @@
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ContentSerializerSubscriber">
             <argument type="service" id="sulu_page.structure.factory"/>
-
-            <tag name="jms_serializer.event_subscriber"/>
-        </service>
-
-        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ProductViewSerializerSubscriber">
-            <argument type="service" id="sulu.content.structure_manager"/>
-            <argument type="service" id="sulu.content.type_manager"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="sulu.repository.route"/>
 
             <tag name="jms_serializer.event_subscriber"/>
         </service>
@@ -88,7 +79,6 @@
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\SingleProductSelectionContentType">
             <argument type="service" id="message_bus"/>
-            <argument type="service" id="jms_serializer"/>
             <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
             <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
 
@@ -97,7 +87,6 @@
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\ProductSelectionContentType">
             <argument type="service" id="message_bus"/>
-            <argument type="service" id="jms_serializer"/>
             <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
             <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
 
@@ -117,6 +106,17 @@
         <service id="sulu_sylius_consumer.content.proxy_factory"
                  class="Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory">
             <argument type="service" id="sulu_sylius_consumer.data_provider.proxy_factory"/>
+            <argument type="service" id="sulu_sylius_consumer.content.product_view_resolver"/>
+        </service>
+
+        <service id="sulu_sylius_consumer.content.product_view_resolver"
+                 class="Sulu\Bundle\SyliusConsumerBundle\Resolver\ProductViewContentResolver"
+                 public="true">
+            <argument type="service" id="sulu.content.structure_manager"/>
+            <argument type="service" id="sulu_core.array_serializer"/>
+            <argument type="service" id="sulu.repository.route"/>
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="sulu.content.type_manager"/>
         </service>
     </services>
 </container>

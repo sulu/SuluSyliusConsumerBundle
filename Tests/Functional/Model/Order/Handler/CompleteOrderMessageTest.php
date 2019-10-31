@@ -19,19 +19,14 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\GatewayClientTestCase;
 
 class CompleteOrderMessageTest extends GatewayClientTestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->purgeDatabase();
     }
 
-    public function tearDown()
+    protected static function getKernelConfiguration(): array
     {
-        parent::tearDown();
-    }
-
-    public function getKernelConfiguration()
-    {
-        return ['sulu_context' => 'website'];
+        return ['sulu.context' => 'website'];
     }
 
     public function testMin(): void
@@ -104,7 +99,7 @@ class CompleteOrderMessageTest extends GatewayClientTestCase
         $this->assertSame('Order confirmation', $message->getSubject());
         $this->assertSame('no-reply@example.com', key($message->getFrom()));
         $this->assertSame('test@test.com', key($message->getTo()));
-        $this->assertContains(
+        $this->assertStringContainsString(
             'Your order no. 55 has been successfully placed',
             $message->getBody()
         );

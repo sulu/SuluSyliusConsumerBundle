@@ -12,9 +12,10 @@ parameters:
         - %currentWorkingDirectory%/EventSubscriber/AutoLoginSubscriber.php
         - %currentWorkingDirectory%/Middleware/EventMiddleware.php
         - %currentWorkingDirectory%/vendor/*
-        - %currentWorkingDirectory%/Tests/app/AppKernel.php
-        - %currentWorkingDirectory%/Tests/app/cache/*
-        - %currentWorkingDirectory%/Tests/app/var/*
+        - %currentWorkingDirectory%/Tests/Application/AppKernel.php
+        - %currentWorkingDirectory%/Tests/Application/cache/*
+        - %currentWorkingDirectory%/Tests/Application/var/*
         - %currentWorkingDirectory%/Tests/var/*
+        - %currentWorkingDirectory%/Tests/Unit/EventSubscriber/ProductViewSerializerSubscriberTest.php
     symfony:
-        container_xml_path: %rootDir%/../../../Tests/app/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml
+        container_xml_path: %rootDir%/../../../Tests/Application/var/cache/admin/dev/adminAdminDevDebugProjectContainer.xml
