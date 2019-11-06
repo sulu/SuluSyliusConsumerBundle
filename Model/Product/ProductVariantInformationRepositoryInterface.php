@@ -23,5 +23,5 @@ interface ProductVariantInformationRepositoryInterface
 
     public function findAllByVariantId(string $variantId): array;
 
-    public function remove(ProductVariantInformation $variantInformation): void;
+    public function remove(ProductVariantInformationInterface $variantInformation): void;
 }

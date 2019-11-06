@@ -116,7 +116,7 @@ class RemoveProductMessageHandlerTest extends TestCase
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
-        $productRepository->remove($product->reveal())->shouldBeCalled();
+        $productRepository->remove(Argument::any())->shouldNotBeCalled();
 
         $productInformationRepository->findAllByProductId('123-123-123')->willReturn([]);
         $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();

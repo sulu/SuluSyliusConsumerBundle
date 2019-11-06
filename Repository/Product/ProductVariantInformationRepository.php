@@ -16,7 +16,6 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Repository\Product;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformation;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
@@ -54,7 +53,7 @@ class ProductVariantInformationRepository extends EntityRepository implements Pr
         return $this->findBy(['productVariant' => $variantId]);
     }
 
-    public function remove(ProductVariantInformation $variantInformation): void
+    public function remove(ProductVariantInformationInterface $variantInformation): void
     {
         $this->getEntityManager()->remove($variantInformation);
     }
