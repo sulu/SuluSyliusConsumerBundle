@@ -54,8 +54,8 @@ class RemoveProductMessageHandlerTest extends TestCase
 
         $variant = $this->prophesize(ProductVariantInterface::class);
         $variant->getId()->willReturn('123-123-123-variant');
-        $variantRepository->findByCode('product-1')->willReturn($variant->reveal());
-        $variantRepository->remove($variant->reveal())->shouldBeCalled();
+        $productVariantRepository->findByCode('product-1')->willReturn($variant->reveal());
+        $productVariantRepository->remove($variant->reveal())->shouldBeCalled();
 
         $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productInformationRepository->findAllByProductId('123-123-123')->willReturn([$productInformation->reveal()]);
