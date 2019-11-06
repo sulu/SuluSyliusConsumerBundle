@@ -51,8 +51,6 @@ class SingleProductSelectionContentType extends SimpleContentType
     }
 
     /**
-     * @param PropertyInterface $property
-     *
      * @return array|null
      */
     public function getContentData(PropertyInterface $property)

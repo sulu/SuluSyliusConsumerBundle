@@ -132,9 +132,7 @@ class ProductRouteDefaultsProvider implements RouteDefaultsProviderInterface
             || !isset($cacheLifetime['value'])
             || !$this->cacheLifetimeResolver->supports($cacheLifetime['type'], $cacheLifetime['value'])
         ) {
-            throw new \InvalidArgumentException(
-                sprintf('Invalid cachelifetime in product route default provider: %s', var_export($cacheLifetime, true))
-            );
+            throw new \InvalidArgumentException(sprintf('Invalid cachelifetime in product route default provider: %s', var_export($cacheLifetime, true)));
         }
 
         return $this->cacheLifetimeResolver->resolve($cacheLifetime['type'], $cacheLifetime['value']);
