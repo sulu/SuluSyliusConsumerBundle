@@ -52,6 +52,8 @@
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Message\RemoveProductMessageHandler">
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface"/>
             <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>
