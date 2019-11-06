@@ -18,8 +18,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundExce
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
 class RemoveProductMessageHandler
 {
@@ -80,7 +80,7 @@ class RemoveProductMessageHandler
         if (empty($productInformations)) {
             throw new ProductInformationNotFoundException($product->getId());
         }
-        
+
         foreach ($productInformations as $productInformation) {
             $this->productInformationRepository->remove($productInformation);
         }
