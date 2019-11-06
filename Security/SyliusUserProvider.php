@@ -40,17 +40,13 @@ class SyliusUserProvider implements UserProviderInterface
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof SyliusUserInterface) {
-            throw new UnsupportedUserException(
-                sprintf('Instances of "%s" are not supported.', \get_class($user))
-            );
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
         try {
             $customer = $this->customerGateway->findById($user->getCustomer()->getId());
         } catch (NotFoundException $exception) {
-            throw new UsernameNotFoundException(
-                sprintf('Customer with id %s not found', json_encode($user->getCustomer()->getId()))
-            );
+            throw new UsernameNotFoundException(sprintf('Customer with id %s not found', json_encode($user->getCustomer()->getId())));
         }
 
         return new SyliusUser($customer);

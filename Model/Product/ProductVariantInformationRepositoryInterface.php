@@ -20,4 +20,8 @@ interface ProductVariantInformationRepositoryInterface
     public function create(ProductVariantInterface $productVariant, DimensionInterface $dimension): ProductVariantInformationInterface;
 
     public function findByVariantId(string $variantId, DimensionInterface $dimension): ?ProductVariantInformationInterface;
+
+    public function findAllByVariantId(string $variantId): array;
+
+    public function remove(ProductVariantInformationInterface $variantInformation): void;
 }

@@ -47,4 +47,14 @@ class ProductVariantInformationRepository extends EntityRepository implements Pr
             return null;
         }
     }
+
+    public function findAllByVariantId(string $variantId): array
+    {
+        return $this->findBy(['productVariant' => $variantId]);
+    }
+
+    public function remove(ProductVariantInformationInterface $variantInformation): void
+    {
+        $this->getEntityManager()->remove($variantInformation);
+    }
 }

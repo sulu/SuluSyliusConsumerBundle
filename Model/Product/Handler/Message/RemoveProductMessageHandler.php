@@ -18,6 +18,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Exception\ProductNotFoundExce
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\RemoveProductMessage;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
 class RemoveProductMessageHandler
 {
@@ -31,24 +33,50 @@ class RemoveProductMessageHandler
      */
     private $productInformationRepository;
 
+    /**
+     * @var ProductVariantRepositoryInterface
+     */
+    private $productVariantRepository;
+
+    /**
+     * @var ProductVariantInformationRepositoryInterface
+     */
+    private $productVariantInformationRepository;
+
     public function __construct(
         ProductRepositoryInterface $productRepository,
-        ProductInformationRepositoryInterface $productInformationRepository
+        ProductInformationRepositoryInterface $productInformationRepository,
+        ProductVariantRepositoryInterface $productVariantRepository,
+        ProductVariantInformationRepositoryInterface $productVariantInformationRepository
     ) {
         $this->productRepository = $productRepository;
         $this->productInformationRepository = $productInformationRepository;
+        $this->productVariantRepository = $productVariantRepository;
+        $this->productVariantInformationRepository = $productVariantInformationRepository;
     }
 
     public function __invoke(RemoveProductMessage $message): void
     {
         $product = $this->productRepository->findByCode($message->getCode());
+
         if (!$product) {
             throw new ProductNotFoundException($message->getCode());
         }
 
-        $this->productRepository->remove($product);
+        $variant = $this->productVariantRepository->findByCode($message->getCode());
+
+        if (null !== $variant) {
+            $variantInformations = $this->productVariantInformationRepository->findAllByVariantId($variant->getId());
+
+            foreach ($variantInformations as $variantInformation) {
+                $this->productVariantInformationRepository->remove($variantInformation);
+            }
+
+            $this->productVariantRepository->remove($variant);
+        }
 
         $productInformations = $this->productInformationRepository->findAllByProductId($product->getId());
+
         if (empty($productInformations)) {
             throw new ProductInformationNotFoundException($product->getId());
         }
@@ -56,5 +84,7 @@ class RemoveProductMessageHandler
         foreach ($productInformations as $productInformation) {
             $this->productInformationRepository->remove($productInformation);
         }
+
+        $this->productRepository->remove($product);
     }
 }

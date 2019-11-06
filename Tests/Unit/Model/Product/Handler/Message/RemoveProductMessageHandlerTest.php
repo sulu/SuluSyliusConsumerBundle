@@ -23,6 +23,10 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInformationRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductVariantRepositoryInterface;
 
 class RemoveProductMessageHandlerTest extends TestCase
 {
@@ -33,9 +37,14 @@ class RemoveProductMessageHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productVariantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productVariantInformationRepository = $this->prophesize(ProductVariantInformationRepositoryInterface::class);
+
         $handler = new RemoveProductMessageHandler(
             $productRepository->reveal(),
-            $productInformationRepository->reveal()
+            $productInformationRepository->reveal(),
+            $productVariantRepository->reveal(),
+            $productVariantInformationRepository->reveal()
         );
 
         $product = $this->prophesize(ProductInterface::class);
@@ -43,9 +52,18 @@ class RemoveProductMessageHandlerTest extends TestCase
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
         $productRepository->remove($product->reveal())->shouldBeCalled();
 
+        $variant = $this->prophesize(ProductVariantInterface::class);
+        $variant->getId()->willReturn('123-123-123-variant');
+        $productVariantRepository->findByCode('product-1')->willReturn($variant->reveal());
+        $productVariantRepository->remove($variant->reveal())->shouldBeCalled();
+
         $productInformation = $this->prophesize(ProductInformationInterface::class);
         $productInformationRepository->findAllByProductId('123-123-123')->willReturn([$productInformation->reveal()]);
         $productInformationRepository->remove($productInformation->reveal())->shouldBeCalled();
+
+        $productVariantInformation = $this->prophesize(ProductVariantInformationInterface::class);
+        $productVariantInformationRepository->findAllByVariantId('123-123-123-variant')->willReturn([$productVariantInformation->reveal()]);
+        $productVariantInformationRepository->remove($productVariantInformation->reveal())->shouldBeCalled();
 
         $handler->__invoke($message->reveal());
     }
@@ -59,9 +77,14 @@ class RemoveProductMessageHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productVariantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productVariantInformationRepository = $this->prophesize(ProductVariantInformationRepositoryInterface::class);
+
         $handler = new RemoveProductMessageHandler(
             $productRepository->reveal(),
-            $productInformationRepository->reveal()
+            $productInformationRepository->reveal(),
+            $productVariantRepository->reveal(),
+            $productVariantInformationRepository->reveal()
         );
 
         $productRepository->findByCode('product-1')->willReturn(null);
@@ -80,18 +103,22 @@ class RemoveProductMessageHandlerTest extends TestCase
 
         $productRepository = $this->prophesize(ProductRepositoryInterface::class);
         $productInformationRepository = $this->prophesize(ProductInformationRepositoryInterface::class);
+        $productVariantRepository = $this->prophesize(ProductVariantRepositoryInterface::class);
+        $productVariantInformationRepository = $this->prophesize(ProductVariantInformationRepositoryInterface::class);
+
         $handler = new RemoveProductMessageHandler(
             $productRepository->reveal(),
-            $productInformationRepository->reveal()
+            $productInformationRepository->reveal(),
+            $productVariantRepository->reveal(),
+            $productVariantInformationRepository->reveal()
         );
 
         $product = $this->prophesize(ProductInterface::class);
         $product->getId()->willReturn('123-123-123');
         $productRepository->findByCode('product-1')->willReturn($product->reveal());
-        $productRepository->remove($product->reveal())->shouldBeCalled();
+        $productRepository->remove(Argument::any())->shouldNotBeCalled();
 
         $productInformationRepository->findAllByProductId('123-123-123')->willReturn([]);
-        $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
         $productInformationRepository->remove(Argument::any())->shouldNotBeCalled();
 
         $handler->__invoke($message->reveal());
