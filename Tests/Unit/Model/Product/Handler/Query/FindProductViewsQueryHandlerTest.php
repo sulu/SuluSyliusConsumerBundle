@@ -63,7 +63,7 @@ class FindProductViewsQueryHandlerTest extends TestCase
             ['111-111-111', '222-222-222'],
             [$dimension->reveal(), $localizedDimension->reveal()]
         )
-            ->willReturn([$product1->reveal(), $product2->reveal()])
+            ->willReturn([$product2->reveal(), $product1->reveal()])
             ->shouldBeCalled();
 
         $productView1 = $this->prophesize(ProductViewInterface::class);
