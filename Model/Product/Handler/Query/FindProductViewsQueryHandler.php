@@ -63,11 +63,15 @@ class FindProductViewsQueryHandler
             [$liveDimension, $localizedLiveDimension]
         );
 
-        $productViews = [];
+        // Creates an array with the product ids as keys and null as value.
+        $productViews = array_fill_keys(array_keys(array_flip($query->getIds())), null);
         foreach ($products as $product) {
-            $productViews[] = $this->productViewFactory->create($product, [$liveDimension, $localizedLiveDimension]);
+            $productViews[$product->getId()] = $this->productViewFactory->create(
+                $product,
+                [$liveDimension, $localizedLiveDimension]
+            );
         }
 
-        $query->setProductViews($productViews);
+        $query->setProductViews(array_filter($productViews));
     }
 }
