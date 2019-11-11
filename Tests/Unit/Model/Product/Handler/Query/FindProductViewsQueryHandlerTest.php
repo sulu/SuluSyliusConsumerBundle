@@ -55,7 +55,9 @@ class FindProductViewsQueryHandlerTest extends TestCase
         )->willReturn($localizedDimension->reveal());
 
         $product1 = $this->prophesize(ProductInterface::class);
+        $product1->getId()->willReturn('111-111-111');
         $product2 = $this->prophesize(ProductInterface::class);
+        $product2->getId()->willReturn('222-222-222');
 
         $productRepository->findByIdsAndDimensionIds(
             ['111-111-111', '222-222-222'],
