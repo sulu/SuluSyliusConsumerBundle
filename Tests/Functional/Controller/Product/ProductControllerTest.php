@@ -75,4 +75,32 @@ class ProductControllerTest extends SuluTestCase
         $this->assertEquals($productInformation1->getProductId(), $result['_embedded'][ProductInterface::RESOURCE_KEY][0]['id']);
         $this->assertEquals($productInformation1->getName(), $result['_embedded'][ProductInterface::RESOURCE_KEY][0]['name']);
     }
+
+    public function testCGetActionWithIds(): void
+    {
+        $product = $this->createProduct('product-1');
+        $productInformation1 = $this->createProductInformation($product->getId(), 'en');
+        $productInformation1->setName('Product One');
+        $this->getEntityManager()->flush();
+
+        $product2 = $this->createProduct('product-2');
+        $productInformation2 = $this->createProductInformation($product2->getId(), 'en');
+        $productInformation2->setName('Product Two');
+        $this->getEntityManager()->flush();
+
+        $client = $this->createAuthenticatedClient();
+        $client->request('GET', '/api/products?locale=en&ids=' . $product2->getId() . ',' . $product->getId());
+
+        /** @var Response $response */
+        $response = $client->getResponse();
+        $this->assertInstanceOf(Response::class, $response);
+        $result = json_decode((string) $response->getContent(), true);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $this->assertCount(2, $result['_embedded'][ProductInterface::RESOURCE_KEY]);
+        $this->assertEquals($productInformation2->getProductId(), $result['_embedded'][ProductInterface::RESOURCE_KEY][0]['id']);
+        $this->assertEquals($productInformation2->getName(), $result['_embedded'][ProductInterface::RESOURCE_KEY][0]['name']);
+        $this->assertEquals($productInformation1->getProductId(), $result['_embedded'][ProductInterface::RESOURCE_KEY][1]['id']);
+        $this->assertEquals($productInformation1->getName(), $result['_embedded'][ProductInterface::RESOURCE_KEY][1]['name']);
+    }
 }

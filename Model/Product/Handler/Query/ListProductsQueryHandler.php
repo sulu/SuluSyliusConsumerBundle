@@ -71,6 +71,7 @@ class ListProductsQueryHandler
         $listBuilder->addSelectField($fieldDescriptors['stage']);
         $listBuilder->setParameter('stage', DimensionInterface::ATTRIBUTE_VALUE_DRAFT);
 
+        $ids = null;
         if (array_key_exists('ids', $query->getQuery())) {
             $ids = explode(',', $query->getQuery()['ids']);
             $listBuilder->in($fieldDescriptors['id'], $ids);
@@ -79,6 +80,17 @@ class ListProductsQueryHandler
         $listBuilder->distinct();
 
         $listResponse = $listBuilder->execute();
+
+        if (is_array($ids)) {
+            // Creates an array with the product ids as keys and null as value.
+            // This is needed to keep the correct order of products.
+            $orderedListResponse = array_fill_keys(array_keys(array_flip($ids)), null);
+            foreach ($listResponse as $product) {
+                $orderedListResponse[$product['id']] = $product;
+            }
+
+            $listResponse = array_values(array_filter($orderedListResponse));
+        }
 
         $products = new ListRepresentation(
             $listResponse,
