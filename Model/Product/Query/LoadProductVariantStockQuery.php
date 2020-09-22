@@ -26,12 +26,12 @@ class LoadProductVariantStockQuery
     private $variantCode;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $onHold;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $onHand;
 
@@ -56,24 +56,24 @@ class LoadProductVariantStockQuery
         return $this->channel;
     }
 
-    public function getOnHold(): int
+    public function getOnHold(): ?int
     {
         return $this->onHold;
     }
 
-    public function setOnHold(int $onHold): self
+    public function setOnHold(?int $onHold): self
     {
         $this->onHold = $onHold;
 
         return $this;
     }
 
-    public function getOnHand(): int
+    public function getOnHand(): ?int
     {
         return $this->onHand;
     }
 
-    public function setOnHand(int $onHand): self
+    public function setOnHand(?int $onHand): self
     {
         $this->onHand = $onHand;
 

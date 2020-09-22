@@ -36,6 +36,6 @@ class LoadProductVariantStockQueryHandler
         );
 
         $query->setOnHand($variantData['onHand']);
-        $query->setOnHand($variantData['onHold']);
+        $query->setOnHold($variantData['onHold']);
     }
 }

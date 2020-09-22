@@ -35,7 +35,7 @@ class LoadProductVariantChannelPricingQueryHandler
             $query->getVariantCode()
         );
 
-        foreach ($variantData['channelPricing'] as $channelPricing) {
+        foreach ($variantData['channelPricings'] as $channelPricing) {
             if ($query->getChannel() === $channelPricing['channelCode']) {
                 $query->setPrice($channelPricing['price']);
             }
