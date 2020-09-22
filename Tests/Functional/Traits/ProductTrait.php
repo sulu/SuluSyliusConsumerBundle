@@ -29,7 +29,7 @@ trait ProductTrait
         return $product;
     }
 
-    protected function findProduct(string $code): ?Product
+    protected function findProduct(string $code): ?object
     {
         return $this->getEntityManager()->find(Product::class, $code);
     }

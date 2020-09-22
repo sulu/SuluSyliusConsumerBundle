@@ -138,7 +138,13 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\LoadProductVariantChannelPricingQueryHandler">
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantChannelPricingGatewayInterface"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantGatewayInterface"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query\LoadProductVariantStockQueryHandler">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantGatewayInterface"/>
 
             <tag name="messenger.message_handler"/>
         </service>

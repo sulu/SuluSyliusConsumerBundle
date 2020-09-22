@@ -80,6 +80,6 @@ class ProductController implements ClassResourceInterface, SecuredControllerInte
 
     public function getLocale(Request $request)
     {
-        return $request->query->get('locale');
+        return $request->query->get('locale') ?? '';
     }
 }

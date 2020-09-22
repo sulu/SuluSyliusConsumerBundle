@@ -72,7 +72,7 @@
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Mail\MailFactory">
             <argument type="service" id="mailer"/>
-            <argument type="service" id="templating"/>
+            <argument type="service" id="twig"/>
             <argument type="service" id="translator"/>
             <argument>%sulu_sylius_consumer.mail_sender%</argument>
         </service>

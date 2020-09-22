@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
-class ProductVariantChannelPricingGateway extends AbstractGateway implements ProductVariantChannelPricingGatewayInterface
+class ProductVariantGateway extends AbstractGateway implements ProductVariantGatewayInterface
 {
     const URI = '/api/v1/products/{PRODUCT_ID}/variants/';
 
@@ -27,8 +27,7 @@ class ProductVariantChannelPricingGateway extends AbstractGateway implements Pro
         if (200 !== $response->getStatusCode()) {
             $this->handleErrors($response);
         }
-        $data = json_decode($response->getBody()->getContents(), true);
 
-        return $data['channelPricings'];
+        return json_decode($response->getBody()->getContents(), true);
     }
 }
