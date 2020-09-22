@@ -33,8 +33,8 @@
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantChannelPricingGatewayInterface"
-                 class="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantChannelPricingGateway">
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantGatewayInterface"
+                 class="Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantGateway">
             <argument type="service" id="sulu_sylius_consumer.gateway_client" />
         </service>
     </services>

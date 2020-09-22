@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Gateway;
 
-interface ProductVariantChannelPricingGatewayInterface
+interface ProductVariantGatewayInterface
 {
     public function findByCodeAndVariantCode(string $code, string $variantCode): array;
 }

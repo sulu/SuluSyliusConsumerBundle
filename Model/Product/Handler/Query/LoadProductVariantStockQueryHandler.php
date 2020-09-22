@@ -14,9 +14,9 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Product\Handler\Query;
 
 use Sulu\Bundle\SyliusConsumerBundle\Gateway\ProductVariantGatewayInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\LoadProductVariantChannelPricingQuery;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Query\LoadProductVariantStockQuery;
 
-class LoadProductVariantChannelPricingQueryHandler
+class LoadProductVariantStockQueryHandler
 {
     /**
      * @var ProductVariantGatewayInterface
@@ -28,17 +28,14 @@ class LoadProductVariantChannelPricingQueryHandler
         $this->gateway = $productVariantGateway;
     }
 
-    public function __invoke(LoadProductVariantChannelPricingQuery $query): void
+    public function __invoke(LoadProductVariantStockQuery $query): void
     {
         $variantData = $this->gateway->findByCodeAndVariantCode(
             $query->getCode(),
             $query->getVariantCode()
         );
 
-        foreach ($variantData['channelPricing'] as $channelPricing) {
-            if ($query->getChannel() === $channelPricing['channelCode']) {
-                $query->setPrice($channelPricing['price']);
-            }
-        }
+        $query->setOnHand($variantData['onHand']);
+        $query->setOnHand($variantData['onHold']);
     }
 }
