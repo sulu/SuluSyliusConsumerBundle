@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 trait ProductInformationTrait
 {
@@ -100,13 +101,16 @@ trait ProductInformationTrait
             throw new \RuntimeException('Product not fount');
         }
 
-        return $this->getEntityManager()->find(
+        /** @var ProductInformation $productInformation */
+        $productInformation = $this->getEntityManager()->find(
             ProductInformation::class,
             [
                 'product' => $product,
                 'dimension' => $dimension,
             ]
         );
+
+        return $productInformation;
     }
 
     abstract protected function findDimension(array $attributes): DimensionInterface;
