@@ -58,7 +58,7 @@ abstract class ContentController implements ClassResourceInterface
     {
         $content = null;
         try {
-            $message = new FindContentQuery($this->getResourceKey(), $id, $request->query->get('locale'), '');
+            $message = new FindContentQuery($this->getResourceKey(), $id, $request->query->get('locale', ''));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (HandlerFailedException $exception) {
