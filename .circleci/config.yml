@@ -25,18 +25,26 @@ jobs:
               sudo -E docker-php-ext-install pdo_mysql gd
             parallel: true
 
+      - run: echo -e "memory_limit=2G" | sudo tee /usr/local/etc/php/php.ini > /dev/null
+
+      - run: sudo composer self-update
+
       - restore_cache:
           keys:
           - composer-v2-{{ checksum "composer.json" }}
           - composer-v2-
 
-      - run: composer install -n --prefer-dist
+      - run: php -d memory_limit=-1 /usr/local/bin/composer install -n --prefer-dist
 
       - save_cache:
-          paths:
-            - ~/.composer
           key: composer-v2-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+            - ~/.composer/cache
 
-      - run: composer initialize
+      - run:
+          name: List Bundles
+          command:
+            ./Tests/Application/bin/adminconsole debug:config
 
       - run: composer test
