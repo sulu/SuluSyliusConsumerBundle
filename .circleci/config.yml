@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:7.3-node-browsers
+      - image: circleci/php:7.2-node-browsers
       - image: circleci/mysql:5.7
         environment:
           - DATABASE_URL=mysql://root:@127.0.0.1:3306/su_sylius_test
@@ -25,22 +25,17 @@ jobs:
               sudo -E docker-php-ext-install pdo_mysql gd
             parallel: true
 
-      - run: echo -e "memory_limit=2G" | sudo tee /usr/local/etc/php/php.ini > /dev/null
-
-      - run: sudo composer self-update
-
       - restore_cache:
           keys:
-          - composer-v2-{{ checksum "composer.json" }}
-          - composer-v2-
+          - v1-dependencies-{{ checksum "composer.json" }}
+          - v1-dependencies-
 
-      - run: php -d memory_limit=-1 /usr/local/bin/composer install -n --prefer-dist
+      - run: composer install -n --prefer-dist
 
       - save_cache:
-          key: composer-v2-{{ checksum "composer.json" }}
           paths:
-            - vendor
-            - ~/.composer/cache
+            - ~/.composer
+          key: v1-dependencies-{{ checksum "composer.json" }}
 
       - run: composer initialize
 
