@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:7.2-node-browsers
+      - image: circleci/php:7.3-node-browsers
       - image: circleci/mysql:5.7
         environment:
           - DATABASE_URL=mysql://root:@127.0.0.1:3306/su_sylius_test
@@ -27,15 +27,15 @@ jobs:
 
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "composer.json" }}
-          - v1-dependencies-
+          - composer-v2-{{ checksum "composer.json" }}
+          - composer-v2-
 
       - run: composer install -n --prefer-dist
 
       - save_cache:
           paths:
             - ~/.composer
-          key: v1-dependencies-{{ checksum "composer.json" }}
+          key: composer-v2-{{ checksum "composer.json" }}
 
       - run: composer initialize
 
