@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Mail;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use Twig\Environment;
 
 class MailFactory
 {
@@ -25,9 +26,9 @@ class MailFactory
     protected $mailer;
 
     /**
-     * @var EngineInterface
+     * @var Environment
      */
-    protected $engine;
+    protected $twig;
 
     /**
      * @var TranslatorInterface
@@ -41,12 +42,12 @@ class MailFactory
 
     public function __construct(
         \Swift_Mailer $mailer,
-        EngineInterface $engine,
+        Environment $twig,
         TranslatorInterface $translator,
         array $sender
     ) {
         $this->mailer = $mailer;
-        $this->engine = $engine;
+        $this->twig = $twig;
         $this->translator = $translator;
         $this->sender = $sender;
     }
@@ -97,7 +98,7 @@ class MailFactory
             $this->translator->setLocale($locale);
         }
 
-        $body = $this->engine->render($template, $data);
+        $body = $this->twig->render($template, $data);
 
         $message = new \Swift_Message();
         $message->setSubject($this->translator->trans($subject));
