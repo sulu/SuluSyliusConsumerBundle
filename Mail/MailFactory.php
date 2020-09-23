@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Mail;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
-use Symfony\Component\Templating\EngineInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Twig\Environment;
 
