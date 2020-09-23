@@ -51,11 +51,6 @@ class LoadProductVariantStockQuery
         return $this->variantCode;
     }
 
-    public function getChannel(): string
-    {
-        return $this->channel;
-    }
-
     public function getOnHold(): ?int
     {
         return $this->onHold;
