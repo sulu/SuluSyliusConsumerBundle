@@ -42,9 +42,6 @@ jobs:
             - vendor
             - ~/.composer/cache
 
-      - run:
-          name: List Bundles
-          command:
-            ./Tests/Application/bin/adminconsole debug:config
+      - run: composer initialize
 
       - run: composer test
