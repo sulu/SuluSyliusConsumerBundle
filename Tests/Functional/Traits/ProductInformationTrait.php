@@ -53,8 +53,9 @@ trait ProductInformationTrait
             ]
         );
 
+        /** @var ProductInterface $product */
         $product = $this->getEntityManager()->find(Product::class, $productId);
-        if (!$product) {
+        if (!$product instanceof ProductInterface) {
             throw new \RuntimeException('Product not fount');
         }
 
@@ -76,10 +77,13 @@ trait ProductInformationTrait
             ]
         );
 
-        return $this->getEntityManager()->find(
+        /** @var ProductInformation $productInformation */
+        $productInformation = $this->getEntityManager()->find(
             ProductInformation::class,
             ['product' => $id, 'dimension' => $dimension]
         );
+
+        return $productInformation;
     }
 
     protected function findProductInformationByCode(string $code, string $locale): ?ProductInformation
