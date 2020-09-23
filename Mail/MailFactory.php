@@ -61,7 +61,7 @@ class MailFactory
         $this->sendEmail(
             [$customer->getEmail() => $customer->getFullName()],
             'sulu_sylius.email_customer_verify.subject',
-            'SuluSyliusConsumerBundle:Email:customer-verify.html.twig',
+            '@SuluSyliusConsumer/Email/customer-verify.html.twig',
             [
                 'customer' => $customer,
                 'token' => $customer->getUser()->getToken(),
@@ -74,7 +74,7 @@ class MailFactory
         $this->sendEmail(
             [$customer->getEmail() => $customer->getFullName()],
             'sulu_sylius.email_order-confirmation.subject',
-            'SuluSyliusConsumerBundle:Email:order-confirmation.html.twig',
+            '@SuluSyliusConsumer/Email/order-confirmation.html.twig',
             [
                 'customer' => $customer,
                 'order' => $order,
