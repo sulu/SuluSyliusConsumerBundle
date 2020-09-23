@@ -18,4 +18,4 @@ parameters:
         - %currentWorkingDirectory%/Tests/var/*
         - %currentWorkingDirectory%/Tests/Unit/EventSubscriber/ProductViewSerializerSubscriberTest.php
     symfony:
-        container_xml_path: %rootDir%/../../../Tests/Application/var/cache/admin/dev/Sulu_Bundle_SyliusConsumerBundle_Tests_Application_KernelDevDebugContainer.xml.xml
+        container_xml_path: %rootDir%/../../../Tests/Application/var/cache/admin/dev/Sulu_Bundle_SyliusConsumerBundle_Tests_Application_KernelDevDebugContainer.xml
