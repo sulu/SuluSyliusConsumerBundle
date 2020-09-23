@@ -29,9 +29,6 @@ trait ProductTrait
         return $product;
     }
 
-    /**
-     * @return Product|null
-     */
     protected function findProduct(string $code): ?object
     {
         return $this->getEntityManager()->find(Product::class, $code);
