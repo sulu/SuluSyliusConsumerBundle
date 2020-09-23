@@ -29,6 +29,7 @@ trait ProductInformationTrait
             ]
         );
 
+        /** @var ProductInterface $product */
         $product = $this->getEntityManager()->find(Product::class, $productId);
         if (!$product) {
             throw new \RuntimeException('Product not fount');
