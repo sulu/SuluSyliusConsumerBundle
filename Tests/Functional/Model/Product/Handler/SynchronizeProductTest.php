@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Model\Product\Handler;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
@@ -41,6 +42,7 @@ class SynchronizeProductTest extends SuluTestCase
 
         $messageBus->dispatch($message);
 
+        /** @var ProductInformation|null $result */
         $result = $this->findProductInformationByCode(ExampleSynchronizeProductMessage::getCode(), 'de');
         $this->assertNotNull($result);
 

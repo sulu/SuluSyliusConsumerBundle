@@ -30,7 +30,7 @@ trait ProductInformationTrait
             ]
         );
 
-        /** @var ProductInterface $product */
+        /** @var ProductInterface|null $product */
         $product = $this->getEntityManager()->find(Product::class, $productId);
         if (!$product instanceof ProductInterface) {
             throw new \RuntimeException('Product not fount');
@@ -54,7 +54,7 @@ trait ProductInformationTrait
             ]
         );
 
-        /** @var ProductInterface $product */
+        /** @var ProductInterface|null $product */
         $product = $this->getEntityManager()->find(Product::class, $productId);
         if (!$product instanceof ProductInterface) {
             throw new \RuntimeException('Product not fount');
