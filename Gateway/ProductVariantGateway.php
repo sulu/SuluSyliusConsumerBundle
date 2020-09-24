@@ -27,7 +27,7 @@ class ProductVariantGateway extends AbstractGateway implements ProductVariantGat
         if (200 !== $response->getStatusCode()) {
             $this->handleErrors($response);
         }
-        
+
         return json_decode($response->getBody()->getContents(), true);
     }
 }
