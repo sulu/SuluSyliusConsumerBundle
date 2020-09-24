@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\Product;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInformation;
+use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductInterface;
 
 trait ProductInformationTrait
 {
@@ -29,8 +30,9 @@ trait ProductInformationTrait
             ]
         );
 
+        /** @var ProductInterface|null $product */
         $product = $this->getEntityManager()->find(Product::class, $productId);
-        if (!$product) {
+        if (!$product instanceof ProductInterface) {
             throw new \RuntimeException('Product not fount');
         }
 
@@ -52,8 +54,9 @@ trait ProductInformationTrait
             ]
         );
 
+        /** @var ProductInterface|null $product */
         $product = $this->getEntityManager()->find(Product::class, $productId);
-        if (!$product) {
+        if (!$product instanceof ProductInterface) {
             throw new \RuntimeException('Product not fount');
         }
 
@@ -75,10 +78,13 @@ trait ProductInformationTrait
             ]
         );
 
-        return $this->getEntityManager()->find(
+        /** @var ProductInformation $productInformation */
+        $productInformation = $this->getEntityManager()->find(
             ProductInformation::class,
             ['product' => $id, 'dimension' => $dimension]
         );
+
+        return $productInformation;
     }
 
     protected function findProductInformationByCode(string $code, string $locale): ?ProductInformation
@@ -95,13 +101,16 @@ trait ProductInformationTrait
             throw new \RuntimeException('Product not fount');
         }
 
-        return $this->getEntityManager()->find(
+        /** @var ProductInformation $productInformation */
+        $productInformation = $this->getEntityManager()->find(
             ProductInformation::class,
             [
                 'product' => $product,
                 'dimension' => $dimension,
             ]
         );
+
+        return $productInformation;
     }
 
     abstract protected function findDimension(array $attributes): DimensionInterface;

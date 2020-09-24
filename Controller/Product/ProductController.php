@@ -24,6 +24,7 @@ use Sulu\Component\Security\SecuredControllerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Webmozart\Assert\Assert;
 
 class ProductController implements ClassResourceInterface, SecuredControllerInterface
 {
@@ -78,8 +79,11 @@ class ProductController implements ClassResourceInterface, SecuredControllerInte
         return SyliusConsumerAdmin::PRODUCT_SECURITY_CONTEXT;
     }
 
-    public function getLocale(Request $request)
+    public function getLocale(Request $request): string
     {
-        return $request->query->get('locale');
+        $locale = $request->query->get('locale');
+        Assert::notNull($locale);
+
+        return $locale;
     }
 }

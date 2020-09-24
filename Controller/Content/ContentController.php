@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Webmozart\Assert\Assert;
 
 abstract class ContentController implements ClassResourceInterface
 {
@@ -58,7 +59,7 @@ abstract class ContentController implements ClassResourceInterface
     {
         $content = null;
         try {
-            $message = new FindContentQuery($this->getResourceKey(), $id, $request->query->get('locale'));
+            $message = new FindContentQuery($this->getResourceKey(), $id, $this->getLocale($request));
             $this->messageBus->dispatch($message);
             $content = $message->getContent();
         } catch (HandlerFailedException $exception) {
@@ -81,7 +82,7 @@ abstract class ContentController implements ClassResourceInterface
             'data' => $data,
         ];
 
-        $locale = $request->query->get('locale');
+        $locale = $this->getLocale($request);
         $message = new ModifyContentMessage($this->getResourceKey(), $resourceId, $locale, $payload);
         $this->messageBus->dispatch($message);
 
@@ -107,4 +108,12 @@ abstract class ContentController implements ClassResourceInterface
     abstract protected function handlePublish(string $resourceId, string $locale): void;
 
     abstract protected function getResourceKey(): string;
+
+    public function getLocale(Request $request): string
+    {
+        $locale = $request->query->get('locale');
+        Assert::notNull($locale);
+
+        return $locale;
+    }
 }
