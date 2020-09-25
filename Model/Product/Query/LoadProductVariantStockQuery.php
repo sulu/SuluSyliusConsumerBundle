@@ -35,6 +35,11 @@ class LoadProductVariantStockQuery
      */
     private $onHand;
 
+    /**
+     * @var bool|null
+     */
+    private $tracked;
+
     public function __construct(string $code, string $variantCode)
     {
         $this->code = $code;
@@ -71,6 +76,18 @@ class LoadProductVariantStockQuery
     public function setOnHand(?int $onHand): self
     {
         $this->onHand = $onHand;
+
+        return $this;
+    }
+
+    public function isTracked(): ?bool
+    {
+        return $this->tracked;
+    }
+
+    public function setTracked(?bool $tracked): self
+    {
+        $this->tracked = $tracked;
 
         return $this;
     }
