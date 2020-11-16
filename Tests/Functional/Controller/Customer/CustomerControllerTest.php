@@ -17,7 +17,7 @@ use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUser;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
@@ -25,7 +25,6 @@ class CustomerControllerTest extends SuluTestCase
 {
     public function testVerify(): void
     {
-        /** @var Client $client */
         $client = $this->createWebsiteClient();
 
         $this->getGatewayClient($client)->setHandleRequestCallable(
@@ -76,25 +75,15 @@ class CustomerControllerTest extends SuluTestCase
         $this->assertTrue($user->getCustomer()->getUser()->isEnabled());
     }
 
-    private function getToken(Client $client): ?TokenInterface
+    private function getToken(KernelBrowser $client): ?TokenInterface
     {
-        $container = $client->getContainer();
-        if (!$container) {
-            throw new \RuntimeException('Container is missing');
-        }
-
-        return $container->get('security.token_storage')->getToken();
+        return $client->getContainer()->get('security.token_storage')->getToken();
     }
 
-    private function getGatewayClient(Client $client): GatewayClient
+    private function getGatewayClient(KernelBrowser $client): GatewayClient
     {
-        $container = $client->getContainer();
-        if (!$container) {
-            throw new \RuntimeException('Container is missing');
-        }
-
         /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $container->get('sulu_sylius_consumer.gateway_client');
+        $gatewayClient = $client->getContainer()->get('sulu_sylius_consumer.gateway_client');
 
         return $gatewayClient;
     }

@@ -14,7 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Mail;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\LocaleAwareInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class MailFactory
@@ -30,7 +31,7 @@ class MailFactory
     protected $twig;
 
     /**
-     * @var TranslatorInterface
+     * @var TranslatorInterface|LocaleAwareInterface
      */
     protected $translator;
 

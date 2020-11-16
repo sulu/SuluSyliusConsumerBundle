@@ -44,8 +44,6 @@ class ContentViewFactoryTest extends TestCase
 
         if (!$result) {
             $this->fail('Result is null');
-
-            return;
         }
 
         $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $result->getResourceKey());
@@ -87,8 +85,6 @@ class ContentViewFactoryTest extends TestCase
 
         if (!$result) {
             $this->fail('Result is null');
-
-            return;
         }
 
         $this->assertEquals(ProductInterface::CONTENT_RESOURCE_KEY, $result->getResourceKey());
