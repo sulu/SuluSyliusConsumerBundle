@@ -7,16 +7,16 @@ doctrine:
             gedmo_tree:
                 type: xml
                 prefix: Gedmo\Tree\Entity
-                dir: "%kernel.root_dir%/../../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
+                dir: "%kernel.project_dir%/../../vendor/gedmo/doctrine-extensions/lib/Gedmo/Tree/Entity"
                 alias: GedmoTree
                 is_bundle: false
 
 framework:
     router:
-        resource: "%kernel.root_dir%/config/routing_%sulu.context%.yml"
+        resource: "%kernel.project_dir%/config/routing_%sulu.context%.yml"
     messenger:
         buses:
-            command_bus:
+            message_bus:
                 middleware:
                     - doctrine_transaction
                     - event_middleware
