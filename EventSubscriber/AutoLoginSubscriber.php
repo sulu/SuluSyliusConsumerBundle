@@ -87,6 +87,6 @@ final class AutoLoginSubscriber implements EventSubscriberInterface
         $this->tokenStorage->setToken($token);
 
         $loginEvent = new InteractiveLoginEvent($request, $token);
-        $this->dispatcher->dispatch(SecurityEvents::INTERACTIVE_LOGIN, $loginEvent);
+        $this->dispatcher->dispatch($loginEvent, SecurityEvents::INTERACTIVE_LOGIN);
     }
 }

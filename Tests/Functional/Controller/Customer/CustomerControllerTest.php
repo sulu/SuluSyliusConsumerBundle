@@ -23,11 +23,20 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CustomerControllerTest extends SuluTestCase
 {
+    /**
+     * @var KernelBrowser
+     */
+    private $client;
+
+    protected function setUp(): void
+    {
+        $this->client = $this->createWebsiteClient();
+        parent::setUp();
+    }
+
     public function testVerify(): void
     {
-        $client = $this->createWebsiteClient();
-
-        $this->getGatewayClient($client)->setHandleRequestCallable(
+        $this->getGatewayClient($this->client)->setHandleRequestCallable(
             function ($method, $uri, array $options = []) {
                 return new Response(
                     200,
@@ -53,14 +62,14 @@ class CustomerControllerTest extends SuluTestCase
             }
         );
 
-        $client->request('GET', '/verify/123-123-123');
+        $this->client->request('GET', '/verify/123-123-123');
 
         /** @var SymfonyResponse $response */
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertInstanceOf(SymfonyResponse::class, $response);
         $this->assertEquals(302, $response->getStatusCode());
 
-        $token = $this->getToken($client);
+        $token = $this->getToken($this->client);
         $this->assertNotNull($token);
         if (!$token) {
             return;

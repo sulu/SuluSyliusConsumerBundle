@@ -18,6 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\DimensionTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductInformationTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Traits\ProductTrait;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductControllerTest extends SuluTestCase
@@ -26,8 +27,14 @@ class ProductControllerTest extends SuluTestCase
     use ProductInformationTrait;
     use ProductTrait;
 
+    /**
+     * @var KernelBrowser
+     */
+    private $client;
+
     protected function setUp(): void
     {
+        $this->client = $this->createAuthenticatedClient();
         $this->purgeDatabase();
     }
 
@@ -38,11 +45,10 @@ class ProductControllerTest extends SuluTestCase
         $productInformation->setName('Product One');
         $this->getEntityManager()->flush();
 
-        $client = $this->createAuthenticatedClient();
-        $client->request('GET', '/api/products/' . $productInformation->getProductId() . '?locale=en');
+        $this->client->request('GET', '/api/products/' . $productInformation->getProductId() . '?locale=en');
 
         /** @var Response $response */
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $result = json_decode((string) $response->getContent(), true);
         $this->assertEquals(200, $response->getStatusCode());
@@ -62,11 +68,10 @@ class ProductControllerTest extends SuluTestCase
         $productInformation2->setName('Produkt Eins');
         $this->getEntityManager()->flush();
 
-        $client = $this->createAuthenticatedClient();
-        $client->request('GET', '/api/products?locale=en');
+        $this->client->request('GET', '/api/products?locale=en');
 
         /** @var Response $response */
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $result = json_decode((string) $response->getContent(), true);
         $this->assertEquals(200, $response->getStatusCode());
@@ -88,11 +93,10 @@ class ProductControllerTest extends SuluTestCase
         $productInformation2->setName('Product Two');
         $this->getEntityManager()->flush();
 
-        $client = $this->createAuthenticatedClient();
-        $client->request('GET', '/api/products?locale=en&ids=' . $product2->getId() . ',' . $product->getId());
+        $this->client->request('GET', '/api/products?locale=en&ids=' . $product2->getId() . ',' . $product->getId());
 
         /** @var Response $response */
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertInstanceOf(Response::class, $response);
         $result = json_decode((string) $response->getContent(), true);
         $this->assertEquals(200, $response->getStatusCode());
