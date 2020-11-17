@@ -37,6 +37,7 @@ trait ProductInformationTrait
         }
 
         $productInformation = new ProductInformation($product, $dimension);
+        $product->addProductInformation($productInformation);
 
         $this->getEntityManager()->persist($productInformation);
 

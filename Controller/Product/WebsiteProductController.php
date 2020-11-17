@@ -18,17 +18,31 @@ use Sulu\Bundle\SyliusConsumerBundle\Model\Attribute\Query\FindAttributeTranslat
 use Sulu\Bundle\SyliusConsumerBundle\Model\Product\ProductViewInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Resolver\ProductViewContentResolverInterface;
 use Sulu\Bundle\WebsiteBundle\Resolver\TemplateAttributeResolverInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class WebsiteProductController implements ContainerAwareInterface
+class WebsiteProductController extends AbstractController
 {
-    use ContainerAwareTrait;
-    use ControllerTrait;
+    /**
+     * @var ProductViewContentResolverInterface
+     */
+    private $productViewContentResolver;
+
+    /**
+     * @var TemplateAttributeResolverInterface
+     */
+    private $templateAttributesResolver;
+
+    public function __construct(
+        ProductViewContentResolverInterface $productViewContentResolver,
+        TemplateAttributeResolverInterface $templateAttributesResolver
+    ) {
+        $this->productViewContentResolver = $productViewContentResolver;
+        $this->templateAttributesResolver = $templateAttributesResolver;
+    }
 
     public function indexAction(Request $request, ProductViewInterface $object, string $view): Response
     {
@@ -85,10 +99,7 @@ class WebsiteProductController implements ContainerAwareInterface
 
     protected function getAttributeResolver(): TemplateAttributeResolverInterface
     {
-        /** @var TemplateAttributeResolverInterface $resolver */
-        $resolver = $this->get('sulu_website.resolver.template_attribute');
-
-        return $resolver;
+        return $this->templateAttributesResolver;
     }
 
     protected function createResponse(Request $request)
@@ -102,8 +113,8 @@ class WebsiteProductController implements ContainerAwareInterface
                 SuluHttpCache::HEADER_REVERSE_PROXY_TTL,
                 $cacheLifetime
             );
-            $response->setMaxAge($this->container->getParameter('sulu_http_cache.cache.max_age'));
-            $response->setSharedMaxAge($this->container->getParameter('sulu_http_cache.cache.shared_max_age'));
+            $response->setMaxAge($this->getContainer()->getParameter('sulu_http_cache.cache.max_age'));
+            $response->setSharedMaxAge($this->getContainer()->getParameter('sulu_http_cache.cache.shared_max_age'));
         }
 
         return $response;
@@ -111,10 +122,7 @@ class WebsiteProductController implements ContainerAwareInterface
 
     protected function getProductViewResolver(): ProductViewContentResolverInterface
     {
-        /** @var ProductViewContentResolverInterface $resolver */
-        $resolver = $this->get('sulu_sylius_consumer.content.product_view_resolver');
-
-        return $resolver;
+        return $this->productViewContentResolver;
     }
 
     protected function getMessageBus(): MessageBusInterface
@@ -123,5 +131,13 @@ class WebsiteProductController implements ContainerAwareInterface
         $messageBus = $this->get('message_bus');
 
         return $messageBus;
+    }
+
+    protected function getContainer(): ContainerInterface
+    {
+        /** @var ContainerInterface $container */
+        $container = $this->container;
+
+        return $container;
     }
 }

@@ -31,8 +31,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $treeBuilder->root('sulu_sylius_consumer')
+        $treeBuilder = new TreeBuilder('sulu_sylius_consumer');
+        $treeBuilder->getRootNode()
             ->children()
                 ->scalarNode('sylius_base_url')->isRequired()->end()
                 ->scalarNode('sylius_default_channel')->isRequired()->end()

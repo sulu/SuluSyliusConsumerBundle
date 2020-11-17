@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Event;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\CustomerInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 abstract class CustomerEvent extends Event
 {

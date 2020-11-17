@@ -17,18 +17,26 @@ use GuzzleHttp\Psr7\Response;
 use Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUser;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CustomerControllerTest extends SuluTestCase
 {
+    /**
+     * @var KernelBrowser
+     */
+    private $client;
+
+    protected function setUp(): void
+    {
+        $this->client = $this->createWebsiteClient();
+        parent::setUp();
+    }
+
     public function testVerify(): void
     {
-        /** @var Client $client */
-        $client = $this->createWebsiteClient();
-
-        $this->getGatewayClient($client)->setHandleRequestCallable(
+        $this->getGatewayClient($this->client)->setHandleRequestCallable(
             function ($method, $uri, array $options = []) {
                 return new Response(
                     200,
@@ -54,14 +62,14 @@ class CustomerControllerTest extends SuluTestCase
             }
         );
 
-        $client->request('GET', '/verify/123-123-123');
+        $this->client->request('GET', '/verify/123-123-123');
 
         /** @var SymfonyResponse $response */
-        $response = $client->getResponse();
+        $response = $this->client->getResponse();
         $this->assertInstanceOf(SymfonyResponse::class, $response);
         $this->assertEquals(302, $response->getStatusCode());
 
-        $token = $this->getToken($client);
+        $token = $this->getToken($this->client);
         $this->assertNotNull($token);
         if (!$token) {
             return;
@@ -76,25 +84,15 @@ class CustomerControllerTest extends SuluTestCase
         $this->assertTrue($user->getCustomer()->getUser()->isEnabled());
     }
 
-    private function getToken(Client $client): ?TokenInterface
+    private function getToken(KernelBrowser $client): ?TokenInterface
     {
-        $container = $client->getContainer();
-        if (!$container) {
-            throw new \RuntimeException('Container is missing');
-        }
-
-        return $container->get('security.token_storage')->getToken();
+        return $client->getContainer()->get('security.token_storage')->getToken();
     }
 
-    private function getGatewayClient(Client $client): GatewayClient
+    private function getGatewayClient(KernelBrowser $client): GatewayClient
     {
-        $container = $client->getContainer();
-        if (!$container) {
-            throw new \RuntimeException('Container is missing');
-        }
-
         /** @var GatewayClient $gatewayClient */
-        $gatewayClient = $container->get('sulu_sylius_consumer.gateway_client');
+        $gatewayClient = $client->getContainer()->get('sulu_sylius_consumer.gateway_client');
 
         return $gatewayClient;
     }

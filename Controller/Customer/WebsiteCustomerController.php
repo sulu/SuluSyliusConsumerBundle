@@ -15,13 +15,14 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Controller\Customer;
 
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Exception\TokenNotFoundException;
 use Sulu\Bundle\SyliusConsumerBundle\Model\Customer\Message\VerifyCustomerMessage;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class WebsiteCustomerController extends AbstractController
+class WebsiteCustomerController
 {
     /**
      * @var MessageBusInterface
@@ -53,7 +54,7 @@ class WebsiteCustomerController extends AbstractController
         try {
             $this->messageBus->dispatch(new VerifyCustomerMessage($token));
         } catch (TokenNotFoundException $tokenNotFoundException) {
-            throw $this->createNotFoundException('Token not found');
+            throw new NotFoundHttpException('Token not found', $tokenNotFoundException);
         }
 
         if (0 === strpos($this->redirectTo, '/')) {
@@ -62,6 +63,6 @@ class WebsiteCustomerController extends AbstractController
             $url = $this->urlGenerator->generate($this->redirectTo);
         }
 
-        return $this->redirect($url);
+        return new RedirectResponse($url, 302);
     }
 }
