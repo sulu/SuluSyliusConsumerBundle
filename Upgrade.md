@@ -1,6 +1,6 @@
 # Upgrade
 
-## dev-develop
+## 0.x
 
 ```sql
 ALTER TABLE ca_categories ADD syliusCode VARCHAR(255) DEFAULT NULL;

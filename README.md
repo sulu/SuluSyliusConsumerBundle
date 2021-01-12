@@ -7,4 +7,4 @@ Consumer for synchronization products with sylius.
 ## Documentation
 
 The the documentation is stored in the
-[Resources/doc/](https://github.com/sulu/SuluSyliusConsumerBundle/blob/master/Resources/doc) folder.
+[Resources/doc/](https://github.com/sulu/SuluSyliusConsumerBundle/blob/0.x/Resources/doc) folder.
