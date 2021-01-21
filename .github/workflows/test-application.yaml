@@ -21,7 +21,7 @@ jobs:
                 include:
                     - php-version: '7.2'
                       php-extensions: 'ctype, iconv, mysql, gd'
-                      dependency-versions: 'locked'
+                      dependency-versions: 'highest'
                       tools: 'composer:v1'
                       lint: false
                       env:
