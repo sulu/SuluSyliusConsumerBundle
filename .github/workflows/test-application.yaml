@@ -1,0 +1,77 @@
+name: Test application
+
+on:
+    pull_request:
+    push:
+        branches:
+            - '[0-9]+.x'
+            - '[0-9]+.[0-9]+'
+
+jobs:
+    test:
+        name: "PHP ${{ matrix.php-version }} (dependency ${{ matrix.dependency-versions }})"
+        runs-on: ubuntu-latest
+
+        env:
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/sulu_test?serverVersion=5.7
+
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - php-version: '7.2'
+                      php-extensions: 'ctype, iconv, mysql, gd'
+                      dependency-versions: 'highest'
+                      tools: 'composer:v1'
+                      lint: false
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: disabled
+                          DATABASE_CHARSET: UTF8
+                          DATABASE_COLLATE: UTF8_BIN
+
+                    - php-version: '7.4'
+                      dependency-versions: 'highest'
+                      php-extensions: 'ctype, iconv, mysql, imagick'
+                      tools: 'composer:v2'
+                      lint: true
+                      env:
+                          SYMFONY_DEPRECATIONS_HELPER: weak
+
+        services:
+            mysql:
+                image: mysql:5.7
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                ports:
+                    - 3306:3306
+                options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+
+        steps:
+            - name: Checkout project
+              uses: actions/checkout@v2
+
+            - name: Install and configure PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-version }}
+                  extensions: ${{ matrix.php-extensions }}
+                  tools: ${{ matrix.tools }}
+                  coverage: none
+
+            - name: Install composer dependencies
+              uses: ramsey/composer-install@v1
+              with:
+                  dependency-versions: ${{matrix.dependency-versions}}
+
+            - name: Bootstrap test environment
+              run: composer initialize
+              env: ${{ matrix.env }}
+
+            - name: Lint code
+              if: ${{ matrix.lint }}
+              run: composer lint
+              env: ${{ matrix.env }}
+
+            - name: Execute test cases
+              run: time composer test
+              env: ${{ matrix.env }}

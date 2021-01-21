@@ -60,8 +60,10 @@
             "Tests/Application/console cache:clear"
         ],
         "test": [
+            "@phpunit"
+        ],
+        "lint": [
             "@phpstan",
-            "@phpunit",
             "@php-cs"
         ],
         "phpunit": "vendor/bin/phpunit",
