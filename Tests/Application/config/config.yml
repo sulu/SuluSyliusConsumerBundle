@@ -16,45 +16,10 @@ framework:
         resource: "%kernel.project_dir%/config/routing_%sulu.context%.yml"
     messenger:
         buses:
-            message_bus:
-                middleware:
-                    - doctrine_transaction
-                    - event_middleware
-
-sulu_route:
-    mappings:
-        Sulu\Bundle\SyliusConsumerBundle\Model\RoutableResource\RoutableResource:
-            generator: schema
-            resource_key: products
-            options:
-                route_schema: "/products/{object.getCode()}"
-
-services:
-    sulu_sylius_consumer_test.messenger.bus.default:
-        alias: message_bus
-        public: true
-    sulu_sylius_consumer_test.repository.dimension:
-        alias: Sulu\Bundle\SyliusConsumerBundle\Model\Dimension\DimensionRepositoryInterface
-        public: true
-    messenger.middleware.doctrine_transaction:
-        class: Symfony\Bridge\Doctrine\Messenger\DoctrineTransactionMiddleware
-        abstract: true
-        arguments: ['@doctrine']
-    sulu_sylius_consumer.gateway_client:
-        class: Sulu\Bundle\SyliusConsumerBundle\Tests\Service\GatewayClient
-        public: true
+            message_bus: ~
 
 sulu_sylius_consumer:
     sylius_base_url: 'http://sylius.localhost'
-    sylius_default_channel: 'default_channel'
-    sylius_oauth_config:
-        username: api
-        password: api
-        client_id: demo_client
-        client_secret: secret_demo_client
-    route_defaults_fallback:
-        view: 'templates/products/default'
-    firewall_provider_key: 'main'
 
 swiftmailer:
     disable_delivery: true

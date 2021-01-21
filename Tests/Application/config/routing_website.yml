@@ -1,2 +1,0 @@
-sulu_sylius_consumer:
-    resource: "@SuluSyliusConsumerBundle/Resources/config/routing_website.xml"

@@ -2,121 +2,29 @@
 <container xmlns="http://symfony.com/schema/dic/services"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
-    <imports>
-        <import resource="services/address-handler.xml"/>
-        <import resource="services/attribute-handler.xml"/>
-        <import resource="services/cart-handler.xml"/>
-        <import resource="services/content-handler.xml"/>
-        <import resource="services/controllers.xml"/>
-        <import resource="services/customer-handler.xml"/>
-        <import resource="services/user.xml"/>
-        <import resource="services/gateway.xml"/>
-        <import resource="services/gateway-client.xml"/>
-        <import resource="services/message-middleware.xml"/>
-        <import resource="services/order-handler.xml"/>
-        <import resource="services/product-handler.xml"/>
-        <import resource="services/repository.xml"/>
-        <import resource="services/routable-handler.xml"/>
-        <import resource="services/security.xml"/>
-    </imports>
-
     <services>
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Admin\SyliusConsumerAdmin">
-            <argument type="service" id="sulu_core.webspace.webspace_manager"/>
-            <argument type="service" id="Sulu\Bundle\AdminBundle\Admin\View\ViewBuilderFactoryInterface"/>
-            <argument type="service" id="sulu_security.security_checker"/>
-
-            <tag name="sulu.admin"/>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeProductMessageHandler">
+            <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\ContentSerializerSubscriber">
-            <argument type="service" id="sulu_page.structure.factory"/>
-
-            <tag name="jms_serializer.event_subscriber"/>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeProductVariantMessageHandler">
+            <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\MailSubscriber">
-            <argument type="service" id="message_bus"/>
-            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Mail\MailFactory"/>
-
-            <tag name="kernel.event_subscriber"/>
-            <tag name="sulu.context" context="website"/>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeTaxonMessageHandler">
+            <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\EventSubscriber\AutoLoginSubscriber">
-            <argument type="service" id="security.token_storage" on-invalid="null"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="event_dispatcher"/>
-            <argument>%sulu_sylius_consumer.firewall_provider_key%</argument>
-
-            <tag name="kernel.event_subscriber"/>
-            <tag name="sulu.context" context="website"/>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveProductMessageHandler">
+            <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Routing\ProductRouteDefaultsProvider">
-            <argument type="service" id="message_bus"/>
-            <argument type="service" id="sulu_page.structure.factory"/>
-            <argument type="service" id="sulu_http_cache.cache_lifetime.resolver"/>
-            <argument>%sulu_sylius_consumer.route_defaults_fallback%</argument>
-
-            <tag name="sulu_route.defaults_provider"/>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveTaxonMessageHandler">
+            <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Model\Media\Factory\MediaFactory">
-            <argument type="service" id="sulu_media.storage"/>
-            <argument type="service" id="sulu.repository.media"/>
-            <argument type="service" id="sulu_media.type_manager"/>
-            <argument type="service" id="doctrine.orm.entity_manager"/>
-            <argument type="service" id="sulu_media.system_collections.manager"/>
-        </service>
-
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Mail\MailFactory">
-            <argument type="service" id="mailer"/>
-            <argument type="service" id="twig"/>
-            <argument type="service" id="translator"/>
-            <argument>%sulu_sylius_consumer.mail_sender%</argument>
-        </service>
-
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\SingleProductSelectionContentType">
-            <argument type="service" id="message_bus"/>
-            <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
-            <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
-
-            <tag name="sulu.content.type" alias="single_product_selection" />
-        </service>
-
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Content\Types\ProductSelectionContentType">
-            <argument type="service" id="message_bus"/>
-            <argument type="service" id="sulu_sylius_consumer.reference_store.product"/>
-            <argument type="service" id="sulu_sylius_consumer.content.proxy_factory"/>
-
-            <tag name="sulu.content.type" alias="product_selection" />
-        </service>
-
-        <service id="sulu_sylius_consumer.reference_store.product"
-                 class="Sulu\Bundle\WebsiteBundle\ReferenceStore\ReferenceStore">
-            <tag name="sulu_website.reference_store" alias="product"/>
-        </service>
-
-        <service id="sulu_sylius_consumer.data_provider.proxy_factory"
-                 class="ProxyManager\Factory\LazyLoadingValueHolderFactory">
-            <argument type="service" id="sulu_core.proxy_manager.configuration"/>
-        </service>
-
-        <service id="sulu_sylius_consumer.content.proxy_factory"
-                 class="Sulu\Bundle\SyliusConsumerBundle\Content\ProxyFactory">
-            <argument type="service" id="sulu_sylius_consumer.data_provider.proxy_factory"/>
-            <argument type="service" id="sulu_sylius_consumer.content.product_view_resolver"/>
-        </service>
-
-        <service id="sulu_sylius_consumer.content.product_view_resolver"
-                 class="Sulu\Bundle\SyliusConsumerBundle\Resolver\ProductViewContentResolver"
-                 public="true">
-            <argument type="service" id="sulu.content.structure_manager"/>
-            <argument type="service" id="sulu_core.array_serializer"/>
-            <argument type="service" id="sulu.repository.route"/>
-            <argument type="service" id="request_stack"/>
-            <argument type="service" id="sulu.content.type_manager"/>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveProductVariantMessageHandler">
+            <tag name="messenger.message_handler"/>
         </service>
     </services>
 </container>

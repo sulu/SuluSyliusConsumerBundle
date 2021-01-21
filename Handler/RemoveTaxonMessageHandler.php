@@ -11,10 +11,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle;
+namespace Sulu\Bundle\SyliusConsumerBundle\Handler;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Sulu\Bundle\SyliusConsumerBundle\Message\RemoveTaxonMessage;
 
-class SuluSyliusConsumerBundle extends Bundle
+class RemoveTaxonMessageHandler
 {
+    public function __invoke(RemoveTaxonMessage $message): void
+    {
+    }
 }
