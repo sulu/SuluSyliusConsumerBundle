@@ -1,6 +1,6 @@
 # SuluSyliusConsumerBundle
 
-[![CircleCI](https://circleci.com/gh/sulu/SuluSyliusConsumerBundle.svg?style=svg)](https://circleci.com/gh/sulu/SuluSyliusConsumerBundle)
+[![Test Application](https://img.shields.io/github/workflow/status/sulu/SuluSyliusConsumerPlugin/Test%20application.svg?label=Test-Application)](https://github.com/sulu/SuluSyliusConsumerPlugin/actions)
 
 Consumer for synchronization products with sylius.
 
