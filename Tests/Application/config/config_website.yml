@@ -1,13 +1,2 @@
 imports:
     - { resource: "./config.yml" }
-
-security:
-    providers:
-        sylius:
-            id: Sulu\Bundle\SyliusConsumerBundle\Security\SyliusUserProvider
-    firewalls:
-        main:
-            anonymous: ~
-            guard:
-                authenticators:
-                    - Sulu\Bundle\SyliusConsumerBundle\Security\SyliusAuthenticator

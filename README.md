@@ -4,7 +4,16 @@
 
 Consumer for synchronization products with sylius.
 
-## Documentation
+## Installation
 
-The the documentation is stored in the
-[Resources/doc/](https://github.com/sulu/SuluSyliusConsumerBundle/blob/0.x/Resources/doc) folder.
+```bash
+composer require sulu/sylius-consumer-plugin
+```
+
+### Register the plugin
+
+```bash
+// config/bundles.php
+
+    Sulu\SyliusConsumerBundle\SuluSyliusConsumerBundle::class => ['all' => true],
+```

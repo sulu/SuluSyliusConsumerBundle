@@ -1,6 +1,0 @@
-{% extends "@SuluSyliusConsumer/Email/master-email.html.twig" %}
-
-{% block content %}
-    {% set confirmUrl = url('sulu_sylius.customer.verify', { token: token }) %}
-    <a href="{{ confirmUrl }}">{{ confirmUrl }}</a>
-{% endblock %}

@@ -1,4 +1,0 @@
-sulu_sylius_product:
-    prefix: "/api"
-    resource: "@SuluSyliusConsumerBundle/Resources/config/routing_api.yml"
-    type: rest

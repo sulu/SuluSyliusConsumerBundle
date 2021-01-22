@@ -1,7 +1,0 @@
-sulu_sylius_product.product_content:
-    type: rest
-    resource: sulu_sylius_product.controller.product_content
-
-sulu_sylius_product.product:
-    type: rest
-    resource: sulu_sylius_product.controller.product
