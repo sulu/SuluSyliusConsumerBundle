@@ -4,10 +4,14 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeProductMessageHandler">
+            <argument type="tagged" tag="sulu_sylius_consumer.adapter.product"/>
+
             <tag name="messenger.message_handler"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeProductVariantMessageHandler">
+            <argument type="tagged" tag="sulu_sylius_consumer.adapter.product_variant"/>
+
             <tag name="messenger.message_handler"/>
         </service>
 
@@ -18,14 +22,20 @@
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveProductMessageHandler">
-            <tag name="messenger.message_handler"/>
-        </service>
+            <argument type="tagged" tag="sulu_sylius_consumer.adapter.product"/>
 
-        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveTaxonMessageHandler">
             <tag name="messenger.message_handler"/>
         </service>
 
         <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveProductVariantMessageHandler">
+            <argument type="tagged" tag="sulu_sylius_consumer.adapter.product_variant"/>
+
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveTaxonMessageHandler">
+            <argument type="tagged" tag="sulu_sylius_consumer.adapter.taxon"/>
+
             <tag name="messenger.message_handler"/>
         </service>
     </services>

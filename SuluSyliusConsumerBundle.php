@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle;
 
 use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Adapter\ProductAdapterInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Adapter\ProductVariantAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\TaxonAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridgeInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,6 +29,12 @@ class SuluSyliusConsumerBundle extends Bundle
     {
         $container->registerForAutoconfiguration(TaxonAdapterInterface::class)
             ->addTag('sulu_sylius_consumer.adapter.taxon');
+
+        $container->registerForAutoconfiguration(ProductAdapterInterface::class)
+            ->addTag('sulu_sylius_consumer.adapter.product');
+
+        $container->registerForAutoconfiguration(ProductVariantAdapterInterface::class)
+            ->addTag('sulu_sylius_consumer.adapter.product_variant');
 
         $this->buildPersistence(
             [

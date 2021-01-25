@@ -17,7 +17,7 @@ sulu_sylius_consumer:
 
 ## Custom Adapter
 
-If you want to add your custom adapter to synchronize taxons to your e.g. custom entity or pages you can add you own 
+If you want to add your custom adapter to synchronize taxons to your e.g. custom entity or pages you can add your own 
 adapter.
 
 ```php

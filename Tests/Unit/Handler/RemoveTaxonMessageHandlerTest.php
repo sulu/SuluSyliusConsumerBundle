@@ -20,7 +20,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Message\RemoveTaxonMessage;
 
 class RemoveTaxonMessageHandlerTest extends TestCase
 {
-    public function testGetId(): void
+    public function testInvoke(): void
     {
         $adapter1 = $this->prophesize(TaxonAdapterInterface::class);
         $adapter2 = $this->prophesize(TaxonAdapterInterface::class);

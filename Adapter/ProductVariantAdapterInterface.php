@@ -13,11 +13,11 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Adapter;
 
-use Sulu\Bundle\SyliusConsumerBundle\Payload\TaxonPayload;
+use Sulu\Bundle\SyliusConsumerBundle\Payload\ProductVariantPayload;
 
-interface TaxonAdapterInterface
+interface ProductVariantAdapterInterface
 {
-    public function synchronize(TaxonPayload $payload): void;
+    public function synchronize(ProductVariantPayload $payload): void;
 
-    public function remove(int $id): void;
+    public function remove(string $code): void;
 }
