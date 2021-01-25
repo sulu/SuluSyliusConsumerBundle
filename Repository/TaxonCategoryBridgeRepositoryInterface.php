@@ -14,15 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Repository;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryReferenceInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridgeInterface;
 
-interface TaxonCategoryReferenceRepositoryInterface
+interface TaxonCategoryBridgeRepositoryInterface
 {
-    public function create(int $id, CategoryInterface $category): TaxonCategoryReferenceInterface;
+    public function create(int $id, CategoryInterface $category): TaxonCategoryBridgeInterface;
 
-    public function add(TaxonCategoryReferenceInterface $reference): void;
+    public function add(TaxonCategoryBridgeInterface $bridge): void;
 
-    public function findById(int $id): ?TaxonCategoryReferenceInterface;
+    public function findById(int $id): ?TaxonCategoryBridgeInterface;
 
     public function removeById(int $id): void;
 }

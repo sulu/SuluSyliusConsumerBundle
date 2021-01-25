@@ -18,15 +18,15 @@ use Sulu\Bundle\CategoryBundle\Entity\CategoryRepositoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslationInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslationRepositoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Payload\TaxonPayload;
-use Sulu\Bundle\SyliusConsumerBundle\Repository\TaxonCategoryReferenceRepositoryInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Repository\TaxonCategoryBridgeRepositoryInterface;
 use Sulu\Component\Localization\Localization;
 
 class TaxonCategoryAdapter implements TaxonAdapterInterface
 {
     /**
-     * @var TaxonCategoryReferenceRepositoryInterface
+     * @var TaxonCategoryBridgeRepositoryInterface
      */
-    private $taxonCategoryReferenceRepository;
+    private $taxonCategoryBridgeRepository;
 
     /**
      * @var CategoryRepositoryInterface
@@ -39,11 +39,11 @@ class TaxonCategoryAdapter implements TaxonAdapterInterface
     private $categoryTranslationRepository;
 
     public function __construct(
-        TaxonCategoryReferenceRepositoryInterface $taxonCategoryReferenceRepository,
+        TaxonCategoryBridgeRepositoryInterface $taxonCategoryBridgeRepository,
         CategoryRepositoryInterface $categoryRepository,
         CategoryTranslationRepositoryInterface $categoryTranslationRepository
     ) {
-        $this->taxonCategoryReferenceRepository = $taxonCategoryReferenceRepository;
+        $this->taxonCategoryBridgeRepository = $taxonCategoryBridgeRepository;
         $this->categoryRepository = $categoryRepository;
         $this->categoryTranslationRepository = $categoryTranslationRepository;
     }
@@ -55,14 +55,14 @@ class TaxonCategoryAdapter implements TaxonAdapterInterface
 
     private function handlePayload(TaxonPayload $payload, ?CategoryInterface $parent = null): void
     {
-        $reference = $this->taxonCategoryReferenceRepository->findById($payload->getId());
-        if (!$reference) {
+        $bridge = $this->taxonCategoryBridgeRepository->findById($payload->getId());
+        if (!$bridge) {
             $category = $this->categoryRepository->createNew();
-            $reference = $this->taxonCategoryReferenceRepository->create($payload->getId(), $category);
-            $this->taxonCategoryReferenceRepository->add($reference);
+            $bridge = $this->taxonCategoryBridgeRepository->create($payload->getId(), $category);
+            $this->taxonCategoryBridgeRepository->add($bridge);
         }
 
-        $category = $reference->getCategory();
+        $category = $bridge->getCategory();
         $category->setKey($payload->getCode());
 
         if ($parent) {
@@ -98,6 +98,6 @@ class TaxonCategoryAdapter implements TaxonAdapterInterface
 
     public function remove(int $id): void
     {
-        $this->taxonCategoryReferenceRepository->removeById($id);
+        $this->taxonCategoryBridgeRepository->removeById($id);
     }
 }

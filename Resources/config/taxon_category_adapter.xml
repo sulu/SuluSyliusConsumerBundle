@@ -4,7 +4,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service id="Sulu\Bundle\SyliusConsumerBundle\Adapter\TaxonCategoryAdapter">
-            <argument type="service" id="sulu.repository.taxon_category_reference"/>
+            <argument type="service" id="sulu.repository.taxon_category_bridge"/>
             <argument type="service" id="sulu.repository.category"/>
             <argument type="service" id="sulu.repository.category_translation"/>
 

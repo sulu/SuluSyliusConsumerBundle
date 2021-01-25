@@ -14,24 +14,24 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Repository;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryReferenceInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridgeInterface;
 use Sulu\Component\Persistence\Repository\ORM\EntityRepository;
 
-class TaxonCategoryReferenceRepository extends EntityRepository implements TaxonCategoryReferenceRepositoryInterface
+class TaxonCategoryBridgeRepository extends EntityRepository implements TaxonCategoryBridgeRepositoryInterface
 {
-    public function create(int $id, CategoryInterface $category): TaxonCategoryReferenceInterface
+    public function create(int $id, CategoryInterface $category): TaxonCategoryBridgeInterface
     {
         $className = $this->getClassName();
 
         return new $className($id, $category);
     }
 
-    public function add(TaxonCategoryReferenceInterface $reference): void
+    public function add(TaxonCategoryBridgeInterface $bridge): void
     {
-        $this->getEntityManager()->persist($reference);
+        $this->getEntityManager()->persist($bridge);
     }
 
-    public function findById(int $id): ?TaxonCategoryReferenceInterface
+    public function findById(int $id): ?TaxonCategoryBridgeInterface
     {
         return $this->find($id);
     }

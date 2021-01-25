@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Adapter;
 
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\TaxonCategoryAdapter;
-use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryReference;
+use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridge;
 use Sulu\Bundle\SyliusConsumerBundle\Payload\TaxonPayload;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\MockSyliusData;
 use Sulu\Bundle\TestBundle\Testing\KernelTestCase;
@@ -40,17 +40,17 @@ class TaxonCategoryAdapterTest extends KernelTestCase
         $adapter->synchronize($taxonPayload);
         $this->getEntityManager()->flush();
 
-        $reference1 = $this->getEntityManager()->find(TaxonCategoryReference::class, 1);
-        $reference2 = $this->getEntityManager()->find(TaxonCategoryReference::class, 2);
-        $reference3 = $this->getEntityManager()->find(TaxonCategoryReference::class, 3);
+        $bridge1 = $this->getEntityManager()->find(TaxonCategoryBridge::class, 1);
+        $bridge2 = $this->getEntityManager()->find(TaxonCategoryBridge::class, 2);
+        $bridge3 = $this->getEntityManager()->find(TaxonCategoryBridge::class, 3);
 
-        $this->assertNotNull($reference1);
-        $this->assertNotNull($reference2);
-        $this->assertNotNull($reference3);
+        $this->assertNotNull($bridge1);
+        $this->assertNotNull($bridge2);
+        $this->assertNotNull($bridge3);
 
-        $category1 = $reference1->getCategory();
-        $category2 = $reference2->getCategory();
-        $category3 = $reference3->getCategory();
+        $category1 = $bridge1->getCategory();
+        $category2 = $bridge2->getCategory();
+        $category3 = $bridge3->getCategory();
 
         $this->assertEquals('MENU_CATEGORY', $category1->getKey());
         $this->assertEquals('t_shirts', $category2->getKey());

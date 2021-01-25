@@ -54,7 +54,7 @@ class TaxonPayloadTest extends TestCase
         $translations = $entity->getTranslations();
         $this->assertCount(1, $translations);
 
-        $this->assertEquals(MockSyliusData::TAXON['translations']['en_US'], $translations['en_US']->getPayload());
+        $this->assertEquals(MockSyliusData::TAXON['translations']['en_US'], $translations['en_US']->getPayload()->getData());
     }
 
     public function testGetChildren(): void
@@ -64,6 +64,6 @@ class TaxonPayloadTest extends TestCase
         $children = $entity->getChildren();
         $this->assertCount(1, $children);
 
-        $this->assertEquals(MockSyliusData::TAXON['children'][0], $children[0]->getPayload());
+        $this->assertEquals(MockSyliusData::TAXON['children'][0], $children[0]->getPayload()->getData());
     }
 }

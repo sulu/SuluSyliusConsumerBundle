@@ -11,7 +11,7 @@ To enable it use following configuration:
 
 ```yaml
 sulu_sylius_consumer:
-    default_taxon_adapter:
+    taxon_category_adapter:
         enabled: true
 ```
 

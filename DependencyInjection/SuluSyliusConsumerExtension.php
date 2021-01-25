@@ -36,8 +36,8 @@ class SuluSyliusConsumerExtension extends Extension
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('handler.xml');
 
-        if ($config['default_taxon_adapter']['enabled'] ?? false) {
-            $loader->load('taxon_adapter.xml');
+        if ($config['taxon_category_adapter']['enabled'] ?? false) {
+            $loader->load('taxon_category_adapter.xml');
         }
     }
 }

@@ -13,23 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Payload;
 
-use Sulu\Bundle\SyliusConsumerBundle\Common\PayloadTrait;
+use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
 use Sulu\Component\Localization\Localization;
 
 class TaxonTranslationPayload
 {
-    use PayloadTrait;
-
     /**
      * @var int
      */
     private $id;
 
+    /**
+     * @var Payload
+     */
+    private $payload;
+
     public function __construct(int $id, array $payload)
     {
-        $this->initializePayloadTrait($payload);
-
         $this->id = $id;
+        $this->payload = new Payload($payload);
     }
 
     public function getId(): int
@@ -39,26 +41,31 @@ class TaxonTranslationPayload
 
     public function getLocale(): string
     {
-        return $this->getStringValue('locale');
+        return $this->getLocalization()->getLocale();
     }
 
     public function getLocalization(): Localization
     {
-        return Localization::createFromString($this->getLocale(), Localization::LCID);
+        return Localization::createFromString($this->payload->getStringValue('locale'), Localization::LCID);
     }
 
     public function getName(): string
     {
-        return $this->getStringValue('name');
+        return $this->payload->getStringValue('name');
     }
 
     public function getSlug(): string
     {
-        return $this->getStringValue('slug');
+        return $this->payload->getStringValue('slug');
     }
 
     public function getDescription(): string
     {
-        return $this->getStringValue('description');
+        return $this->payload->getStringValue('description');
+    }
+
+    public function getPayload(): Payload
+    {
+        return $this->payload;
     }
 }

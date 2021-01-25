@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Entity;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 
-class TaxonCategoryReference implements TaxonCategoryReferenceInterface
+class TaxonCategoryBridge implements TaxonCategoryBridgeInterface
 {
     /**
      * @var int

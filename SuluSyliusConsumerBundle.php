@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle;
 
 use Sulu\Bundle\PersistenceBundle\PersistenceBundleTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\TaxonAdapterInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryReferenceInterface;
+use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridgeInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -30,7 +30,7 @@ class SuluSyliusConsumerBundle extends Bundle
 
         $this->buildPersistence(
             [
-                TaxonCategoryReferenceInterface::class => 'sulu.model.taxon_category_reference.class',
+                TaxonCategoryBridgeInterface::class => 'sulu.model.taxon_category_bridge.class',
             ],
             $container
         );

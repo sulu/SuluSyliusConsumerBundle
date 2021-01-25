@@ -13,34 +13,35 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Common;
 
+use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;
 
-trait PayloadTrait
+class Payload
 {
     /**
      * @var mixed[]
      */
-    protected $payload;
+    protected $data;
 
     /**
-     * @param mixed[] $payload
+     * @param mixed[] $data
      */
-    public function initializePayloadTrait(array $payload = []): void
+    public function __construct(array $data)
     {
-        $this->payload = $payload;
+        $this->data = $data;
     }
 
     /**
      * @return mixed[]
      */
-    public function getPayload(): array
+    public function getData(): array
     {
-        return $this->payload;
+        return $this->data;
     }
 
     public function keyExists(string $key): bool
     {
-        return \array_key_exists($key, $this->payload);
+        return \array_key_exists($key, $this->data);
     }
 
     /**
@@ -49,10 +50,10 @@ trait PayloadTrait
     public function getValue(string $key, bool $nullIfNotExists = false)
     {
         if (!$nullIfNotExists) {
-            Assert::keyExists($this->payload, $key);
+            Assert::keyExists($this->data, $key);
         }
 
-        return $this->payload[$key] ?? null;
+        return $this->data[$key] ?? null;
     }
 
     public function getBoolValue(string $key): bool
@@ -95,6 +96,30 @@ trait PayloadTrait
         }
 
         Assert::string($value);
+
+        return $value;
+    }
+
+    public function getUuidValue(string $key): string
+    {
+        $value = $this->getValue($key, false);
+
+        Assert::string($value);
+        static::assertUuid($value);
+
+        return $value;
+    }
+
+    public function getNullableUuidValue(string $key, bool $nullIfNotExists = false): ?string
+    {
+        $value = $this->getValue($key, $nullIfNotExists);
+
+        if (null === $value) {
+            return null;
+        }
+
+        Assert::string($value);
+        static::assertUuid($value);
 
         return $value;
     }
@@ -149,6 +174,10 @@ trait PayloadTrait
     {
         $value = $this->getValue($key, false);
 
+        if (\is_numeric($value)) {
+            $value = (int) $value;
+        }
+
         Assert::integer($value);
 
         return $value;
@@ -160,6 +189,10 @@ trait PayloadTrait
 
         if (null === $value) {
             return null;
+        }
+
+        if (\is_numeric($value)) {
+            $value = (int) $value;
         }
 
         Assert::integer($value);
@@ -193,5 +226,15 @@ trait PayloadTrait
         Assert::isArray($value);
 
         return $value;
+    }
+
+    /**
+     * @throws \InvalidArgumentException when the given value is no uuid
+     */
+    private static function assertUuid(string $value): void
+    {
+        if (!Uuid::isValid($value)) {
+            throw new \InvalidArgumentException(\sprintf('Expected a uuid. Got: %s', $value));
+        }
     }
 }

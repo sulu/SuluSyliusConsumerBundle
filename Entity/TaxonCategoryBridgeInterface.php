@@ -15,7 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Entity;
 
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 
-interface TaxonCategoryReferenceInterface
+interface TaxonCategoryBridgeInterface
 {
     public function getTaxonId(): int;
 

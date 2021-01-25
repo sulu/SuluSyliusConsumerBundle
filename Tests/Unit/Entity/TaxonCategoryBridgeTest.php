@@ -15,14 +15,14 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Entity;
 
 use PHPUnit\Framework\TestCase;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
-use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryReference;
+use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridge;
 
-class TaxonCategoryReferenceTest extends TestCase
+class TaxonCategoryBridgeTest extends TestCase
 {
     public function testGetId(): void
     {
         $category = $this->prophesize(CategoryInterface::class);
-        $entity = new TaxonCategoryReference(42, $category->reveal());
+        $entity = new TaxonCategoryBridge(42, $category->reveal());
 
         $this->assertEquals(42, $entity->getTaxonId());
     }
@@ -30,7 +30,7 @@ class TaxonCategoryReferenceTest extends TestCase
     public function testGetCategory(): void
     {
         $category = $this->prophesize(CategoryInterface::class);
-        $entity = new TaxonCategoryReference(42, $category->reveal());
+        $entity = new TaxonCategoryBridge(42, $category->reveal());
 
         $this->assertEquals($category->reveal(), $entity->getCategory());
     }
