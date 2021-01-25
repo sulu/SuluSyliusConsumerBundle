@@ -20,6 +20,8 @@ framework:
 
 sulu_sylius_consumer:
     sylius_base_url: 'http://sylius.localhost'
+    taxon_category_adapter:
+        enabled: true
 
 swiftmailer:
     disable_delivery: true

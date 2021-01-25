@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\DependencyInjection;
 
+use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridge;
+use Sulu\Bundle\SyliusConsumerBundle\Repository\TaxonCategoryBridgeRepository;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -28,6 +30,20 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('sylius_base_url')->isRequired()->end()
                 ->booleanNode('auto_publish')->defaultFalse()->end()
+                ->arrayNode('taxon_category_adapter')->canBeEnabled()->end()
+                ->arrayNode('objects')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->arrayNode('taxon_category_bridge')
+                            ->addDefaultsIfNotSet()
+                            ->children()
+                                ->scalarNode('model')->defaultValue(TaxonCategoryBridge::class)->end()
+                                ->scalarNode('repository')->defaultValue(TaxonCategoryBridgeRepository::class)->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
+            ->end()
         ;
 
         return $treeBuilder;

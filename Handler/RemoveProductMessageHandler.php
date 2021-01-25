@@ -13,11 +13,25 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Handler;
 
+use Sulu\Bundle\SyliusConsumerBundle\Adapter\ProductAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Message\RemoveProductMessage;
 
 class RemoveProductMessageHandler
 {
+    /**
+     * @var iterable<ProductAdapterInterface>
+     */
+    private $productAdapters;
+
+    public function __construct(iterable $productAdapters)
+    {
+        $this->productAdapters = $productAdapters;
+    }
+
     public function __invoke(RemoveProductMessage $message): void
     {
+        foreach ($this->productAdapters as $productAdapter) {
+            $productAdapter->remove($message->getCode());
+        }
     }
 }

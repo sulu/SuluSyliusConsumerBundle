@@ -13,11 +13,26 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Handler;
 
+use Sulu\Bundle\SyliusConsumerBundle\Adapter\ProductAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Message\SynchronizeProductMessage;
+use Sulu\Bundle\SyliusConsumerBundle\Payload\ProductPayload;
 
 class SynchronizeProductMessageHandler
 {
+    /**
+     * @var iterable<ProductAdapterInterface>
+     */
+    private $productAdapters;
+
+    public function __construct(iterable $productAdapters)
+    {
+        $this->productAdapters = $productAdapters;
+    }
+
     public function __invoke(SynchronizeProductMessage $message): void
     {
+        foreach ($this->productAdapters as $productAdapter) {
+            $productAdapter->synchronize(new ProductPayload($message->getCode(), $message->getPayload()));
+        }
     }
 }

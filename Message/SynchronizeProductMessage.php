@@ -13,6 +13,9 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Message;
 
+/**
+ * @internal
+ */
 class SynchronizeProductMessage
 {
     /**

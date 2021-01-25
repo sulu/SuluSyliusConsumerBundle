@@ -11,25 +11,35 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Bundle\SyliusConsumerBundle\Message;
+namespace Sulu\Bundle\SyliusConsumerBundle\Payload;
 
-/**
- * @internal
- */
-class RemoveProductMessage
+use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
+
+class ProductVariantPayload
 {
     /**
      * @var string
      */
     private $code;
 
-    public function __construct(string $code)
+    /**
+     * @var Payload
+     */
+    private $payload;
+
+    public function __construct(string $code, array $payload)
     {
         $this->code = $code;
+        $this->payload = new Payload($payload);
     }
 
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getPayload(): Payload
+    {
+        return $this->payload;
     }
 }
