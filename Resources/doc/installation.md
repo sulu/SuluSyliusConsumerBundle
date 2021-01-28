@@ -17,7 +17,7 @@ sulu_sylius_consumer:
 framework:
     messenger:
         transports:
-            sulu_sylius_transport: '%env(SYLIUS_MESSENGER_TRANSPORT_DSN)%'
+            sulu_sylius_transport: '%env(SULU_SYLIUS_MESSENGER_TRANSPORT_DSN)%'
         buses:
             sulu_sylius_producer.messenger_bus:
                 middleware:

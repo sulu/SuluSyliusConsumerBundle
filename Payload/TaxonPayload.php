@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Payload;
 
 use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
+use Sulu\Exception\FeatureNotImplementedException;
 
 class TaxonPayload
 {
@@ -76,6 +77,14 @@ class TaxonPayload
         }
 
         return $translations;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getImages(): array
+    {
+        throw new FeatureNotImplementedException('Images are not implemented');
     }
 
     public function getPayload(): Payload
