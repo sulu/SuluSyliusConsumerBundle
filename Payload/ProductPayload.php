@@ -44,9 +44,9 @@ class ProductPayload
         return $this->payload->getBoolValue('enabled');
     }
 
-    public function getMainTaxonId(): int
+    public function getMainTaxonId(): ?int
     {
-        return $this->payload->getIntValue('mainTaxonId');
+        return $this->payload->getNullableIntValue('mainTaxonId');
     }
 
     /**

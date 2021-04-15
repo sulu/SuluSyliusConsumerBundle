@@ -38,7 +38,9 @@ class TaxonCategoryAdapterTest extends KernelTestCase
         $taxonPayload = new TaxonPayload(1, MockSyliusData::TAXON);
 
         $adapter->synchronize($taxonPayload);
-        $this->getEntityManager()->flush();
+
+        // Adapter flushed the entity-manager - by clearing it we can check if that works correctly
+        $this->getEntityManager()->clear();
 
         $bridge1 = $this->getEntityManager()->find(TaxonCategoryBridge::class, 1);
         $bridge2 = $this->getEntityManager()->find(TaxonCategoryBridge::class, 2);
