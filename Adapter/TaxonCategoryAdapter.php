@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Sulu\Bundle\SyliusConsumerBundle\Adapter;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryRepositoryInterface;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryTranslationInterface;
@@ -38,19 +39,30 @@ class TaxonCategoryAdapter implements TaxonAdapterInterface
      */
     private $categoryTranslationRepository;
 
+    /**
+     * @var EntityManagerInterface
+     */
+    private $entityManager;
+
     public function __construct(
         TaxonCategoryBridgeRepositoryInterface $taxonCategoryBridgeRepository,
         CategoryRepositoryInterface $categoryRepository,
-        CategoryTranslationRepositoryInterface $categoryTranslationRepository
+        CategoryTranslationRepositoryInterface $categoryTranslationRepository,
+        EntityManagerInterface $entityManager
     ) {
         $this->taxonCategoryBridgeRepository = $taxonCategoryBridgeRepository;
         $this->categoryRepository = $categoryRepository;
         $this->categoryTranslationRepository = $categoryTranslationRepository;
+        $this->entityManager = $entityManager;
     }
 
     public function synchronize(TaxonPayload $payload): void
     {
         $this->handlePayload($payload);
+
+        // Needed to use categories in other adapters
+        // (e.g. category pages with a smart-content filtered by the sylius category)
+        $this->entityManager->flush();
     }
 
     private function handlePayload(TaxonPayload $payload, ?CategoryInterface $parent = null): void
