@@ -83,6 +83,7 @@ final class MockSyliusData
         'code' => 'Everyday_white_basic_T_Shirt',
         'enabled' => true,
         'mainTaxonId' => 4,
+        'isSimple' => true,
         'productTaxons' => [
             [
                 'id' => 1,
@@ -140,5 +141,21 @@ Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos eni
                 'onHand' => 7,
             ],
         ],
+    ];
+
+    const PRODUCT_VARIANT = [
+        'id' => 1,
+        'code' => 'Everyday_white_basic_T_Shirt-variant-0',
+        'position' => 0,
+        'translations' => [
+            'en_US' => [
+                'locale' => 'en_US',
+                'id' => 1,
+                'name' => 'S',
+            ],
+        ],
+        'version' => 1,
+        'onHold' => 0,
+        'onHand' => 7,
     ];
 }

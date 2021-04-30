@@ -33,6 +33,13 @@ class ProductPayloadTest extends TestCase
         $this->assertTrue($entity->isEnabled());
     }
 
+    public function testIsSimple(): void
+    {
+        $entity = new ProductPayload(MockSyliusData::PRODUCT['code'], MockSyliusData::PRODUCT);
+
+        $this->assertTrue($entity->isSimple());
+    }
+
     public function testGetMainTaxonId(): void
     {
         $entity = new ProductPayload(MockSyliusData::PRODUCT['code'], MockSyliusData::PRODUCT);

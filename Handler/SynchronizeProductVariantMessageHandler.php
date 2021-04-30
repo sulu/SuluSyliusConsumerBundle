@@ -32,7 +32,7 @@ class SynchronizeProductVariantMessageHandler
     public function __invoke(SynchronizeProductVariantMessage $message): void
     {
         foreach ($this->productVariantAdapters as $productVariantAdapter) {
-            $productVariantAdapter->synchronize(new ProductVariantPayload($message->getCode(), $message->getPayload()));
+            $productVariantAdapter->synchronize(new ProductVariantPayload($message->getCode(), $message->getProductCode(), $message->getPayload()));
         }
     }
 }
