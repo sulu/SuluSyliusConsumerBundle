@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Sulu.
  *
- * (c) MASSIVE ART WebServices GmbH
+ * (c) Sulu GmbH
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -44,6 +44,11 @@ class ProductPayload
         return $this->payload->getBoolValue('enabled');
     }
 
+    public function isSimple(): bool
+    {
+        return $this->payload->getBoolValue('isSimple');
+    }
+
     public function getMainTaxonId(): ?int
     {
         return $this->payload->getNullableIntValue('mainTaxonId');
@@ -80,7 +85,7 @@ class ProductPayload
     {
         $variants = [];
         foreach ($this->payload->getArrayValue('variants') as $variantPayload) {
-            $variants[] = new ProductVariantPayload($variantPayload['code'], $variantPayload);
+            $variants[] = new ProductVariantPayload($variantPayload['code'], $this->getCode(), $variantPayload);
         }
 
         return $variants;

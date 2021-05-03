@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Sulu.
  *
- * (c) MASSIVE ART WebServices GmbH
+ * (c) Sulu GmbH
  *
  * This source file is subject to the MIT license that is bundled
  * with this source code in the file LICENSE.
@@ -32,7 +32,7 @@ class SynchronizeProductVariantMessageHandler
     public function __invoke(SynchronizeProductVariantMessage $message): void
     {
         foreach ($this->productVariantAdapters as $productVariantAdapter) {
-            $productVariantAdapter->synchronize(new ProductVariantPayload($message->getCode(), $message->getPayload()));
+            $productVariantAdapter->synchronize(new ProductVariantPayload($message->getCode(), $message->getProductCode(), $message->getPayload()));
         }
     }
 }

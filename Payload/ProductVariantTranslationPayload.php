@@ -16,7 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Payload;
 use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
 use Sulu\Component\Localization\Localization;
 
-class ProductTranslationPayload
+class ProductVariantTranslationPayload
 {
     /**
      * @var Payload
@@ -41,31 +41,6 @@ class ProductTranslationPayload
     public function getName(): string
     {
         return $this->payload->getStringValue('name');
-    }
-
-    public function getSlug(): string
-    {
-        return $this->payload->getStringValue('slug');
-    }
-
-    public function getDescription(): string
-    {
-        return $this->payload->getStringValue('description');
-    }
-
-    public function getShortDescription(): string
-    {
-        return $this->payload->getStringValue('shortDescription');
-    }
-
-    public function getMetaKeywords(): ?string
-    {
-        return $this->payload->getNullableStringValue('metaKeywords');
-    }
-
-    public function getMetaDescription(): ?string
-    {
-        return $this->payload->getNullableStringValue('metaDescription');
     }
 
     public function getPayload(): Payload
