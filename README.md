@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/sulu/SuluSyliusConsumerBundle/blob/0.x/LICENSE" target="_blank">
+    <a href="LICENSE" target="_blank">
         <img src="https://img.shields.io/github/license/sulu/SuluSyliusConsumerBundle.svg" alt="GitHub license">
     </a>
     <a href="https://github.com/sulu/SuluSyliusConsumerBundle/releases" target="_blank">
@@ -35,7 +35,7 @@ project:
 composer require sulu/sylius-consumer-plugin
 ```
 
-Afterwards, visit the [bundle documentation](https://github.com/sulu/SuluSyliusConsumerBundle/blob/0.x/Resources/doc) to
+Afterwards, visit the [bundle documentation](Resources/doc) to
 find out **how to set up and configure the SuluSyliusConsumerBundle** to your specific needs.
 
 ## ❤️&nbsp; Support and Contributions
