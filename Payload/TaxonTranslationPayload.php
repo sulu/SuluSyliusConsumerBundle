@@ -64,6 +64,7 @@ class TaxonTranslationPayload
         if (!$this->payload->keyExists('description')) {
             return '';
         }
+
         return $this->payload->getNullableStringValue('description') ?? '';
     }
 
