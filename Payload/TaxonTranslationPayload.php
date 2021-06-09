@@ -61,7 +61,11 @@ class TaxonTranslationPayload
 
     public function getDescription(): string
     {
-        return $this->payload->getStringValue('description');
+        if (!$this->payload->keyExists('description')) {
+            return '';
+        }
+
+        return $this->payload->getNullableStringValue('description') ?? '';
     }
 
     public function getPayload(): Payload
