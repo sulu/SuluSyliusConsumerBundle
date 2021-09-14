@@ -41,4 +41,11 @@ class ProductVariantTranslationPayloadTest extends TestCase
 
         $this->assertEquals('S', $entity->getName());
     }
+
+    public function testGetNameWithMinimum(): void
+    {
+        $entity = new ProductVariantTranslationPayload(MockSyliusData::PRODUCT_VARIANT_MINIMUM['translations']['en_US']);
+
+        $this->assertEquals('', $entity->getName());
+    }
 }

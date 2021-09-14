@@ -70,4 +70,30 @@ class TaxonCategoryAdapterTest extends KernelTestCase
         $this->assertEquals($category1->getId(), $category2->getParent()->getId());
         $this->assertEquals($category2->getId(), $category3->getParent()->getId());
     }
+
+    public function testSynchronizeMinimum(): void
+    {
+        $adapter = $this->getContainer()->get(TaxonCategoryAdapter::class);
+
+        $taxonPayload = new TaxonPayload(1, MockSyliusData::TAXON_MINIMUM);
+
+        $adapter->synchronize($taxonPayload);
+
+        // Adapter flushed the entity-manager - by clearing it we can check if that works correctly
+        $this->getEntityManager()->clear();
+
+        $bridge = $this->getEntityManager()->find(TaxonCategoryBridge::class, 1);
+
+        $this->assertNotNull($bridge);
+
+        $category = $bridge->getCategory();
+
+        $this->assertEquals('MENU_CATEGORY', $category->getKey());
+
+        $this->assertEquals('en_us', $category->getDefaultLocale());
+
+        $this->assertFalse($category->findTranslationByLocale('en_us'));
+
+        $this->assertNull($category->getParent());
+    }
 }

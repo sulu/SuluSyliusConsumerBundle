@@ -76,6 +76,27 @@ final class MockSyliusData
             ],
         ],
         'images' => [],
+        'customData' => [
+            'test' => 1,
+        ],
+    ];
+
+    const TAXON_MINIMUM = [
+        'name' => 'Category',
+        'id' => 1,
+        'code' => 'MENU_CATEGORY',
+        'children' => [],
+        'left' => 1,
+        'right' => 22,
+        'level' => 0,
+        'position' => 0,
+        'translations' => [
+            'en_US' => [
+                'locale' => 'en_US',
+                'id' => 2,
+            ],
+        ],
+        'images' => [],
     ];
 
     const PRODUCT = [
@@ -109,8 +130,8 @@ Est cumque illum saepe aliquam est. Ullam impedit ipsa aut nostrum est sunt nesc
 
 Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos enim expedita voluptatibus aut. Non ducimus nesciunt voluptas deleniti.',
                 'shortDescription' => 'Sequi doloribus minus quis quibusdam. Architecto optio sit inventore quibusdam magni voluptatem. Non sed ex mollitia nisi nemo velit quidem.',
-                'metaKeywords' => null,
-                'metaDescription' => null,
+                'metaKeywords' => 'Sequi,Architecto',
+                'metaDescription' => 'Sequi doloribus minus quis quibusdam.',
                 'customData' => [],
             ],
         ],
@@ -123,7 +144,9 @@ Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos eni
                 'customData' => [],
             ],
         ],
-        'customData' => [],
+        'customData' => [
+            'test' => 1,
+        ],
         'variants' => [
             [
                 'id' => 1,
@@ -143,6 +166,23 @@ Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos eni
         ],
     ];
 
+    const PRODUCT_MINIMUM = [
+        'id' => 1,
+        'code' => 'Everyday_white_basic_T_Shirt',
+        'enabled' => true,
+        'mainTaxonId' => 4,
+        'isSimple' => true,
+        'productTaxons' => [],
+        'translations' => [
+            [
+                'locale' => 'en_US',
+            ],
+        ],
+        'images' => [],
+        'customData' => [],
+        'variants' => [],
+    ];
+
     const PRODUCT_VARIANT = [
         'id' => 1,
         'code' => 'Everyday_white_basic_T_Shirt-variant-0',
@@ -157,5 +197,24 @@ Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos eni
         'version' => 1,
         'onHold' => 0,
         'onHand' => 7,
+        'customData' => [
+            'test' => 1,
+        ],
+    ];
+
+    const PRODUCT_VARIANT_MINIMUM = [
+        'id' => 1,
+        'code' => 'Everyday_white_basic_T_Shirt-variant-0',
+        'position' => 0,
+        'translations' => [
+            'en_US' => [
+                'locale' => 'en_US',
+                'id' => 1,
+            ],
+        ],
+        'version' => 1,
+        'onHold' => 0,
+        'onHand' => 7,
+        'customData' => [],
     ];
 }

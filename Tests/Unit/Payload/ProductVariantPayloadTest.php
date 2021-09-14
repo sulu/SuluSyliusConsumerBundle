@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Payload;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
 use Sulu\Bundle\SyliusConsumerBundle\Payload\ProductVariantPayload;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\MockSyliusData;
 
@@ -41,5 +42,14 @@ class ProductVariantPayloadTestPayloadTest extends TestCase
         $this->assertCount(1, $translations);
 
         $this->assertEquals(MockSyliusData::PRODUCT_VARIANT['translations']['en_US'], $translations['en_us']->getPayload()->getData());
+    }
+
+    public function testGetCustomData(): void
+    {
+        $entity = new ProductVariantPayload(MockSyliusData::PRODUCT_VARIANT['code'], 'product-1', MockSyliusData::PRODUCT_VARIANT);
+
+        $customData = $entity->getCustomData();
+        $this->assertInstanceOf(Payload::class, $customData);
+        $this->assertSame(['test' => 1], $customData->getData());
     }
 }

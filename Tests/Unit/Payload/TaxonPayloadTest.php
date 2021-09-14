@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Payload;
 
 use PHPUnit\Framework\TestCase;
+use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
 use Sulu\Bundle\SyliusConsumerBundle\Payload\TaxonPayload;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\MockSyliusData;
 
@@ -65,5 +66,14 @@ class TaxonPayloadTest extends TestCase
         $this->assertCount(1, $children);
 
         $this->assertEquals(MockSyliusData::TAXON['children'][0], $children[0]->getPayload()->getData());
+    }
+
+    public function testGetCustomData(): void
+    {
+        $entity = new TaxonPayload(1, MockSyliusData::TAXON);
+
+        $customData = $entity->getCustomData();
+        $this->assertInstanceOf(Payload::class, $customData);
+        $this->assertSame(['test' => 1], $customData->getData());
     }
 }

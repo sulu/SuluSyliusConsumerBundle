@@ -87,6 +87,11 @@ class TaxonPayload
         throw new FeatureNotImplementedException('Images are not implemented');
     }
 
+    public function getCustomData(): Payload
+    {
+        return new Payload($this->payload->getNullableArrayValue('customData', true) ?? []);
+    }
+
     public function getPayload(): Payload
     {
         return $this->payload;

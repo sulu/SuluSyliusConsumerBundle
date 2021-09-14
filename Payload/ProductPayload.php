@@ -91,6 +91,11 @@ class ProductPayload
         return $variants;
     }
 
+    public function getCustomData(): Payload
+    {
+        return new Payload($this->payload->getNullableArrayValue('customData', true) ?? []);
+    }
+
     /**
      * @return mixed[]
      */

@@ -40,7 +40,7 @@ class ProductVariantTranslationPayload
 
     public function getName(): string
     {
-        return $this->payload->getStringValue('name');
+        return $this->payload->getNullableStringValue('name', true) ?? '';
     }
 
     public function getPayload(): Payload

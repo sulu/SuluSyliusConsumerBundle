@@ -49,6 +49,13 @@ class TaxonTranslationPayloadTest extends TestCase
         $this->assertEquals('Category', $entity->getName());
     }
 
+    public function testGetNameWithMinimum(): void
+    {
+        $entity = new TaxonTranslationPayload(1, MockSyliusData::TAXON_MINIMUM['translations']['en_US']);
+
+        $this->assertEquals('', $entity->getName());
+    }
+
     public function testGetSlug(): void
     {
         $entity = new TaxonTranslationPayload(1, MockSyliusData::TAXON['translations']['en_US']);
@@ -56,10 +63,24 @@ class TaxonTranslationPayloadTest extends TestCase
         $this->assertEquals('category', $entity->getSlug());
     }
 
+    public function testGetSlugWithMinimum(): void
+    {
+        $entity = new TaxonTranslationPayload(1, MockSyliusData::TAXON_MINIMUM['translations']['en_US']);
+
+        $this->assertEquals('', $entity->getSlug());
+    }
+
     public function testGetDescription(): void
     {
         $entity = new TaxonTranslationPayload(1, MockSyliusData::TAXON['translations']['en_US']);
 
         $this->assertEquals('Soluta deleniti dolore tenetur. Odio voluptatibus excepturi quas autem totam odio dolorum. Sed aut at cum quia recusandae. Quos eos iusto sed sed occaecati.', $entity->getDescription());
+    }
+
+    public function testGetDescriptionWithMinimum(): void
+    {
+        $entity = new TaxonTranslationPayload(1, MockSyliusData::TAXON_MINIMUM['translations']['en_US']);
+
+        $this->assertNull($entity->getDescription());
     }
 }

@@ -51,21 +51,17 @@ class TaxonTranslationPayload
 
     public function getName(): string
     {
-        return $this->payload->getStringValue('name');
+        return $this->payload->getNullableStringValue('name', true) ?? '';
     }
 
     public function getSlug(): string
     {
-        return $this->payload->getStringValue('slug');
+        return $this->payload->getNullableStringValue('slug', true) ?? '';
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
-        if (!$this->payload->keyExists('description')) {
-            return '';
-        }
-
-        return $this->payload->getNullableStringValue('description') ?? '';
+        return $this->payload->getNullableStringValue('description', true);
     }
 
     public function getPayload(): Payload

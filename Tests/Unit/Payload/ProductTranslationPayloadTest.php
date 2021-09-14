@@ -42,11 +42,25 @@ class ProductTranslationPayloadTest extends TestCase
         $this->assertEquals('Everyday white basic T-Shirt', $entity->getName());
     }
 
+    public function testGetNameWithMinimum(): void
+    {
+        $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT_MINIMUM['translations'][0]);
+
+        $this->assertEquals('', $entity->getName());
+    }
+
     public function testGetSlug(): void
     {
         $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT['translations'][0]);
 
         $this->assertEquals('everyday-white-basic-t-shirt', $entity->getSlug());
+    }
+
+    public function testGetSlugWithMinimum(): void
+    {
+        $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT_MINIMUM['translations'][0]);
+
+        $this->assertEquals('', $entity->getSlug());
     }
 
     public function testGetDescription(): void
@@ -56,6 +70,13 @@ class ProductTranslationPayloadTest extends TestCase
         $this->assertEquals('Quia nihil dignissimos expedita quia neque odio qui sunt. Nemo animi maxime rem qui quaerat eos. Eum ipsam aut aliquid cum et in sint.' . PHP_EOL . PHP_EOL . 'Est cumque illum saepe aliquam est. Ullam impedit ipsa aut nostrum est sunt nesciunt. Ut sint saepe ullam sed dolorum atque eos accusamus.' . PHP_EOL . PHP_EOL . 'Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos enim expedita voluptatibus aut. Non ducimus nesciunt voluptas deleniti.', $entity->getDescription());
     }
 
+    public function testGetDescriptionWithMimum(): void
+    {
+        $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT_MINIMUM['translations'][0]);
+
+        $this->assertNull($entity->getDescription());
+    }
+
     public function testGetShortDescription(): void
     {
         $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT['translations'][0]);
@@ -63,9 +84,23 @@ class ProductTranslationPayloadTest extends TestCase
         $this->assertEquals('Sequi doloribus minus quis quibusdam. Architecto optio sit inventore quibusdam magni voluptatem. Non sed ex mollitia nisi nemo velit quidem.', $entity->getShortDescription());
     }
 
+    public function testGetShortDescriptionWithMinimum(): void
+    {
+        $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT_MINIMUM['translations'][0]);
+
+        $this->assertNull($entity->getShortDescription());
+    }
+
     public function testGetMetaKeyword(): void
     {
         $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT['translations'][0]);
+
+        $this->assertSame('Sequi,Architecto', $entity->getMetaKeywords());
+    }
+
+    public function testGetMetaKeywordWithMinimum(): void
+    {
+        $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT_MINIMUM['translations'][0]);
 
         $this->assertNull($entity->getMetaKeywords());
     }
@@ -73,6 +108,13 @@ class ProductTranslationPayloadTest extends TestCase
     public function testGetMetaDescription(): void
     {
         $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT['translations'][0]);
+
+        $this->assertSame('Sequi doloribus minus quis quibusdam.', $entity->getMetaDescription());
+    }
+
+    public function testGetMetaDescriptionWithMinimum(): void
+    {
+        $entity = new ProductTranslationPayload(MockSyliusData::PRODUCT_MINIMUM['translations'][0]);
 
         $this->assertNull($entity->getMetaDescription());
     }

@@ -40,32 +40,32 @@ class ProductTranslationPayload
 
     public function getName(): string
     {
-        return $this->payload->getStringValue('name');
+        return $this->payload->getNullableStringValue('name', true) ?? '';
     }
 
     public function getSlug(): string
     {
-        return $this->payload->getStringValue('slug');
+        return $this->payload->getNullableStringValue('slug', true) ?? '';
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
-        return $this->payload->getStringValue('description');
+        return $this->payload->getNullableStringValue('description', true);
     }
 
-    public function getShortDescription(): string
+    public function getShortDescription(): ?string
     {
-        return $this->payload->getStringValue('shortDescription');
+        return $this->payload->getNullableStringValue('shortDescription', true);
     }
 
     public function getMetaKeywords(): ?string
     {
-        return $this->payload->getNullableStringValue('metaKeywords');
+        return $this->payload->getNullableStringValue('metaKeywords', true);
     }
 
     public function getMetaDescription(): ?string
     {
-        return $this->payload->getNullableStringValue('metaDescription');
+        return $this->payload->getNullableStringValue('metaDescription', true);
     }
 
     public function getPayload(): Payload

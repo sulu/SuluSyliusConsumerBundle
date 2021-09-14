@@ -88,6 +88,9 @@ class TaxonCategoryAdapter implements TaxonAdapterInterface
 
         foreach ($translations as $translationPayload) {
             $locale = $translationPayload->getLocalization()->getLocale();
+            if ('' === $translationPayload->getName()) {
+                continue;
+            }
 
             /** @var CategoryTranslationInterface|null $categoryTranslation */
             $categoryTranslation = $category->findTranslationByLocale($locale);
