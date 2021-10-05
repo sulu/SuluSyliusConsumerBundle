@@ -54,6 +54,11 @@ class ProductPayload
         return $this->payload->getNullableIntValue('mainTaxonId');
     }
 
+    public function getMainTaxonCode(): ?string
+    {
+        return $this->payload->getNullableStringValue('mainTaxonCode');
+    }
+
     /**
      * @return int[]
      */
@@ -61,6 +66,16 @@ class ProductPayload
     {
         return array_map(function (array $taxon) {
             return $taxon['taxonId'];
+        }, $this->payload->getArrayValue('productTaxons'));
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTaxonCodes(): array
+    {
+        return array_map(function (array $taxon) {
+            return $taxon['taxonCode'];
         }, $this->payload->getArrayValue('productTaxons'));
     }
 

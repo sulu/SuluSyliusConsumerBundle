@@ -18,7 +18,7 @@ use Sulu\Bundle\SyliusConsumerBundle\Common\Payload;
 use Sulu\Bundle\SyliusConsumerBundle\Payload\ProductVariantPayload;
 use Sulu\Bundle\SyliusConsumerBundle\Tests\MockSyliusData;
 
-class ProductVariantPayloadTestPayloadTest extends TestCase
+class ProductVariantPayloadTest extends TestCase
 {
     public function testGetCode(): void
     {

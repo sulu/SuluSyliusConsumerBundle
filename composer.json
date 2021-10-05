@@ -12,7 +12,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
-        "sulu/sulu": "^2.1",
+        "sulu/sulu": "^2.1 || 2.x-dev",
         "symfony/config": "^4.4 || ^5.0",
         "symfony/dependency-injection": "^4.4 || ^5.0",
         "symfony/framework-bundle": "^4.4 || ^5.0",

@@ -104,17 +104,20 @@ final class MockSyliusData
         'code' => 'Everyday_white_basic_T_Shirt',
         'enabled' => true,
         'mainTaxonId' => 4,
+        'mainTaxonCode' => 't_shirts',
         'isSimple' => true,
         'productTaxons' => [
             [
                 'id' => 1,
                 'taxonId' => 2,
+                'taxonCode' => 'caps',
                 'position' => 0,
                 'customData' => [],
             ],
             [
                 'id' => 2,
                 'taxonId' => 4,
+                'taxonCode' => 't_shirts',
                 'position' => 1,
                 'customData' => [],
             ],
@@ -171,6 +174,7 @@ Expedita voluptatum magnam est vitae voluptas eos. Maiores voluptatibus quos eni
         'code' => 'Everyday_white_basic_T_Shirt',
         'enabled' => true,
         'mainTaxonId' => 4,
+        'mainTaxonCode' => 't_shirts',
         'isSimple' => true,
         'productTaxons' => [],
         'translations' => [

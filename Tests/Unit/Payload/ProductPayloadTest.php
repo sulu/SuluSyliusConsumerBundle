@@ -48,11 +48,25 @@ class ProductPayloadTest extends TestCase
         $this->assertEquals(MockSyliusData::PRODUCT['mainTaxonId'], $entity->getMainTaxonId());
     }
 
+    public function testGetMainTaxonCode(): void
+    {
+        $entity = new ProductPayload(MockSyliusData::PRODUCT['code'], MockSyliusData::PRODUCT);
+
+        $this->assertEquals(MockSyliusData::PRODUCT['mainTaxonCode'], $entity->getMainTaxonCode());
+    }
+
     public function testGetTaxonIds(): void
     {
         $entity = new ProductPayload(MockSyliusData::PRODUCT['code'], MockSyliusData::PRODUCT);
 
         $this->assertEquals([2, 4], $entity->getTaxonIds());
+    }
+
+    public function testGetTaxonCodes(): void
+    {
+        $entity = new ProductPayload(MockSyliusData::PRODUCT['code'], MockSyliusData::PRODUCT);
+
+        $this->assertEquals(['caps', 't_shirts'], $entity->getTaxonCodes());
     }
 
     public function testGetTranslations(): void
