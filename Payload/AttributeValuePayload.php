@@ -32,6 +32,11 @@ class AttributeValuePayload
         return $this->payload->getStringValue('code');
     }
 
+    public function getLocaleCode(): ?string
+    {
+        return $this->payload->getNullableStringValue('localeCode', true);
+    }
+
     /**
      * @return mixed
      */

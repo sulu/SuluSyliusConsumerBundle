@@ -48,6 +48,11 @@ class AttributePayload
         return $this->payload->getStringValue('type');
     }
 
+    public function isTranslatable(): bool
+    {
+        return $this->payload->getNullableBoolValue('translatable', true) ?? false;
+    }
+
     /**
      * @return AttributeTranslationPayload[]
      */
