@@ -24,6 +24,7 @@ jobs:
                       php-extensions: 'ctype, iconv, mysql, imagick'
                       tools: 'composer:v2'
                       lint: false
+                      phpunit-config: 'phpunit-9.xml.dist'
                       env:
                           SYMFONY_DEPRECATIONS_HELPER: weak
 
@@ -101,5 +102,5 @@ jobs:
               env: ${{ matrix.env }}
 
             - name: Execute test cases
-              run: time composer test
+              run: time composer test -- --config ${{ matrix.phpunit-config || 'phpunit.xml.dist' }}
               env: ${{ matrix.env }}
