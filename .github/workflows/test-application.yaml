@@ -95,6 +95,14 @@ jobs:
                   tools: ${{ matrix.tools }}
                   coverage: none
 
+            - name: Allow old composer plugin
+              run: composer config --no-plugins allow-plugins.ocramius/package-versions true # todo remove when not longer required for lowest task
+
+            - name: Remove Lint Tools
+              # These tools are not required to run tests, so we are removing them to improve dependency resolving and
+              # testing lowest versions.
+              run: composer remove "*php-cs-fixer*" "*phpstan*" "*rector*" --dev --no-update
+
             - name: Install composer dependencies
               uses: ramsey/composer-install@v2
               with:
