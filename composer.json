@@ -21,11 +21,12 @@
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
-        "php-cs-fixer/shim": "^3.9",
         "handcraftedinthealps/zendsearch": "^2.0",
         "jackalope/jackalope-doctrine-dbal": "^1.3.4|| ^2.0",
         "jangregor/phpstan-prophecy": "^1.0",
+        "php-cs-fixer/shim": "^3.9",
         "phpspec/prophecy": "^1.15",
+        "phpspec/prophecy-phpunit": "^1.0 || ^2.0",
         "phpstan/phpstan": "^1.0",
         "phpstan/phpstan-doctrine": "^1.0",
         "phpstan/phpstan-symfony": "^1.0",

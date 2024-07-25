@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Handler;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\ProductVariantAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeProductVariantMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Message\SynchronizeProductVariantMessage;
@@ -22,6 +23,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Payload\ProductVariantPayload;
 
 class SynchronizeProductVariantMessageHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInvoke(): void
     {
         $adapter1 = $this->prophesize(ProductVariantAdapterInterface::class);

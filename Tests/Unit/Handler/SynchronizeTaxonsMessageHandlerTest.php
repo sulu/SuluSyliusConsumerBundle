@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Handler;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\TaxonAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeTaxonsMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Message\SynchronizeTaxonsMessage;
@@ -22,6 +23,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Payload\TaxonPayload;
 
 class SynchronizeTaxonsMessageHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInvoke(): void
     {
         $adapter1 = $this->prophesize(TaxonAdapterInterface::class);

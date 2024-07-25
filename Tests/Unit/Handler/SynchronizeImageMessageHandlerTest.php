@@ -15,6 +15,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Handler;
 
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\ImageAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Handler\SynchronizeImageMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Message\SynchronizeImageMessage;
@@ -22,6 +23,8 @@ use Sulu\Bundle\SyliusConsumerBundle\Payload\ImagePayload;
 
 class SynchronizeImageMessageHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInvoke(): void
     {
         $adapter1 = $this->prophesize(ImageAdapterInterface::class);
