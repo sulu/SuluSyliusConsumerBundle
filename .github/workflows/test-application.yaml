@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
 
         env:
-            DATABASE_URL: mysql://root:root@127.0.0.1:3306/sulu_test?serverVersion=5.7
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/sulu_test?serverVersion=8.0
 
         strategy:
             fail-fast: false
@@ -96,11 +96,33 @@ jobs:
               run: composer initialize
               env: ${{ matrix.env }}
 
-            - name: Lint code
-              if: ${{ matrix.lint }}
-              run: composer lint
-              env: ${{ matrix.env }}
-
             - name: Execute test cases
               run: time composer test -- --config ${{ matrix.phpunit-config || 'phpunit.xml.dist' }}
               env: ${{ matrix.env }}
+
+    lint:
+        name: "PHP Lint"
+        runs-on: ubuntu-latest
+
+        env:
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/sulu_test?serverVersion=8.0
+
+        steps:
+            - name: Checkout project
+              uses: actions/checkout@v2
+
+            - name: Install and configure PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: 8.3
+                  extensions: 'ctype, iconv, mysql, imagick'
+                  tools: 'composer:v2'
+                  coverage: none
+
+            - name: Install composer dependencies
+              uses: ramsey/composer-install@v2
+              with:
+                  dependency-versions: highest
+
+            - name: Lint code
+              run: composer lint
