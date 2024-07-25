@@ -55,6 +55,14 @@ jobs:
                       lint: true
                       env:
                         SYMFONY_DEPRECATIONS_HELPER: weak
+                    - php-version: '8.4'
+                      dependency-versions: 'highest'
+                      composer-options: '--ignore-platform-reqs'
+                      php-extensions: 'ctype, iconv, mysql, imagick'
+                      tools: 'composer:v2'
+                      lint: true
+                      env:
+                        SYMFONY_DEPRECATIONS_HELPER: weak
 
         services:
             mysql:
@@ -81,6 +89,7 @@ jobs:
               uses: ramsey/composer-install@v2
               with:
                   dependency-versions: ${{matrix.dependency-versions}}
+                  composer-options: ${{matrix.composer-options}}
 
             - name: Bootstrap test environment
               run: composer initialize
