@@ -14,12 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Handler;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\ProductVariantAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveProductVariantMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Message\RemoveProductVariantMessage;
 
 class RemoveProductVariantMessageHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInvoke(): void
     {
         $adapter1 = $this->prophesize(ProductVariantAdapterInterface::class);

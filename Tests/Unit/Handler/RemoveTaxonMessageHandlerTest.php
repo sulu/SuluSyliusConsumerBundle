@@ -14,12 +14,15 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Handler;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\SyliusConsumerBundle\Adapter\TaxonAdapterInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Handler\RemoveTaxonMessageHandler;
 use Sulu\Bundle\SyliusConsumerBundle\Message\RemoveTaxonMessage;
 
 class RemoveTaxonMessageHandlerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInvoke(): void
     {
         $adapter1 = $this->prophesize(TaxonAdapterInterface::class);

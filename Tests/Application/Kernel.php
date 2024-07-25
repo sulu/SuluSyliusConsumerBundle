@@ -37,4 +37,12 @@ class Kernel extends SuluTestKernel
 
         $loader->load(__DIR__ . '/config/config_' . $this->getContext() . '.yml');
     }
+
+    protected function getKernelParameters(): array
+    {
+        $parameters = parent::getKernelParameters();
+        $parameters['kernel.root_dir'] = __DIR__; // TODO remove when lowest version increased
+
+        return $parameters;
+    }
 }

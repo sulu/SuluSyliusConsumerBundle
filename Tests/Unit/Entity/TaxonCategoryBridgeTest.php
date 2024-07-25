@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Entity;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\CategoryBundle\Entity\CategoryInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Entity\TaxonCategoryBridge;
 
 class TaxonCategoryBridgeTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGetId(): void
     {
         $category = $this->prophesize(CategoryInterface::class);

@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Unit\Entity;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Entity\ImageMediaBridge;
 
 class ImageMediaBridgeTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGetId(): void
     {
         $media = $this->prophesize(MediaInterface::class);

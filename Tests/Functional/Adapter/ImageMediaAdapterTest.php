@@ -16,6 +16,7 @@ namespace Sulu\Bundle\SyliusConsumerBundle\Tests\Functional\Adapter;
 use Doctrine\ORM\Id\AssignedGenerator;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Sulu\Bundle\MediaBundle\Entity\CollectionType;
 use Sulu\Bundle\MediaBundle\Entity\MediaType;
@@ -33,6 +34,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageMediaAdapterTest extends KernelTestCase
 {
+    use ProphecyTrait;
     use PurgeDatabaseTrait;
 
     /**
