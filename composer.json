@@ -36,11 +36,6 @@
         "symfony/error-handler": "^4.4 || ^5.0 || ^6.0 || ^7.0",
         "symfony/monolog-bundle": "^3.3"
     },
-    "conflict": {
-        "symfony/dependency-injection": "4.1.8",
-        "symfony/symfony": "4.2.7",
-        "symfony/framework-bundle": "4.2.7"
-    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
