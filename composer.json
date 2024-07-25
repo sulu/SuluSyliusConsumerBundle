@@ -64,7 +64,7 @@
         "phpunit": "vendor/bin/phpunit",
         "phpstan": [
             "Tests/Application/console cache:warmup --env dev",
-            "vendor/bin/phpstan analyze -c ./phpstan.neon . -l 5"
+            "vendor/bin/phpstan analyze -c ./phpstan.neon"
         ],
         "php-cs": "vendor/bin/php-cs-fixer fix --verbose --diff --dry-run",
         "php-cs-fix": "vendor/bin/php-cs-fixer fix"
