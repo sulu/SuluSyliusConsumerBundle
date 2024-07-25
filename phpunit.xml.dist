@@ -11,25 +11,19 @@
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory>.</directory>
-            <exclude>
-                <directory>Resources/</directory>
-                <directory>Tests/</directory>
-                <directory>vendor/</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-        </whitelist>
-    </filter>
-
     <php>
         <env name="APP_ENV" value="test"/>
         <env name="KERNEL_CLASS" value="Sulu\Bundle\SyliusConsumerBundle\Tests\Application\Kernel"/>
     </php>
+
+    <source>
+        <include>
+            <directory>./</directory>
+        </include>
+        <exclude>
+            <directory>Resources/</directory>
+            <directory>Tests/</directory>
+            <directory>vendor/</directory>
+        </exclude>
+    </source>
 </phpunit>
