@@ -2,12 +2,6 @@
 doctrine:
     dbal:
         url: '%env(resolve:DATABASE_URL)%'
-    orm:
-        mappings:
-            gedmo_tree:
-                type: xml
-                prefix: Gedmo\Tree\Entity
-                dir: "%gedmo_directory%/Tree/Entity"
 
 framework:
     router:
