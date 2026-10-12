@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Adapter\Product\SuluProductWriter">
+            <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="Sulu\Product\Domain\Repository\ProductRepositoryInterface"/>
+            <argument type="service" id="Sulu\Product\Domain\Repository\ProductFamilyRepositoryInterface"/>
+            <argument>%sulu_sylius_consumer.product_adapter.locales%</argument>
+            <argument>%sulu_sylius_consumer.product_adapter.family_key%</argument>
+            <argument>%sulu_sylius_consumer.product_adapter.template%</argument>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Adapter\Product\SuluProductAdapter">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Adapter\Product\SuluProductWriter"/>
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Adapter\ImageMediaAdapter" on-invalid="null"/>
+            <argument type="service" id="sulu.repository.image_media_bridge"/>
+            <argument type="service" id="sulu.repository.taxon_category_bridge"/>
+            <argument>%sulu_sylius_consumer.product_adapter.url_prefix%</argument>
+
+            <tag name="sulu_sylius_consumer.adapter.product"/>
+        </service>
+
+        <service id="Sulu\Bundle\SyliusConsumerBundle\Adapter\Product\SuluProductVariantAdapter">
+            <argument type="service" id="Sulu\Bundle\SyliusConsumerBundle\Adapter\Product\SuluProductWriter"/>
+            <argument type="service" id="Sulu\Product\Domain\Repository\ProductRepositoryInterface"/>
+            <argument>%sulu_sylius_consumer.product_adapter.url_prefix%</argument>
+
+            <tag name="sulu_sylius_consumer.adapter.product_variant"/>
+        </service>
+    </services>
+</container>

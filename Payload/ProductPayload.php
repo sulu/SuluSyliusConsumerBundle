@@ -124,11 +124,14 @@ class ProductPayload
     }
 
     /**
-     * @return mixed[]
+     * @return list<array{id: int, type: string, path: string, filename?: string|null, customData?: mixed}>
      */
     public function getImages(): array
     {
-        return $this->payload->getNullableArrayValue('images', true) ?? [];
+        /** @var list<array{id: int, type: string, path: string, filename?: string|null, customData?: mixed}> $images */
+        $images = $this->payload->getNullableArrayValue('images', true) ?? [];
+
+        return $images;
     }
 
     public function getPayload(): Payload

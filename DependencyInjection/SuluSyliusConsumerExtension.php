@@ -42,6 +42,14 @@ class SuluSyliusConsumerExtension extends Extension
             $container->setParameter('sulu_sylius_consumer.media_collection.key', $collectionKey);
         }
 
+        if ($config['product_adapter']['enabled'] ?? false) {
+            $loader->load('product_adapter.xml');
+            $container->setParameter('sulu_sylius_consumer.product_adapter.locales', $config['product_adapter']['locales']);
+            $container->setParameter('sulu_sylius_consumer.product_adapter.family_key', $config['product_adapter']['family_key']);
+            $container->setParameter('sulu_sylius_consumer.product_adapter.template', $config['product_adapter']['template']);
+            $container->setParameter('sulu_sylius_consumer.product_adapter.url_prefix', $config['product_adapter']['url_prefix']);
+        }
+
         if ($config['taxon_category_adapter']['enabled'] ?? false) {
             $loader->load('taxon_category_adapter.xml');
         }

@@ -1,5 +1,12 @@
 # Upgrade
 
+## Unreleased
+
+### Sulu 3.1 required
+
+The bundle requires `sulu/sulu` `^3.1` and PHP 8.2. Sulu 2.x is no longer supported.
+The `ImageMediaAdapter` sets the media type as the string `image`, because Sulu 3 has no `MediaType` entity.
+
 ## 0.4.0
 
 ### Rework synchronization of taxon entities

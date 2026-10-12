@@ -21,7 +21,6 @@ use Sulu\Bundle\MediaBundle\Entity\FileVersionMeta;
 use Sulu\Bundle\MediaBundle\Entity\Media;
 use Sulu\Bundle\MediaBundle\Entity\MediaInterface;
 use Sulu\Bundle\MediaBundle\Entity\MediaRepositoryInterface;
-use Sulu\Bundle\MediaBundle\Entity\MediaType;
 use Sulu\Bundle\MediaBundle\Media\Storage\StorageInterface;
 use Sulu\Bundle\SyliusConsumerBundle\Payload\ImagePayload;
 use Sulu\Bundle\SyliusConsumerBundle\Repository\ImageMediaBridgeRepositoryInterface;
@@ -32,7 +31,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageMediaAdapter implements ImageAdapterInterface
 {
-    private const IMAGE_MEDIA_TYPE = 2;
+    private const IMAGE_MEDIA_TYPE = 'image';
 
     /**
      * @var ImageMediaBridgeRepositoryInterface
@@ -170,7 +169,7 @@ class ImageMediaAdapter implements ImageAdapterInterface
 
         if (!$existingFile) {
             $media->addFile($file)
-                ->setType($this->getImageMediaType())
+                ->setType(self::IMAGE_MEDIA_TYPE)
                 ->setCollection($this->getCollection());
         }
 
@@ -199,15 +198,6 @@ class ImageMediaAdapter implements ImageAdapterInterface
         return $media;
     }
 
-    private function getImageMediaType(): MediaType
-    {
-        $mediaType = $this->entityManager->getRepository(MediaType::class)->find(self::IMAGE_MEDIA_TYPE);
-        if (!$mediaType instanceof MediaType) {
-            throw new \RuntimeException(\sprintf('MediaType "%s" not found. Have you loaded the Sulu fixtures?', self::IMAGE_MEDIA_TYPE));
-        }
-
-        return $mediaType;
-    }
 
     private function getCollection(): Collection
     {
